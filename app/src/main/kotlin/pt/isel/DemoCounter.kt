@@ -57,26 +57,3 @@ private fun handlerGetEvents(
         }
     }
 }
-
-private fun response(context: Context): Response =
-    object : Response {
-        private val outputStream = context.res().outputStream
-
-        override fun sendConnectionHeaders(
-            status: Int,
-            headers: Map<String, List<String>>,
-        ) {
-            context.res().status = status
-            for ((key, values) in headers) {
-                context.res().setHeader(key, values.joinToString(","))
-            }
-        }
-
-        override fun write(text: String) {
-            outputStream.write(text.toByteArray())
-        }
-
-        override fun flush() {
-            outputStream.flush()
-        }
-    }
