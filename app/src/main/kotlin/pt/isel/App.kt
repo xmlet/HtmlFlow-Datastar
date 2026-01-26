@@ -10,6 +10,6 @@ fun main() {
 private fun server(): Javalin =
     Javalin
         .create { config ->
-            config.staticFiles.add("/", Location.CLASSPATH)
+            config.staticFiles.add("/public", Location.CLASSPATH)
             demoCounter(config)
         }

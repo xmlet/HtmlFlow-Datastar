@@ -6,16 +6,17 @@
     <title>Counting Stars</title>
     <script type="module"
             src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<div class="counter-card">
-    <h1 class="counter-title">Counting Stars</h1>
-    <div class="counter-display" data-init="@get('/counter/events')">
+<div>
+    <h1>Counting Stars</h1>
+    <div data-init="@get('/counter/events')">
         <span id="counter">Loading...</span>
     </div>
-    <div class="counter-buttons">
-        <button class="counter-btn" data-on:click="@post('/counter/decrement')">−</button>
-        <button class="counter-btn" data-on:click="@post('/counter/increment')">+</button>
+    <div>
+        <button data-on:click="@post('/counter/decrement')">−</button>
+        <button data-on:click="@post('/counter/increment')">+</button>
     </div>
 </div>
 
