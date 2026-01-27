@@ -15,6 +15,7 @@ private fun server(): Javalin =
             config.staticFiles.add("/public", Location.CLASSPATH)
             demoCounter(config)
             demoCounterSignals(config)
+            demoClickToLoad(config)
         }
 
 /**

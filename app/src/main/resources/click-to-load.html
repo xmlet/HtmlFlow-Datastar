@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Counting Stars</title>
+    <script type="module"
+            src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<h1>Click To Load</h1>
+<div
+        id="demo"
+        data-signals='{"offset":0, "limit":10}'
+>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>ID</th>
+        </tr>
+        </thead>
+        <tbody id="agents">
+        </tbody>
+    </table>
+    <button
+            data-indicator:_fetching
+            data-attr:disabled="$_fetching"
+            data-on:click="!$_fetching && @get('/examples/click_to_load/more')"
+    >
+        Load More
+    </button>
+</div>
+</body>
+</html>
