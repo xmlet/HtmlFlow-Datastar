@@ -23,6 +23,12 @@ dependencies {
     // Use the JUnit 5 integration.
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Javalin test tools for testing
+    testImplementation("io.javalin:javalin-testtools:6.7.0")
+
+    // Playwright for end-to-end testing with JavaScript execution
+    testImplementation("com.microsoft.playwright:playwright:1.48.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
