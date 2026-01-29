@@ -29,3 +29,37 @@ button:hover {
     background: #f0f0f0;
 }
 
+table {
+    width: 60%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table thead {
+    background: #4a90e2;
+    color: white;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 0.5px;
+}
+
+table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+table tbody tr:hover {
+    background: #e3f2fd;
+}

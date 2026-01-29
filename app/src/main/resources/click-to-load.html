@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Counting Stars</title>
+    <title>Click to Load</title>
     <script type="module"
             src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
     <link rel="stylesheet" href="/css/styles.css">
@@ -12,7 +12,7 @@
 <h1>Click To Load</h1>
 <div
         id="demo"
-        data-signals='{"offset":0, "limit":10}'
+        data-signals='{"offset":0, "limit":5}'
 >
     <table>
         <thead>
@@ -28,7 +28,7 @@
     <button
             data-indicator:_fetching
             data-attr:disabled="$_fetching"
-            data-on:click="!$_fetching && @get('/examples/click_to_load/more')"
+            data-on:click="!$_fetching && @get('/click-to-load/more')"
     >
         Load More
     </button>
