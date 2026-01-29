@@ -1,59 +1,68 @@
 package pt.isel
 
-import dev.datastar.kotlin.sdk.Response
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.path
-import io.javalin.apibuilder.ApiBuilder.post
-import io.javalin.config.JavalinConfig
-import io.javalin.http.ContentType
-import io.javalin.http.Context
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.server.response.respondText
+import io.ktor.server.response.respondTextWriter
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.RoutingContext
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.runBlocking
-import org.eclipse.jetty.http.HttpStatus
 
-fun demoCounter(config: JavalinConfig) {
+private val html = loadResource("counter.html")
+
+fun Route.demoCounter() {
     val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    config.router.apiBuilder {
-        path("/counter") {
-            get(::handlerGet)
-            get("/events") { handlerGetEvents(it, counter) }
-            post("/increment") { context ->
-                counter.value++
-                context.status(HttpStatus.NO_CONTENT_204)
-            }
-            post("/decrement") {
-                counter.value--
-                it.status(HttpStatus.NO_CONTENT_204)
-            }
+    route("/counter") {
+        get(RoutingContext::getCounterPage)
+
+        get("/events") {
+            getCounterEvents(counter)
+        }
+
+        post("/increment") {
+            postCounterIncrement(counter)
+        }
+
+        post("/decrement") {
+            postCounterDecrement(counter)
         }
     }
 }
 
-private fun handlerGet(context: Context) {
-    context
-        .status(HttpStatus.OK_200)
-        .contentType(ContentType.TEXT_HTML)
-    object {}.javaClass.classLoader.getResource("counter.html")?.openStream()?.let {
-        context.result(it)
-    }
+private suspend fun RoutingContext.getCounterPage() {
+    call.respondText(html, ContentType.Text.Html)
 }
 
-private fun handlerGetEvents(
-    context: Context,
-    counter: MutableStateFlow<Int>,
-) {
-    val response = response(context)
-    val generator = ServerSentEventGenerator(response)
-    runBlocking {
+private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<Int>) {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val response = response(this)
+        val generator = ServerSentEventGenerator(response)
+
         counter.collect { event ->
-            generator.patchElements(
-                """<span id="counter">$event</span>""",
-            )
+            generator.patchElements("""<span id="counter">$event</span>""")
+
             if (event == 3) {
                 generator.executeScript("""alert('Thanks for trying Datastar!')""")
             }
         }
     }
+}
+
+private fun RoutingContext.postCounterIncrement(counter: MutableStateFlow<Int>) {
+    counter.value++
+    call.response.status(HttpStatusCode.NoContent)
+}
+
+private fun RoutingContext.postCounterDecrement(counter: MutableStateFlow<Int>) {
+    counter.value--
+    call.response.status(HttpStatusCode.NoContent)
 }

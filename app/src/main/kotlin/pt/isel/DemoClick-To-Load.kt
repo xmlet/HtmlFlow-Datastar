@@ -1,41 +1,17 @@
 package pt.isel
 
-import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.path
-import io.javalin.config.JavalinConfig
-import io.javalin.http.ContentType
-import io.javalin.http.Context
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.runBlocking
-import org.eclipse.jetty.http.HttpStatus
+import io.ktor.http.ContentType
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
 
-fun demoClickToLoad(config: JavalinConfig) {
-    config.router.apiBuilder {
-        path("/click-to-load") {
-            get(::handlerGet)
-        }
-    }
-}
+private val html = loadResource("click-to-load.html")
 
-private fun handlerGet(context: Context) {
-    context
-        .status(HttpStatus.OK_200)
-        .contentType(ContentType.TEXT_HTML)
-    object {}.javaClass.classLoader.getResource("click-to-load.html")?.openStream()?.let {
-        context.result(it)
-    }
-}
-
-private fun handlerGetEvents(
-    context: Context,
-    count: MutableStateFlow<Int>,
-) {
-    val response = response(context)
-    val generator = ServerSentEventGenerator(response)
-    runBlocking {
-        count.collect { event ->
-            generator.patchSignals("{count: ${count.value}}")
+fun Route.demoClickToLoad() {
+    route("/click-to-load") {
+        get {
+            call.respondText(html, ContentType.Text.Html)
         }
     }
 }

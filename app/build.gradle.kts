@@ -12,7 +12,11 @@ repositories {
 }
 
 dependencies {
-    implementation("io.javalin:javalin:6.7.0")
+    // Ktor dependencies
+    implementation("io.ktor:ktor-server-core:3.0.3")
+    implementation("io.ktor:ktor-server-netty:3.0.3")
+    implementation("io.ktor:ktor-server-content-negotiation:3.0.3")
+
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.slf4j:slf4j-simple:2.0.16")
@@ -24,8 +28,8 @@ dependencies {
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // Javalin test tools for testing
-    testImplementation("io.javalin:javalin-testtools:6.7.0")
+    // Ktor test tools for testing
+    testImplementation("io.ktor:ktor-server-test-host:3.0.3")
 
     // Playwright for end-to-end testing with JavaScript execution
     testImplementation("com.microsoft.playwright:playwright:1.48.0")

@@ -1,48 +1,55 @@
 package pt.isel
 
 import dev.datastar.kotlin.sdk.Response
-import io.javalin.Javalin
-import io.javalin.http.Context
-import io.javalin.http.staticfiles.Location
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.staticResources
+import io.ktor.server.netty.Netty
+import io.ktor.server.routing.routing
+import java.io.Writer
 
 fun main() {
-    server().start(8080)
+    embeddedServer(Netty, port = 8080) {
+        routing {
+            staticResources("/", "public")
+            demoCounter()
+            demoCounterSignals()
+            demoClickToLoad()
+        }
+    }.start(wait = true)
 }
 
-private fun server(): Javalin =
-    Javalin
-        .create { config ->
-            config.staticFiles.add("/public", Location.CLASSPATH)
-            demoCounter(config)
-            demoCounterSignals(config)
-            demoClickToLoad(config)
-        }
+/**
+ * Loads a resource file from the classpath and returns its content as a String.
+ *
+ * @param path The path to the resource file relative to the classpath.
+ * @return The content of the resource file as a String.
+ * @throws IllegalArgumentException if the resource is not found.
+ */
+fun loadResource(path: String): String =
+    object {}
+        .javaClass.classLoader
+        .getResource(path)
+        ?.readText() ?: throw IllegalArgumentException("Resource not found:$path")
 
 /**
- * Creates a `Response` implementation that interacts with the Javalin `Context`.
+ * Creates a `Response` implementation that interacts with java.io.Writer.
  *
- * @param context The Javalin `Context` object representing the HTTP request and response.
  * @return A `Response` implementation for sending headers and writing data to the response.
  */
-fun response(context: Context): Response =
+fun response(writer: Writer): Response =
     object : Response {
-        private val outputStream = context.res().outputStream
-
         override fun sendConnectionHeaders(
             status: Int,
             headers: Map<String, List<String>>,
         ) {
-            context.res().status = status
-            for ((key, values) in headers) {
-                context.res().setHeader(key, values.joinToString(","))
-            }
+            // connection is already set up when used
         }
 
         override fun write(text: String) {
-            outputStream.write(text.toByteArray())
+            writer.write(text)
         }
 
         override fun flush() {
-            outputStream.flush()
+            writer.flush()
         }
     }
