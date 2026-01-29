@@ -13,9 +13,9 @@ repositories {
 
 dependencies {
     // Ktor dependencies
-    implementation("io.ktor:ktor-server-core:3.0.3")
-    implementation("io.ktor:ktor-server-netty:3.0.3")
-    implementation("io.ktor:ktor-server-content-negotiation:3.0.3")
+    implementation("io.ktor:ktor-server-core:3.4.0")
+    implementation("io.ktor:ktor-server-netty:3.4.0")
+    implementation("io.ktor:ktor-server-content-negotiation:3.4.0")
 
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
@@ -29,7 +29,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // Ktor test tools for testing
-    testImplementation("io.ktor:ktor-server-test-host:3.0.3")
+    testImplementation("io.ktor:ktor-server-test-host:3.4.0")
 
     // Playwright for end-to-end testing with JavaScript execution
     testImplementation("com.microsoft.playwright:playwright:1.48.0")
