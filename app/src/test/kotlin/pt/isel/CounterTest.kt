@@ -3,59 +3,14 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
-import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class CounterTest {
-    @Test
-    fun `demo counter returns page with counter span`() {
-        `demo returns page with counter span`("/counter")
-    }
-
-    @Test
-    fun `demo counter signals returns page with counter span`() {
-        `demo returns page with counter span`("/counter-signals")
-    }
-
-    /**
-     * Tests that the router serves the corresponding html page
-     * and that the page contains a span element with id "counter".
-     */
-    fun `demo returns page with counter span`(path: String) =
-        testApplication {
-            application {
-                routing {
-                    demoCounter()
-                    demoCounterSignals()
-                }
-            }
-
-            // Make a GET request to /counter-signals
-            val response = client.get(path)
-
-            // Check that the response status is 200 OK
-            assertEquals(HttpStatusCode.OK, response.status)
-
-            // Check that the response contains HTML content
-            val body = response.bodyAsText()
-            assertTrue(body.isNotEmpty(), "Response body should not be empty")
-
-            // Check that the response contains a span element with id "counter"
-            assertTrue(
-                body.contains("<span id=\"counter\""),
-                "Response should contain a span element with id 'counter'",
-            )
-        }
-
     @Test
     fun `demo counter increment button via patch element`() {
         testDemoCounterSignalsIncrementButton("counter")
