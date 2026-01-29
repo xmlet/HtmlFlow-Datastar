@@ -32,8 +32,7 @@ private suspend fun RoutingContext.getMore() {
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
-        val response = response(this)
-        val generator = ServerSentEventGenerator(response)
+        val generator = ServerSentEventGenerator(response(this))
         val datastarQueryArg = call.request.queryParameters["datastar"]
         requireNotNull(datastarQueryArg)
 
