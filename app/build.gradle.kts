@@ -12,6 +12,7 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -21,6 +22,9 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:3.4.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.0")
 
+    implementation("com.github.xmlet:htmlflow-datastar:5.0.1-SNAPSHOT")
+
+    // Datastar Kotlin dependencies
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.slf4j:slf4j-simple:2.0.16")

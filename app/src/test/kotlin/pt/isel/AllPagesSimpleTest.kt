@@ -11,18 +11,28 @@ import kotlin.test.assertTrue
 
 class AllPagesSimpleTest {
     @Test
-    fun `demo counter returns page`() {
-        `demo returns page`("/counter")
+    fun `demo counter HTML returns page`() {
+        `demo returns page`("/counter/html")
     }
 
     @Test
-    fun `demo counter signals returns page`() {
-        `demo returns page`("/counter-signals")
+    fun `demo counter signals HTML returns page`() {
+        `demo returns page`("/counter-signals/html")
     }
 
     @Test
-    fun `demo click to load returns page`() {
-        `demo returns page`("/click-to-load")
+    fun `demo counter signals HtmlFlow returns page`() {
+        `demo returns page`("/counter-signals/htmlflow")
+    }
+
+    @Test
+    fun `demo click to load HTML returns page`() {
+        `demo returns page`("/click-to-load/html")
+    }
+
+    @Test
+    fun `demo click to load HtmlFlow returns page`() {
+        `demo returns page`("/click-to-load/htmlflow")
     }
 
     /**

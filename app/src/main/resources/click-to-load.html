@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Click to Load</title>
     <script type="module"
-            src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
+            src="/js/datastar.js"></script>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <h1>Click To Load</h1>
 <div
         id="demo"
-        data-signals='{"offset":0, "limit":5}'
+        data-signals:offset="0"
+        data-signals:limit="5"
 >
     <table>
         <thead>
@@ -26,9 +27,10 @@
         </tbody>
     </table>
     <button
-            data-indicator:_fetching
+            data-indicator="_fetching"
             data-attr:disabled="$_fetching"
             data-on:click="!$_fetching && @get('/click-to-load/more')"
+            data-text="$_fetching ? 'Loading...' : 'Load More'"
     >
         Load More
     </button>

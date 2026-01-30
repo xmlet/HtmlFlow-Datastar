@@ -1,0 +1,62 @@
+package pt.isel.views.htmlflow
+
+import htmlflow.dataInit
+import htmlflow.dataOn
+import htmlflow.dataSignal
+import htmlflow.dataText
+import htmlflow.doc
+import htmlflow.html
+import org.xmlet.htmlapifaster.EnumRelType
+import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.body
+import org.xmlet.htmlapifaster.button
+import org.xmlet.htmlapifaster.div
+import org.xmlet.htmlapifaster.h1
+import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.link
+import org.xmlet.htmlapifaster.script
+import org.xmlet.htmlapifaster.span
+
+val hfCounterViaSignals: String =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        div {
+                            val count = dataSignal("count", 0)
+                            h1 {
+                                text("Counting Stars HtmlFlow - via Signals")
+                            }
+                            div {
+                                dataInit("@get('/counter-signals/events')")
+                                span {
+                                    attrId("counter")
+                                    dataText(count)
+                                }
+                            }
+                            div {
+                                button {
+                                    dataOn("click", "@post('/counter-signals/decrement')")
+                                    text("−")
+                                }
+                                button {
+                                    dataOn("click", "@post('/counter-signals/increment')")
+                                    text("+")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.toString()

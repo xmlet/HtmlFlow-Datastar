@@ -12,6 +12,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
+import pt.isel.views.htmlflow.hfCounterViaSignals
 
 private val html = loadResource("counter-signals.html")
 
@@ -19,7 +20,9 @@ fun Route.demoCounterSignals() {
     val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
     route("/counter-signals") {
-        get(RoutingContext::getCounterPage)
+        get("/html", RoutingContext::getCounterPageHtml)
+
+        get("/htmlflow", RoutingContext::getCounterPageHtmlFlow)
 
         get("/events") {
             getCounterEvents(counter)
@@ -35,8 +38,12 @@ fun Route.demoCounterSignals() {
     }
 }
 
-private suspend fun RoutingContext.getCounterPage() {
+private suspend fun RoutingContext.getCounterPageHtml() {
     call.respondText(html, ContentType.Text.Html)
+}
+
+private suspend fun RoutingContext.getCounterPageHtmlFlow() {
+    call.respondText(hfCounterViaSignals, ContentType.Text.Html)
 }
 
 private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<Int>) {

@@ -11,20 +11,27 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.views.htmlflow.hfClickToLoad
 
 private val html = loadResource("click-to-load.html")
 
 fun Route.demoClickToLoad() {
     route("/click-to-load") {
-        get(RoutingContext::getClickToLoad)
+        get("/html", RoutingContext::getClickToLoadHtml)
+        get("/htmlflow", RoutingContext::getClickToLoadHtmlFlow)
         get("/more", RoutingContext::getMore)
     }
 }
 
-private suspend fun RoutingContext.getClickToLoad() {
+private suspend fun RoutingContext.getClickToLoadHtml() {
     call.respondText(html, ContentType.Text.Html)
+}
+
+private suspend fun RoutingContext.getClickToLoadHtmlFlow() {
+    call.respondText(hfClickToLoad, ContentType.Text.Html)
 }
 
 private suspend fun RoutingContext.getMore() {
@@ -32,6 +39,7 @@ private suspend fun RoutingContext.getMore() {
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
+        delay(1000) // Simulate some delay
         val generator = ServerSentEventGenerator(response(this))
         val datastarQueryArg = call.request.queryParameters["datastar"]
         requireNotNull(datastarQueryArg)

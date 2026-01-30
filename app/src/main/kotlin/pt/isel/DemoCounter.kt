@@ -19,7 +19,7 @@ fun Route.demoCounter() {
     val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
     route("/counter") {
-        get(RoutingContext::getCounterPage)
+        get("/html", RoutingContext::getCounterPageHtml)
 
         get("/events") {
             getCounterEvents(counter)
@@ -35,7 +35,7 @@ fun Route.demoCounter() {
     }
 }
 
-private suspend fun RoutingContext.getCounterPage() {
+private suspend fun RoutingContext.getCounterPageHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 

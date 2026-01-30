@@ -12,13 +12,18 @@ import kotlin.test.assertEquals
 
 class CounterTest {
     @Test
-    fun `demo counter increment button via patch element`() {
-        testDemoCounterSignalsIncrementButton("counter")
+    fun `demo counter HTML increment button via patch element`() {
+        testDemoCounterSignalsIncrementButton("counter/html")
     }
 
     @Test
-    fun `demo counter increment button via patch signals`() {
-        testDemoCounterSignalsIncrementButton("counter-signals")
+    fun `demo counter HTML increment button via patch signals`() {
+        testDemoCounterSignalsIncrementButton("counter-signals/html")
+    }
+
+    @Test
+    fun `demo counter HtmlFlow increment button via patch signals`() {
+        testDemoCounterSignalsIncrementButton("counter-signals/htmlflow")
     }
 
     /**
@@ -36,8 +41,7 @@ class CounterTest {
         val server =
             embeddedServer(Netty, port = 0) {
                 routing {
-                    demoCounter()
-                    demoCounterSignals()
+                    demoHtmlFlowDatastarRouting()
                 }
             }.start()
 

@@ -5,24 +5,30 @@ import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class ClickToLoadTest {
+    @Test
+    fun `click load more button fetches and appends 5 rows to table on HTML`() {
+        `click load more button fetches and appends 5 rows to table`("/click-to-load/html")
+    }
+
+    @Test
+    fun `click load more button fetches and appends 5 rows to table on HtmlFlow`() {
+        `click load more button fetches and appends 5 rows to table`("/click-to-load/htmlflow")
+    }
+
     /**
      * Tests that clicking the "Load More" button fetches 5 table rows via SSE
      * and appends them to the table.
      */
-    @Test
-    fun `click load more button fetches and appends 5 rows to table`() {
+    fun `click load more button fetches and appends 5 rows to table`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {
-                routing {
-                    demoClickToLoad()
-                }
+                demoHtmlFlowDatastarRouting()
             }.start()
 
         val port =
@@ -43,7 +49,7 @@ class ClickToLoadTest {
 
             try {
                 // Navigate to the click-to-load page
-                val url = "http://localhost:$port/click-to-load"
+                val url = "http://localhost:$port$path"
                 val response = page.navigate(url)
                 assertEquals(200, response?.status(), "Navigation to $url should return 200")
 

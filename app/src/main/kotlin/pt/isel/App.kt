@@ -1,6 +1,7 @@
 package pt.isel
 
 import dev.datastar.kotlin.sdk.Response
+import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
@@ -9,14 +10,17 @@ import java.io.Writer
 
 fun main() {
     embeddedServer(Netty, port = 8080) {
-        routing {
-            staticResources("/", "public")
-            demoCounter()
-            demoCounterSignals()
-            demoClickToLoad()
-        }
+        demoHtmlFlowDatastarRouting()
     }.start(wait = true)
 }
+
+fun Application.demoHtmlFlowDatastarRouting() =
+    routing {
+        staticResources("/", "public")
+        demoCounter()
+        demoCounterSignals()
+        demoClickToLoad()
+    }
 
 /**
  * Loads a resource file from the classpath and returns its content as a String.
