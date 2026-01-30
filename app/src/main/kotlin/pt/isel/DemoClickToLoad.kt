@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.views.htmlflow.hfClickToLoad
 
-private val html = loadResource("click-to-load.html")
+private val html = loadResource("public/html/click-to-load.html")
 
 fun Route.demoClickToLoad() {
     route("/click-to-load") {

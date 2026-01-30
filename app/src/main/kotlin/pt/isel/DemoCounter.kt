@@ -13,7 +13,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
 
-private val html = loadResource("counter.html")
+private val html = loadResource("public/html/counter.html")
 
 fun Route.demoCounter() {
     val counter: MutableStateFlow<Int> = MutableStateFlow(0)

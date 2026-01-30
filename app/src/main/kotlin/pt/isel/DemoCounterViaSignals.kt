@@ -14,7 +14,7 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
 import pt.isel.views.htmlflow.hfCounterViaSignals
 
-private val html = loadResource("counter-signals.html")
+private val html = loadResource("public/html/counter-signals.html")
 
 fun Route.demoCounterSignals() {
     val counter: MutableStateFlow<Int> = MutableStateFlow(0)
