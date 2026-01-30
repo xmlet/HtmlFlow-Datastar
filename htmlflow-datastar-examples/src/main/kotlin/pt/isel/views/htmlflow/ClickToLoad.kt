@@ -1,10 +1,5 @@
 package pt.isel.views.htmlflow
 
-import htmlflow.dataAttr
-import htmlflow.dataIndicator
-import htmlflow.dataOn
-import htmlflow.dataSignal
-import htmlflow.dataText
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.EnumRelType
@@ -21,6 +16,12 @@ import org.xmlet.htmlapifaster.tbody
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.extensions.dataAttr
+import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataOn
+import pt.isel.datastar.extensions.dataSignal
+import pt.isel.datastar.extensions.dataSignals
+import pt.isel.datastar.extensions.dataText
 
 val hfClickToLoad: String =
     StringBuilder()
@@ -43,8 +44,7 @@ val hfClickToLoad: String =
                         }
                         div {
                             attrId("demo")
-                            dataSignal("offset", 0)
-                            dataSignal("limit", 5)
+                            dataSignals("offset" to 0, "limit" to 5)
                         }
                         table {
                             thead {
@@ -61,10 +61,12 @@ val hfClickToLoad: String =
                         button {
                             attrClass("info wide")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr(
+                                "disabled" to fetching,
+                            )
                             dataOn("click", "!$fetching && @get('/click-to-load/more')")
                             dataText("$fetching ? 'Loading...' : 'Load More'")
-                            +"Load More"
+                            text("Load More")
                         }
                     }
                 }

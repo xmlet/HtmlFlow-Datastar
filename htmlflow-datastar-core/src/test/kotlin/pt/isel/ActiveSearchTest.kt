@@ -1,0 +1,57 @@
+package pt.isel
+
+import htmlflow.html
+import htmlflow.view
+import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.extensions.dataBind
+import pt.isel.datastar.extensions.dataOn
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.milliseconds
+
+class ActiveSearchTest {
+    @Test
+    fun `Active Search of the Datastar Frontend Reactivity`() {
+        val out = StringBuilder()
+        demoDastarRx.setOut(out).write()
+        val expected = expectedDatastarRx.trimIndent().lines().iterator()
+        out.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
+
+    private val demoDastarRx =
+        view<Unit> {
+            html {
+                head {
+                    script {
+                        attrType(EnumTypeScriptType.MODULE)
+                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                    }
+                }
+                body {
+                    input {
+                        attrType(EnumTypeInputType.TEXT)
+                        attrPlaceholder("Search...")
+                        dataBind("search")
+                        dataOn("input", "@get('/examples/active_search/search')") {
+                            debounce(200.milliseconds)
+                        }
+                    }
+                }
+            }
+        }
+
+    private val expectedDatastarRx = """
+    <!DOCTYPE html>
+<html>
+    <head>
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+        </script>
+    </head>
+<body>
+    <input type="text" placeholder="Search..." data-bind-search="" data-on:input__debounce.200ms="@get('/examples/active_search/search')">
+</body>
+</html>
+    """
+}

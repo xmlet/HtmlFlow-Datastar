@@ -22,7 +22,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:3.4.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.0")
 
-    implementation("com.github.xmlet:htmlflow-datastar:5.0.1-SNAPSHOT")
+    implementation(project(":htmlflow-datastar-core"))
 
     // Datastar Kotlin dependencies
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")

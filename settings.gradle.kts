@@ -11,4 +11,6 @@ plugins {
 }
 
 rootProject.name = "htmlflow-datastar"
+include("htmlflow-datastar-core")
 include("htmlflow-datastar-examples")
+

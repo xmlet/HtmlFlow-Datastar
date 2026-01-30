@@ -1,9 +1,5 @@
 package pt.isel.views.htmlflow
 
-import htmlflow.dataInit
-import htmlflow.dataOn
-import htmlflow.dataSignal
-import htmlflow.dataText
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.EnumRelType
@@ -16,6 +12,10 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.extensions.dataInit
+import pt.isel.datastar.extensions.dataOn
+import pt.isel.datastar.extensions.dataSignal
+import pt.isel.datastar.extensions.dataText
 
 val hfCounterViaSignals: String =
     StringBuilder()
