@@ -10,5 +10,5 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
 }
 
-rootProject.name = "xmlet-datastar-examples"
-include("app")
+rootProject.name = "htmlflow-datastar"
+include("htmlflow-datastar-examples")
