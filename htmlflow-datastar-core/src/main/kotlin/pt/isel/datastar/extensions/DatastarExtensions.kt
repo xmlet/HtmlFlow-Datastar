@@ -81,7 +81,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String): Signal {
     require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
-    this.visitor.visitAttribute("data-bind-$name", "")
+    this.visitor.visitAttribute("data-bind:$name", "")
     return Signal(name)
 }
 
@@ -94,7 +94,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String):
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(signal: Signal): Signal {
     require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
-    this.visitor.visitAttribute("data-bind-${signal.name}", "")
+    this.visitor.visitAttribute("data-bind:${signal.name}", "")
     return signal
 }
 

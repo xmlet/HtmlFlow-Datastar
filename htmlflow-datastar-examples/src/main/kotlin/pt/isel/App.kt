@@ -20,6 +20,7 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoCounter()
         demoCounterSignals()
         demoClickToLoad()
+        demoActiveSearch()
     }
 
 /**

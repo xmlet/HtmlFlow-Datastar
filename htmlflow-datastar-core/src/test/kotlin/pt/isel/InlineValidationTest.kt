@@ -108,18 +108,18 @@ class InlineValidationTest {
                 <div id="demo">
                     <label>
                         Email Address
-                        <input type="email" required="required" aria-live="polite" aria-describedby="email-info" data-bind-email="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
+                        <input type="email" required="required" aria-live="polite" aria-describedby="email-info" data-bind:email="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
                     </label>
                     <p id="email-info" class="info">
                         The only valid email address is "test@test.com".
                     </p>
                     <label>
                         First Name
-                        <input type="text" required="required" aria-live="polite" data-bind-first-name="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
+                        <input type="text" required="required" aria-live="polite" data-bind:first-name="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
                     </label>
                     <label>
                         Last Name
-                        <input type="text" required="required" aria-live="polite" data-bind-last-name="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
+                        <input type="text" required="required" aria-live="polite" data-bind:last-name="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
                     </label>
                     <button class="success" data-on:click="@post('/examples/inline_validation')">
                         <i class="material-symbols:person-add">

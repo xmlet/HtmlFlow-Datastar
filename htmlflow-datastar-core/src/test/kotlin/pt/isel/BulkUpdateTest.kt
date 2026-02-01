@@ -108,7 +108,7 @@ class BulkUpdateTest {
             <thead>
                 <tr>
                     <th>
-                        <input type="checkbox" data-bind-all="" data-on:change="$selections = Array(4).fill($all)" data-effect="$selections; $all = $selections.every(Boolean)" data-attr-disabled="$fetching">
+                        <input type="checkbox" data-bind:all="" data-on:change="$selections = Array(4).fill($all)" data-effect="$selections; $all = $selections.every(Boolean)" data-attr-disabled="$fetching">
                     </th>
                     <th>
                         Name
@@ -124,7 +124,7 @@ class BulkUpdateTest {
             <tbody>
                 <tr>
                     <td>
-                        <input type="checkbox" data-bind-selections="" data-attr-disabled="$fetching">
+                        <input type="checkbox" data-bind:selections="" data-attr-disabled="$fetching">
                     </td>
                     <td>
                         Joe Smith

@@ -66,9 +66,9 @@ class DBmonTest {
                                     dataOn("focus", "$editing = true")
                                     dataOn("blur", "@put('/examples/dbmon/inputs'); $editing = false")
                                     val mutationRate = dataBind("mutation-rate")
-                                    dataAttr("data-bind-${mutationRate.name}", "$editing")
+                                    dataAttr("data-bind:${mutationRate.name}", "$editing")
                                     val mutRate = dataBind("_mutation-rate")
-                                    dataAttr("data-bind-${mutRate.name}", "!$editing")
+                                    dataAttr("data-bind:${mutRate.name}", "!$editing")
                                 }
                             }
                             label {
@@ -81,9 +81,9 @@ class DBmonTest {
                                     dataOn("focus", "$editing = true")
                                     dataOn("blur", "@put('/examples/dbmon/inputs'); $editing = false")
                                     val framesPerSecond = dataBind("fps")
-                                    dataAttr("data-bind-${framesPerSecond.name}", "$editing")
+                                    dataAttr("data-bind:${framesPerSecond.name}", "$editing")
                                     val fps = dataBind("_fps")
-                                    dataAttr("data-bind-${fps.name}", "!$editing")
+                                    dataAttr("data-bind:${fps.name}", "!$editing")
                                 }
                             }
                         }
@@ -128,11 +128,11 @@ class DBmonTest {
                     <div role="group">
                         <label>
                             Mutation Rate %
-                            <input type="number" min="0" max="100" value="20" data-on:focus="$editing = true" data-on:blur="@put('/examples/dbmon/inputs'); $editing = false" data-bind-mutation-rate="" data-attr:data-bind-mutation-rate="$editing" data-bind-_mutation-rate="" data-attr:data-bind-_mutation-rate="!$editing">
+                            <input type="number" min="0" max="100" value="20" data-on:focus="$editing = true" data-on:blur="@put('/examples/dbmon/inputs'); $editing = false" data-bind:mutation-rate="" data-attr:data-bind:mutation-rate="$editing" data-bind:_mutation-rate="" data-attr:data-bind:_mutation-rate="!$editing">
                         </label>
                         <label>
                             FPS
-                            <input type="number" min="1" max="144" value="60" data-on:focus="$editing = true" data-on:blur="@put('/examples/dbmon/inputs'); $editing = false" data-bind-fps="" data-attr:data-bind-fps="$editing" data-bind-_fps="" data-attr:data-bind-_fps="!$editing">
+                            <input type="number" min="1" max="144" value="60" data-on:focus="$editing = true" data-on:blur="@put('/examples/dbmon/inputs'); $editing = false" data-bind:fps="" data-attr:data-bind:fps="$editing" data-bind:_fps="" data-attr:data-bind:_fps="!$editing">
                         </label>
                     </div>
                     <table style="table-layout: fixed; width: 100%; word-break: break-all">

@@ -158,10 +158,10 @@ class EditRowTest {
                     <tbody>
                         <tr>
                             <td>
-                                <input type="text" data-bind-name="">
+                                <input type="text" data-bind:name="">
                             </td>
                             <td>
-                                <input type="text" data-bind-email="">
+                                <input type="text" data-bind:email="">
                             </td>
                             <td>
                                 <button data-on:click="@get('/examples/edit_row/cancel')">
