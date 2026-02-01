@@ -68,7 +68,7 @@ class BadAppleTest {
        <label data-init="@get('/examples/bad_apple/updates')">
             <span data-text="`Percentage: ${$percentage.toFixed(2)}%`">
             </span>
-            <input type="range" min="0" max="100" step="0.01" disabled="disabled" style="cursor: default" data-attr-value="$percentage">
+            <input type="range" min="0" max="100" step="0.01" disabled="disabled" style="cursor: default" data-attr:value="$percentage">
        </label>
        <pre style="line-height: 100%" data-text="$contents">
        </pre>

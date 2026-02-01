@@ -119,7 +119,7 @@ class ProgressBarTest {
                         </text>
                     </svg>
                     <!-- When progress is 100% -->
-                    <button data-indicator:fetching="" data-attr-aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})">
+                    <button data-indicator:fetching="" data-attr:aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})">
                         <i class="material-symbols:check-circle">
                         </i>
                         Completed! Try again?

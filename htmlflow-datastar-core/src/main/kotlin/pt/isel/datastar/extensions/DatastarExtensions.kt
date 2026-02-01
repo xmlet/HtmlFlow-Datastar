@@ -120,11 +120,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
     name: String,
     js: String,
 ) {
-    if (name.startsWith("data-")) { // Improve this validation to support custom elements
-        this.visitor.visitAttribute("data-attr:$name", js)
-    } else {
-        this.visitor.visitAttribute("data-attr-$name", js)
-    }
+    this.visitor.visitAttribute("data-attr:$name", js)
 }
 
 /**

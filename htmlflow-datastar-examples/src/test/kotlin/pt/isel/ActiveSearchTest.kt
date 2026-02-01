@@ -12,19 +12,19 @@ import kotlin.use
 
 class ActiveSearchTest {
     @Test
-    fun `search name filters table rows on HTML`() {
-        `search name filters table rows`("/active-search/html")
+    fun `search name, filters table rows on HTML`() {
+        `search name, filters table rows`("/active-search/html")
     }
 
     @Test
-    fun `search name filters table rows on HtmlFlow`() {
-        `search name filters table rows`("/active-search/htmlflow")
+    fun `search name, filters table rows on HtmlFlow`() {
+        `search name, filters table rows`("/active-search/htmlflow")
     }
 
     /**
      * Tests that searching for a name filters the table to show only matching rows.
      */
-    fun `search name filters table rows`(path: String) {
+    fun `search name, filters table rows`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {
                 demoHtmlFlowDatastarRouting()

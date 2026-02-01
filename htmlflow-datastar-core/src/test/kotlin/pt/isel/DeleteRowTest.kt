@@ -99,7 +99,7 @@ class DeleteRowTest {
                                 joe@smith.org
                             </td>
                             <td>
-                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:fetching="" data-attr-disabled="$fetching">
+                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:fetching="" data-attr:disabled="$fetching">
                                     Delete
                                 </button>
                             </td>

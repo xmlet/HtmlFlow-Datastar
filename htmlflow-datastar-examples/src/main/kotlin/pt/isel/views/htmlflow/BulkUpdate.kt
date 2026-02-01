@@ -1,0 +1,111 @@
+package pt.isel.views.htmlflow
+
+import htmlflow.doc
+import htmlflow.html
+import org.xmlet.htmlapifaster.EnumRelType
+import org.xmlet.htmlapifaster.EnumTypeInputType
+import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.body
+import org.xmlet.htmlapifaster.button
+import org.xmlet.htmlapifaster.div
+import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.i
+import org.xmlet.htmlapifaster.input
+import org.xmlet.htmlapifaster.link
+import org.xmlet.htmlapifaster.script
+import org.xmlet.htmlapifaster.table
+import org.xmlet.htmlapifaster.tbody
+import org.xmlet.htmlapifaster.td
+import org.xmlet.htmlapifaster.th
+import org.xmlet.htmlapifaster.thead
+import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.extensions.dataAttr
+import pt.isel.datastar.extensions.dataBind
+import pt.isel.datastar.extensions.dataEffect
+import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataOn
+import pt.isel.datastar.extensions.dataSignals
+import pt.isel.users
+import kotlin.collections.component1
+import kotlin.collections.component2
+
+val hfBulkUpdate =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        div {
+                            attrId("demo")
+                            val (fetching, selections) =
+                                dataSignals(
+                                    "_fetching" to false,
+                                    "selections" to "Array(4).fill(false)",
+                                ) { ifMissing() }
+                            table {
+                                thead {
+                                    tr {
+                                        th {
+                                            input {
+                                                attrType(EnumTypeInputType.CHECKBOX)
+                                                val all = dataBind("_all")
+                                                dataOn("change", "$selections = Array(4).fill($all)")
+                                                dataEffect("$selections; $all = $selections.every(Boolean)")
+                                                dataAttr("disabled", "$fetching")
+                                            }
+                                        }
+                                        th { text("Name") }
+                                        th { text("Email") }
+                                        th { text("Status") }
+                                    }
+                                }
+                                tbody {
+                                    users.forEach { user ->
+                                        tr {
+                                            td {
+                                                input {
+                                                    attrType(EnumTypeInputType.CHECKBOX)
+                                                    dataBind("selections")
+                                                    dataAttr("disabled", "$fetching")
+                                                }
+                                            }
+                                            td { text(user.name) }
+                                            td { text(user.email) }
+                                            td { text(user.status.syntax) }
+                                        }
+                                    }
+                                }
+                            }
+                            div {
+                                button {
+                                    attrClass("success")
+                                    dataOn("click", "@put('/bulk-update/activate')")
+                                    dataIndicator(fetching.name)
+                                    dataAttr("disabled", "$fetching")
+                                    i { attrClass("pixelarticons:user-plus") }
+                                    text("Activate")
+                                }
+                                button {
+                                    attrClass("error")
+                                    dataOn("click", "@put('/bulk-update/deactivate')")
+                                    dataIndicator(fetching.name)
+                                    dataAttr("disabled", "$fetching")
+                                    i { attrClass("pixelarticons:user-x") }
+                                    text("Deactivate")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.toString()

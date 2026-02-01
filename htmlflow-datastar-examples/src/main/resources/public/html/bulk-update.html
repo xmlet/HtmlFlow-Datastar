@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="module" src="/js/datastar.js">
+        </script><link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+        <div id="demo" data-signals__ifmissing="{_fetching: false, selections: Array(4).fill(false)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" data-on:change="@setAll(el.checked, {include: /^selections/})" data-effect="el.checked = $selections.every(Boolean)" data-attr:disabled="$_fetching">                    </th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
+                    </td>
+                    <td>Joe Smith</td>
+                    <td>joe@smith.org</td>
+                    <td>Active</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
+                    </td>
+                    <td>Angie MacDowell</td>
+                    <td>angie@macdowell.org</td>
+                    <td>Active</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
+                    </td>
+                    <td>Fuqua Tarkenton</td>
+                    <td>fuqua@tarkenton.org</td>
+                    <td>Inactive</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
+                    </td>
+                    <td>Kim Yee</td>
+                    <td>kim@yee.org</td>
+                    <td>Inactive</td></tr>
+                </tbody>
+            </table>
+            <div role="group">
+                <button class="success" data-on:click="@put('/bulk-update/activate')" data-indicator:_fetching="" data-attr-disabled="$_fetching">
+                    Activate
+                </button>
+                <button class="error" data-on:click="@put('/bulk-update/deactivate')" data-indicator:_fetching="" data-attr-disabled="$_fetching">
+                    Deactivate
+                </button>
+            </div>
+        </div>
+    </body>
+</html>

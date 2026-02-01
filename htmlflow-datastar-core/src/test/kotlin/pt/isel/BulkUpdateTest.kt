@@ -37,7 +37,7 @@ class BulkUpdateTest {
                         attrId("demo")
                         val (fetching, selections) =
                             dataSignals(
-                                "fetching" to false,
+                                "_fetching" to false,
                                 "selections" to "Array(4).fill(false)", // This must be a JS expression
                             ) { ifMissing() }
                         table {
@@ -46,9 +46,8 @@ class BulkUpdateTest {
                                     th {
                                         input {
                                             attrType(EnumTypeInputType.CHECKBOX)
-                                            val all = dataBind("all")
-                                            dataOn("change", "$selections = Array(4).fill($all)")
-                                            dataEffect("$selections; $all = $selections.every(Boolean)")
+                                            dataOn("change", "@setAll(el.checked, {include: /^selections/})")
+                                            dataEffect("el.checked = \$selections.every(Boolean)")
                                             dataAttr("disabled", "$fetching")
                                         }
                                     }
@@ -75,7 +74,7 @@ class BulkUpdateTest {
                         div {
                             button {
                                 attrClass("success")
-                                dataOn("click", "@put('/examples/bulk_update/activate')")
+                                dataOn("click", "@put('/bulk-update/activate')")
                                 dataIndicator(fetching.name)
                                 dataAttr("disabled", "$fetching")
                                 i { attrClass("pixelarticons:user-plus") }
@@ -83,7 +82,7 @@ class BulkUpdateTest {
                             }
                             button {
                                 attrClass("error")
-                                dataOn("click", "@put('/examples/bulk_update/deactivate')")
+                                dataOn("click", "@put('/bulk-update/deactivate')")
                                 dataIndicator(fetching.name)
                                 dataAttr("disabled", "$fetching")
                                 i { attrClass("pixelarticons:user-x") }
@@ -103,13 +102,13 @@ class BulkUpdateTest {
         </script>
     </head>
 <body>
-    <div id="demo" data-signals__ifmissing="{fetching: false, selections: 'Array(4).fill(false)'}">
+    <div id="demo" data-signals__ifmissing="{_fetching: false, selections: 'Array(4).fill(false)'}">
         <table>
             <thead>
                 <tr>
                     <th>
-                        <input type="checkbox" data-bind:all="" data-on:change="$selections = Array(4).fill($all)" data-effect="$selections; $all = $selections.every(Boolean)" data-attr-disabled="$fetching">
-                    </th>
+                        <input type="checkbox" data-on:change="@setAll(el.checked, {include: /^selections/})" data-effect="el.checked = $selections.every(Boolean)" data-attr:disabled="$_fetching">
+                        </th>
                     <th>
                         Name
                     </th>
@@ -124,7 +123,7 @@ class BulkUpdateTest {
             <tbody>
                 <tr>
                     <td>
-                        <input type="checkbox" data-bind:selections="" data-attr-disabled="$fetching">
+                        <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
                     </td>
                     <td>
                         Joe Smith
@@ -139,12 +138,12 @@ class BulkUpdateTest {
             </tbody>
         </table>
         <div>
-            <button class="success" data-on:click="@put('/examples/bulk_update/activate')" data-indicator:fetching="" data-attr-disabled="$fetching">
+            <button class="success" data-on:click="@put('/bulk-update/activate')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                 <i class="pixelarticons:user-plus">
                 </i>
                 Activate
             </button>
-            <button class="error" data-on:click="@put('/examples/bulk_update/deactivate')" data-indicator:fetching="" data-attr-disabled="$fetching">
+            <button class="error" data-on:click="@put('/bulk-update/deactivate')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                 <i class="pixelarticons:user-x">
                 </i>
                 Deactivate

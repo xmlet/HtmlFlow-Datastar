@@ -95,7 +95,7 @@ class ProgressiveLoadTest {
 <body>
     <div>
         <div class="actions">
-            <button id="load-button" data-signals-load-disabled="false" data-on:click="$load-disabled=true; @get('/examples/progressive_load/updates')" data-attr-disabled="$load-disabled" data-indicator:progressive-Load="">
+            <button id="load-button" data-signals-load-disabled="false" data-on:click="$load-disabled=true; @get('/examples/progressive_load/updates')" data-attr:disabled="$load-disabled" data-indicator:progressive-Load="">
                 Load
             </button>
         </div>

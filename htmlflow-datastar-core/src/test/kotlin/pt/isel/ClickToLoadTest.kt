@@ -49,7 +49,7 @@ class ClickToLoadTest {
         </script>
     </head>
 <body>
-    <button class="info wide" data-indicator:fetching="" data-attr-aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/click_to_load/more')">
+    <button class="info wide" data-indicator:fetching="" data-attr:aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/click_to_load/more')">
         Load More
     </button>
 </body>

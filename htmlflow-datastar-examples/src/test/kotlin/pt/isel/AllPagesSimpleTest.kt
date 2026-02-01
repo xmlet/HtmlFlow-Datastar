@@ -45,6 +45,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/active-search/htmlflow")
     }
 
+    @Test
+    fun `demo bulk update HTML returns page`() {
+        `demo returns page`("/bulk-update/html")
+    }
+
+    @Test
+    fun `demo bulk update HtmlFlow returns page`() {
+        `demo returns page`("/bulk-update/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding html page
      * and that the page contains a span element with id "counter".
@@ -57,6 +67,7 @@ class AllPagesSimpleTest {
                     demoCounterSignals()
                     demoClickToLoad()
                     demoActiveSearch()
+                    demoBulkUpdate()
                 }
             }
 
