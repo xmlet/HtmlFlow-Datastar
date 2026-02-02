@@ -50,7 +50,7 @@ val hfBulkUpdate =
                             val (fetching, selections) =
                                 dataSignals(
                                     "_fetching" to false,
-                                    "selections" to "Array(4).fill(false)",
+                                    "selections" to { "Array(4).fill(false)" },
                                 ) { ifMissing() }
                             table {
                                 thead {
@@ -58,9 +58,8 @@ val hfBulkUpdate =
                                         th {
                                             input {
                                                 attrType(EnumTypeInputType.CHECKBOX)
-                                                val all = dataBind("_all")
-                                                dataOn("change", "$selections = Array(4).fill($all)")
-                                                dataEffect("$selections; $all = $selections.every(Boolean)")
+                                                dataOn("change", "@setAll(el.checked, {include: /^selections/})")
+                                                dataEffect($$"el.checked = $selections.every(Boolean)")
                                                 dataAttr("disabled", "$fetching")
                                             }
                                         }

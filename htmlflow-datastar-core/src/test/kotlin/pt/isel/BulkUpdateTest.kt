@@ -38,7 +38,7 @@ class BulkUpdateTest {
                         val (fetching, selections) =
                             dataSignals(
                                 "_fetching" to false,
-                                "selections" to "Array(4).fill(false)", // This must be a JS expression
+                                "selections" to { "Array(4).fill(false)" }, // This must be a JS expression
                             ) { ifMissing() }
                         table {
                             thead {
@@ -47,7 +47,7 @@ class BulkUpdateTest {
                                         input {
                                             attrType(EnumTypeInputType.CHECKBOX)
                                             dataOn("change", "@setAll(el.checked, {include: /^selections/})")
-                                            dataEffect("el.checked = \$selections.every(Boolean)")
+                                            dataEffect($$"el.checked = $selections.every(Boolean)")
                                             dataAttr("disabled", "$fetching")
                                         }
                                     }
@@ -102,7 +102,7 @@ class BulkUpdateTest {
         </script>
     </head>
 <body>
-    <div id="demo" data-signals__ifmissing="{_fetching: false, selections: 'Array(4).fill(false)'}">
+    <div id="demo" data-signals__ifmissing="{_fetching: false, selections: Array(4).fill(false)}">
         <table>
             <thead>
                 <tr>
