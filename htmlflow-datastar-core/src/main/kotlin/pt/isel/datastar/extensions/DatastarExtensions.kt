@@ -36,6 +36,7 @@ fun List<Pair<String, Any?>>.toJson(): String =
         val res =
             when (value) {
                 is String -> "'$value'"
+                is Function0<*> -> value()
                 null -> ""
                 else -> "$value"
             }
