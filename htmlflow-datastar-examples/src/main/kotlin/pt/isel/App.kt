@@ -22,6 +22,7 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoClickToLoad()
         demoActiveSearch()
         demoBulkUpdate()
+        demoClickToEdit()
     }
 
 /**

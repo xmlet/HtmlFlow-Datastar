@@ -38,14 +38,14 @@ class ClickToEditTest {
                         div {
                             button {
                                 attrClass("info")
-                                val fetching = dataIndicator("fetching")
+                                val fetching = dataIndicator("_fetching")
                                 dataAttr("disabled", "$fetching")
                                 dataOn("click", "@get('/examples/click_to_edit/edit')")
                                 text("Edit")
                             }
                             button {
                                 attrClass("warning")
-                                val fetching = dataIndicator("fetching")
+                                val fetching = dataIndicator("_fetching")
                                 dataAttr("disabled", "$fetching")
                                 dataOn("click", "@patch('/examples/click_to_edit/reset')")
                                 text("Reset")
@@ -75,10 +75,10 @@ class ClickToEditTest {
             Email: joe@blow.com
         </p>
         <div>
-            <button class="info" data-indicator:fetching="" data-attr:disabled="$fetching" data-on:click="@get('/examples/click_to_edit/edit')">
+            <button class="info" data-indicator:_fetching="" data-attr:disabled="$fetching" data-on:click="@get('/examples/click_to_edit/edit')">
                 Edit
             </button>
-            <button class="warning" data-indicator:fetching="" data-attr:disabled="$fetching" data-on:click="@patch('/examples/click_to_edit/reset')">
+            <button class="warning" data-indicator:_fetching="" data-attr:disabled="$fetching" data-on:click="@patch('/examples/click_to_edit/reset')">
                 Reset
             </button>
         </div>

@@ -38,7 +38,7 @@ class BulkUpdateTest {
                         val (fetching, selections) =
                             dataSignals(
                                 "_fetching" to false,
-                                "selections" to { "Array(4).fill(false)" }, // This must be a JS expression
+                                "selections" to { "Array(4).fill(false)" },
                             ) { ifMissing() }
                         table {
                             thead {

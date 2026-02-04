@@ -55,9 +55,18 @@ class AllPagesSimpleTest {
         `demo returns page`("/bulk-update/htmlflow")
     }
 
+    @Test
+    fun `demo click to edit HTML returns page`() {
+        `demo returns page`("/click-to-edit/html")
+    }
+
+    @Test
+    fun `demo click to edit HtmlFlow returns page`() {
+        `demo returns page`("/click-to-edit/htmlflow")
+    }
+
     /**
-     * Tests that the router serves the corresponding html page
-     * and that the page contains a span element with id "counter".
+     * Tests that the router serves the corresponding HTML page for the given path.
      */
     fun `demo returns page`(path: String) =
         testApplication {
@@ -68,6 +77,7 @@ class AllPagesSimpleTest {
                     demoClickToLoad()
                     demoActiveSearch()
                     demoBulkUpdate()
+                    demoClickToEdit()
                 }
             }
 
