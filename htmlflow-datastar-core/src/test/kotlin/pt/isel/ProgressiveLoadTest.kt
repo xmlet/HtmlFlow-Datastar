@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package pt.isel
 
 import htmlflow.html
@@ -42,6 +44,7 @@ class ProgressiveLoadTest {
                                 dataIndicator("progressive-Load")
                                 text("Load")
                             }
+                            comment("Indicator element")
                         }
                         p { text("Each part is loaded randomly and progressively.") }
                     }
@@ -74,6 +77,7 @@ class ProgressiveLoadTest {
                                     }
                                     text("This is a comment...")
                                 }
+                                comment("More comments loaded progressively")
                             }
                         }
                         div {
@@ -98,6 +102,7 @@ class ProgressiveLoadTest {
             <button id="load-button" data-signals-load-disabled="false" data-on:click="$load-disabled=true; @get('/examples/progressive_load/updates')" data-attr:disabled="$load-disabled" data-indicator:progressive-Load="">
                 Load
             </button>
+            <!-- Indicator element -->
         </div>
         <p>
             Each part is loaded randomly and progressively.
@@ -129,6 +134,7 @@ class ProgressiveLoadTest {
                     <img src="https://avatar.iran.liara.run/username?username=example" alt="Avatar" class="avatar">
                     This is a comment...
                 </li>
+                <!-- More comments loaded progressively -->
             </ul>
         </section>
         <div id="footer">

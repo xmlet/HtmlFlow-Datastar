@@ -44,9 +44,12 @@ fun List<Pair<String, Any?>>.toJson(): String =
     }
 
 /**
+ *
+ * Initializes one or more signals with their initial values.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-signals attribute will be added
  * @param signals pairs of signal names and their corresponding values
  * @return a list of Signal instances with the given names
  */
@@ -87,6 +90,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String):
 }
 
 /**
+ *
+ * Creates two-way data binding between a signal and an element's value.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-bind attribute will be added
@@ -100,6 +106,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(signal: Signal
 }
 
 /**
+ *
+ * Runs an expression when the attribute is initialized.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-init attribute will be added
@@ -110,6 +119,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(js: String) {
 }
 
 /**
+ *
+ * Binds any HTML attribute to an expression, keeping it synchronized.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-attr attribute will be added
@@ -126,7 +138,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
 
 /**
  *
- * data-attr="{title: $foo, disabled: $bar}
+ * Binds multiple HTML attributes simultaneously through key-value pairs,
+ * keeping them synchronized with their expressions.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
@@ -144,6 +157,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: 
 }
 
 /**
+ *
+ * Executes an expression on page load and whenever any signals in the expression change.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-effect attribute will be added
@@ -154,6 +170,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(js: String) 
 }
 
 /**
+ *
+ * Creates a signal and sets its value to true while a fetch request is in flight, otherwise false.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-indicator attribute will be added
@@ -166,9 +185,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: Str
 }
 
 /**
+ *
+ * Toggles element visibility based on an expression.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-show attribute will be added
  * @param js a JavaScript expression that computes the value of the signal
  * @return a Signal instance with the given name
  */
@@ -177,9 +199,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(js: String) {
 }
 
 /**
+ *
+ * Toggles element visibility based on a Signal's value.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-show attribute will be added
  * @param signal the Signal whose value will be used for the attribute
  * @return a Signal instance with the given name
  */
@@ -188,9 +213,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(signal: Signal
 }
 
 /**
+ *
+ * Binds the text content of an element to an expression.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-text attribute will be added
  * @param js a JavaScript expression that computes the value of the signal
  * @return a Signal instance with the given name
  */
@@ -199,9 +227,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(js: String) {
 }
 
 /**
+ *
+ * Binds the text content of an element to a Signal's value.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-text attribute will be added
  * @param signal the Signal whose value will be used for the attribute
  * @return a Signal instance with the given name
  */
@@ -210,9 +241,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(signal: Signal
 }
 
 /**
+ *
+ * Runs an expression when the element intersects with the viewport.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-on-intersect attribute will be added
  * @param js a JavaScript expression that is run when the element intersects the viewport
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(js: String) {
@@ -220,9 +254,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(js: Str
 }
 
 /**
+ *
+ * Runs an expression whenever any Signal is patched.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-on-signal-patch attribute will be added
  * @param js a JavaScript expression that is run when any signal is patched
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(js: String) {
@@ -230,9 +267,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(js: S
 }
 
 /**
+ *
+ * Filters which signals to watch when using the data-on-signal-patch attribute.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-on-signal-patch-filter attribute will be added
  * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter(jsObj: String) {
@@ -240,9 +280,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter
 }
 
 /**
+ *
+ * Sets the text content of an element to a reactive JSON stringified version of signals.
+ *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
+ * @receiver the Element to which the data-json-signals attribute will be added
  * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(jsObj: String = "") {
