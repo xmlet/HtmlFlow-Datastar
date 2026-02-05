@@ -7,6 +7,9 @@ plugins {
 
     // Apply the Kotlin serialization plugin
     kotlin("plugin.serialization") version "2.3.0"
+
+    // Apply the ktlint plugin for code linting
+    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
 }
 
 repositories {

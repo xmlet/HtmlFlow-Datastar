@@ -1,5 +1,8 @@
 plugins {
     kotlin("jvm") version "2.3.0"
+
+    // Apply ktlint plugin for code linting
+    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
 }
 
 repositories {
