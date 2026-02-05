@@ -77,10 +77,10 @@ class ClickToEditTest {
             Email: joe@blow.com
         </p>
         <div>
-            <button class="info" data-indicator:_fetching="" data-attr:disabled="$fetching" data-on:click="@get('/examples/click_to_edit/edit')">
+            <button class="info" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@get('/examples/click_to_edit/edit')">
                 Edit
             </button>
-            <button class="warning" data-indicator:_fetching="" data-attr:disabled="$fetching" data-on:click="@patch('/examples/click_to_edit/reset')">
+            <button class="warning" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@patch('/examples/click_to_edit/reset')">
                 Reset
             </button>
         </div>

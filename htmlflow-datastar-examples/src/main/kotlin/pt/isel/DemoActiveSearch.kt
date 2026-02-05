@@ -19,7 +19,7 @@ fun Route.demoActiveSearch() {
     route("/active-search") {
         get("/html", RoutingContext::getActiveSearchHtml)
         get("/htmlflow", RoutingContext::getActiveSearchHtmlFlow)
-        get("/search") { searchContacts() }
+        get("/search", RoutingContext::searchContacts)
     }
 }
 

@@ -65,6 +65,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/click-to-edit/htmlflow")
     }
 
+    @Test
+    fun `demo file upload HTML returns page`() {
+        `demo returns page`("/file-upload/html")
+    }
+
+    @Test
+    fun `demo file upload HtmlFlow returns page`() {
+        `demo returns page`("/file-upload/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
@@ -78,6 +88,7 @@ class AllPagesSimpleTest {
                     demoActiveSearch()
                     demoBulkUpdate()
                     demoClickToEdit()
+                    demoFileUpload()
                 }
             }
 

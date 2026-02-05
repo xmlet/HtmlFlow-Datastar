@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="module" src="/js/datastar.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<label>
+    <p>
+        Pick anything less than 1MB
+    </p>
+    <input type="file" data-bind:files multiple="">
+</label>
+<button class="warning" data-signals-files="" data-on:click="$files.length && @post('/file-upload')" data-attr:aria-disabled="`${!$files.length}`">
+    Submit
+</button>
+<div id="file-upload" hidden=""></div>
+</body>
+</html>

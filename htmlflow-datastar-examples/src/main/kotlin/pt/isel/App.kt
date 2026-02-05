@@ -7,6 +7,8 @@ import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import java.io.Writer
+import java.nio.file.Path
+import java.nio.file.Paths
 
 fun main() {
     embeddedServer(Netty, port = 8080) {
@@ -23,6 +25,7 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoActiveSearch()
         demoBulkUpdate()
         demoClickToEdit()
+        demoFileUpload()
     }
 
 /**
@@ -37,6 +40,20 @@ fun loadResource(path: String): String =
         .javaClass.classLoader
         .getResource(path)
         ?.readText() ?: throw IllegalArgumentException("Resource not found:$path")
+
+/**
+ * Get a resource absolute from the classpath and returns its.
+ *
+ * @param path The path to the resource file relative to the classpath.
+ * @return The url to the resource file as a String.
+ */
+fun getResourcePath(path: String): Path =
+    object {}
+        .javaClass.classLoader
+        .getResource(path)
+        ?.let { url ->
+            Paths.get(url.toURI())
+        } ?: throw IllegalArgumentException("Resource not found:$path")
 
 /**
  * Creates a `Response` implementation that interacts with java.io.Writer.
