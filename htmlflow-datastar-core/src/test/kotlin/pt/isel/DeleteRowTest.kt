@@ -62,6 +62,45 @@ class DeleteRowTest {
                                     }
                                 }
                             }
+                            tr {
+                                td { text("Angie MacDowell") }
+                                td { text("angie@macdowell.org") }
+                                td {
+                                    button {
+                                        attrClass("error")
+                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/1')")
+                                        val fetching = dataIndicator("fetching")
+                                        dataAttr("disabled", "$fetching")
+                                        text("Delete")
+                                    }
+                                }
+                            }
+                            tr {
+                                td { text("Fuqua Tarkenton") }
+                                td { text("fuqua@tarkenton.org") }
+                                td {
+                                    button {
+                                        attrClass("error")
+                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/2')")
+                                        val fetching = dataIndicator("fetching")
+                                        dataAttr("disabled", "$fetching")
+                                        text("Delete")
+                                    }
+                                }
+                            }
+                            tr {
+                                td { text("Kim Yee") }
+                                td { text("kim@yee.org") }
+                                td {
+                                    button {
+                                        attrClass("error")
+                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/3')")
+                                        val fetching = dataIndicator("fetching")
+                                        dataAttr("disabled", "$fetching")
+                                        text("Delete")
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -100,6 +139,45 @@ class DeleteRowTest {
                             </td>
                             <td>
                                 <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Angie MacDowell
+                            </td>
+                            <td>
+                                angie@macdowell.org
+                            </td>
+                            <td>
+                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/1')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Fuqua Tarkenton
+                            </td>
+                            <td>
+                                fuqua@tarkenton.org
+                            </td>
+                            <td>
+                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/2')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Kim Yee
+                            </td>
+                            <td>
+                                kim@yee.org
+                            </td>
+                            <td>
+                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/3')" data-indicator:fetching="" data-attr:disabled="$fetching">
                                     Delete
                                 </button>
                             </td>
