@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+    </script>
+</head>
+<body>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                Joe Smith
+            </td>
+            <td>
+                joe@smith.org
+            </td>
+            <td>
+                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Angie MacDowell
+            </td>
+            <td>
+                angie@macdowell.org
+            </td>
+            <td>
+                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/1')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Fuqua Tarkenton
+            </td>
+            <td>
+                fuqua@tarkenton.org
+            </td>
+            <td>
+                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/2')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Kim Yee
+            </td>
+            <td>
+                kim@yee.org
+            </td>
+            <td>
+                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/3')" data-indicator:fetching="" data-attr:disabled="$fetching">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div>
+        <button class="success" data-on:click="@put('/examples/delete_row/reset')">
+            <i class="pixelarticons:user-plus">
+            </i>
+            Reset
+        </button>
+    </div>
+</div>
+</body>
+</html>

@@ -24,8 +24,8 @@
 
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
@@ -44,8 +44,7 @@ import kotlin.test.assertEquals
 class DatastarTest {
     @Test
     fun `test example of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -53,47 +52,51 @@ class DatastarTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        val response = dataSignal("response")
-                        val answer = dataSignal("answer", "bread")
-                        val correct = dataComputed("correct", "$response.toLowerCase() == $answer")
-                        div {
-                            attrId("question")
-                            text("What do you put in a toaster?")
-                        }
-                        button {
-                            dataOn("click", "$response = prompt('Answer:') ?? ''")
-                            text("BUZZ")
-                        }
-                        div {
-                            dataShow("$response != ''")
-                            raw("You answered \"")
-                            span { dataText("$response") }
-                            raw("\".")
-                            span {
-                                dataShow(correct)
-                                text("That is correct ✅")
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
-                            span {
-                                dataShow("!$correct")
-                                raw("The correct answer is \"")
-                                span { dataText(answer) }
-                                raw("\" 🤷")
+                        }
+                        body {
+                            div {
+                                val response = dataSignal("response")
+                                val answer = dataSignal("answer", "bread")
+                                val correct = dataComputed("correct", "$response.toLowerCase() == $answer")
+                                div {
+                                    attrId("question")
+                                    text("What do you put in a toaster?")
+                                }
+                                button {
+                                    dataOn("click", "$response = prompt('Answer:') ?? ''")
+                                    text("BUZZ")
+                                }
+                                div {
+                                    dataShow("$response != ''")
+                                    raw("You answered \"")
+                                    span { dataText("$response") }
+                                    raw("\".")
+                                    span {
+                                        dataShow(correct)
+                                        text("That is correct ✅")
+                                    }
+                                    span {
+                                        dataShow("!$correct")
+                                        raw("The correct answer is \"")
+                                        span { dataText(answer) }
+                                        raw("\" 🤷")
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>
 <html>

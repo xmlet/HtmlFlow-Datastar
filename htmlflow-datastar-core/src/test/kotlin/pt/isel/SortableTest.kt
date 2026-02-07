@@ -1,9 +1,7 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
@@ -14,8 +12,7 @@ import kotlin.test.assertEquals
 class SortableTest {
     @Test
     fun `Sortable of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -23,32 +20,34 @@ class SortableTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        val orderInfo = dataSignal("order-info", "Initial order")
-                        dataText("$orderInfo")
-                    }
-                    div {
-                        attrId("sortContainer")
-                        dataOn("reordered", $$"$orderInfo = event.detail.orderInfo")
-                        button { text("Item 1") }
-                        button { text("Item 2") }
-                        button { text("Item 3") }
-                        button { text("Item 4") }
-                        button { text("Item 5") }
-                    }
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        raw(
-                            $$"""
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                            }
+                        }
+                        body {
+                            div {
+                                val orderInfo = dataSignal("order-info", "Initial order")
+                                dataText("$orderInfo")
+                            }
+                            div {
+                                attrId("sortContainer")
+                                dataOn("reordered", $$"$orderInfo = event.detail.orderInfo")
+                                button { text("Item 1") }
+                                button { text("Item 2") }
+                                button { text("Item 3") }
+                                button { text("Item 4") }
+                                button { text("Item 5") }
+                            }
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                raw(
+                                    $$"""
                             import Sortable from 'https://cdn.jsdelivr.net/npm/sortablejs/+esm'
                             new Sortable(sortContainer, {
                                 animation: 150,
@@ -61,12 +60,13 @@ class SortableTest {
                                     )
                                 }
                             })
-                            """.trimIndent(),
-                        )
+                                    """.trimIndent(),
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

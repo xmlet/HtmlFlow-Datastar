@@ -1,9 +1,7 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
@@ -17,8 +15,7 @@ import kotlin.test.assertEquals
 class BulkUpdateTest {
     @Test
     fun `BulkUpdate of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -26,75 +23,78 @@ class BulkUpdateTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        attrId("demo")
-                        val (fetching, selections) =
-                            dataSignals(
-                                "_fetching" to false,
-                                "selections" to { "Array(4).fill(false)" },
-                            ) { ifMissing() }
-                        table {
-                            thead {
-                                tr {
-                                    th {
-                                        input {
-                                            attrType(EnumTypeInputType.CHECKBOX)
-                                            dataOn("change", "@setAll(el.checked, {include: /^selections/})")
-                                            dataEffect($$"el.checked = $selections.every(Boolean)")
-                                            dataAttr("disabled", "$fetching")
-                                        }
-                                    }
-                                    th { text("Name") }
-                                    th { text("Email") }
-                                    th { text("Status") }
-                                }
-                            }
-                            tbody {
-                                tr {
-                                    td {
-                                        input {
-                                            attrType(EnumTypeInputType.CHECKBOX)
-                                            dataBind(selections)
-                                            dataAttr("disabled", "$fetching")
-                                        }
-                                    }
-                                    td { text("Joe Smith") }
-                                    td { text("joe@smith.org") }
-                                    td { text("Active") }
-                                }
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                        div {
-                            button {
-                                attrClass("success")
-                                dataOn("click", "@put('/bulk-update/activate')")
-                                dataIndicator(fetching.name)
-                                dataAttr("disabled", "$fetching")
-                                i { attrClass("pixelarticons:user-plus") }
-                                text("Activate")
-                            }
-                            button {
-                                attrClass("error")
-                                dataOn("click", "@put('/bulk-update/deactivate')")
-                                dataIndicator(fetching.name)
-                                dataAttr("disabled", "$fetching")
-                                i { attrClass("pixelarticons:user-x") }
-                                text("Deactivate")
+                        body {
+                            div {
+                                attrId("demo")
+                                val (fetching, selections) =
+                                    dataSignals(
+                                        "_fetching" to false,
+                                        "selections" to { "Array(4).fill(false)" }, // This must be a JS expression
+                                    ) { ifMissing() }
+                                table {
+                                    thead {
+                                        tr {
+                                            th {
+                                                input {
+                                                    attrType(EnumTypeInputType.CHECKBOX)
+                                                    dataOn("change", "@setAll(el.checked, {include: /^selections/})")
+                                                    dataEffect($$"el.checked = $selections.every(Boolean)")
+                                                    dataAttr("disabled", "$fetching")
+                                                }
+                                            }
+                                            th { text("Name") }
+                                            th { text("Email") }
+                                            th { text("Status") }
+                                        }
+                                    }
+                                    tbody {
+                                        tr {
+                                            td {
+                                                input {
+                                                    attrType(EnumTypeInputType.CHECKBOX)
+                                                    dataBind(selections)
+                                                    dataAttr("disabled", "$fetching")
+                                                }
+                                            }
+                                            td { text("Joe Smith") }
+                                            td { text("joe@smith.org") }
+                                            td { text("Active") }
+                                        }
+                                    }
+                                }
+                                div {
+                                    button {
+                                        attrClass("success")
+                                        dataOn("click", "@put('/bulk-update/activate')")
+                                        dataIndicator(fetching.name)
+                                        dataAttr("disabled", "$fetching")
+                                        i { attrClass("pixelarticons:user-plus") }
+                                        text("Activate")
+                                    }
+                                    button {
+                                        attrClass("error")
+                                        dataOn("click", "@put('/bulk-update/deactivate')")
+                                        dataIndicator(fetching.name)
+                                        dataAttr("disabled", "$fetching")
+                                        i { attrClass("pixelarticons:user-x") }
+                                        text("Deactivate")
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

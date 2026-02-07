@@ -1,9 +1,7 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
@@ -15,8 +13,7 @@ import kotlin.test.assertEquals
 class ProgressiveLoadTest {
     @Test
     fun `Progressive Load of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -24,70 +21,73 @@ class ProgressiveLoadTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        div {
-                            attrClass("actions")
-                            button {
-                                attrId("load-button")
-                                val loadDisabled = dataSignal("load-disabled", false)
-                                dataOn("click", "$loadDisabled=true; @get('/examples/progressive_load/updates')")
-                                dataAttr("disabled", "$loadDisabled")
-                                dataIndicator("progressive-Load")
-                                text("Load")
-                            }
-                            comment("Indicator element")
-                        }
-                        p { text("Each part is loaded randomly and progressively.") }
-                    }
-                    div {
-                        attrId("Load")
-                        header {
-                            attrId("header")
-                            text("Welcome to my blog")
-                        }
-                        section {
-                            attrId("article")
-                            h4 { text("This is my article") }
-                            section {
-                                attrId("articleBody")
-                                p { text("Lorem ipsum dolor sit amet...") }
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                        section {
-                            attrId("comments")
-                            h5 { text("Comments") }
-                            p { text("This is the comments section. It will also be progressively loaded as you scroll down.") }
-                            ul {
-                                attrId("comments-list")
-                                li {
-                                    attrId("1")
-                                    img {
-                                        attrSrc("https://avatar.iran.liara.run/username?username=example")
-                                        attrAlt("Avatar")
-                                        attrClass("avatar")
+                        body {
+                            div {
+                                div {
+                                    attrClass("actions")
+                                    button {
+                                        attrId("load-button")
+                                        val loadDisabled = dataSignal("load-disabled", false)
+                                        dataOn("click", "$loadDisabled=true; @get('/examples/progressive_load/updates')")
+                                        dataAttr("disabled", "$loadDisabled")
+                                        dataIndicator("progressive-Load")
+                                        text("Load")
                                     }
-                                    text("This is a comment...")
+                                    comment("Indicator element")
                                 }
-                                comment("More comments loaded progressively")
+                                p { text("Each part is loaded randomly and progressively.") }
                             }
-                        }
-                        div {
-                            attrId("footer")
-                            text("Hope you like it")
+                            div {
+                                attrId("Load")
+                                header {
+                                    attrId("header")
+                                    text("Welcome to my blog")
+                                }
+                                section {
+                                    attrId("article")
+                                    h4 { text("This is my article") }
+                                    section {
+                                        attrId("articleBody")
+                                        p { text("Lorem ipsum dolor sit amet...") }
+                                    }
+                                }
+                                section {
+                                    attrId("comments")
+                                    h5 { text("Comments") }
+                                    p { text("This is the comments section. It will also be progressively loaded as you scroll down.") }
+                                    ul {
+                                        attrId("comments-list")
+                                        li {
+                                            attrId("1")
+                                            img {
+                                                attrSrc("https://avatar.iran.liara.run/username?username=example")
+                                                attrAlt("Avatar")
+                                                attrClass("avatar")
+                                            }
+                                            text("This is a comment...")
+                                        }
+                                        comment("More comments loaded progressively")
+                                    }
+                                }
+                                div {
+                                    attrId("footer")
+                                    text("Hope you like it")
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

@@ -2,8 +2,8 @@
 
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
@@ -15,8 +15,7 @@ import kotlin.test.assertEquals
 class FileUploadTest {
     @Test
     fun `File Upload of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -24,32 +23,35 @@ class FileUploadTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    label {
-                        p { text("Pick anything less than 1MB") }
-                        input {
-                            attrType(EnumTypeInputType.FILE)
-                            dataBind("files multiple")
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                            }
                         }
-                    }
-                    button {
-                        attrClass("warning")
-                        val files = dataSignal("files")
-                        dataOn("click", "$files.length && @post('/examples/file_upload')")
-                        dataAttr("aria-disabled", $$"`${!$$files.length}`")
-                        text("Submit")
+                        body {
+                            label {
+                                p { text("Pick anything less than 1MB") }
+                                input {
+                                    attrType(EnumTypeInputType.FILE)
+                                    dataBind("files multiple")
+                                }
+                            }
+                            button {
+                                attrClass("warning")
+                                val files = dataSignal("files")
+                                dataOn("click", "$files.length && @post('/examples/file_upload')")
+                                dataAttr("aria-disabled", $$"`${!$$files.length}`")
+                                text("Submit")
+                            }
+                        }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

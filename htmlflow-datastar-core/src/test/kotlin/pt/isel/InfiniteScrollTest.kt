@@ -1,7 +1,7 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.div
@@ -20,8 +20,7 @@ import kotlin.test.assertEquals
 class InfiniteScrollTest {
     @Test
     fun `Infinite Scroll of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -29,44 +28,47 @@ class InfiniteScrollTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        text("Agents")
-                    }
-                    table {
-                        thead {
-                            tr {
-                                th { text("Name") }
-                                th { text("Email") }
-                                th { text("ID") }
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                        tbody {
-                            // Firt 10 rows (Agent Smith 0-9)
-                            for (i in 0..9) {
-                                tr {
-                                    td { text("Agent Smith $i") }
-                                    td { text("void$i@null.org") }
-                                    td { text(generateId(i)) }
+                        body {
+                            div {
+                                text("Agents")
+                            }
+                            table {
+                                thead {
+                                    tr {
+                                        th { text("Name") }
+                                        th { text("Email") }
+                                        th { text("ID") }
+                                    }
+                                }
+                                tbody {
+                                    // Firt 10 rows (Agent Smith 0-9)
+                                    for (i in 0..9) {
+                                        tr {
+                                            td { text("Agent Smith $i") }
+                                            td { text("void$i@null.org") }
+                                            td { text(generateId(i)) }
+                                        }
+                                    }
                                 }
                             }
+                            div {
+                                dataOnIntersect("@get('/examples/infinite_scroll/more')")
+                                text("Loading...")
+                            }
                         }
-                    }
-                    div {
-                        dataOnIntersect("@get('/examples/infinite_scroll/more')")
-                        text("Loading...")
                     }
                 }
             }
-        }
 
     // Ids from the first 10 rows
     private fun generateId(index: Int): String {

@@ -1,11 +1,13 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
+import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
@@ -22,8 +24,7 @@ import kotlin.test.assertEquals
 class DeleteRowTest {
     @Test
     fun `Delete Row of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -31,73 +32,87 @@ class DeleteRowTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    table {
-                        thead {
-                            tr {
-                                th { text("Name") }
-                                th { text("Email") }
-                                th { text("Actions") }
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                        tbody {
-                            tr {
-                                td { text("Joe Smith") }
-                                td { text("joe@smith.org") }
-                                td {
-                                    button {
-                                        attrClass("error")
-                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/0')")
-                                        val fetching = dataIndicator("fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        text("Delete")
+                        body {
+                            div {
+                                table {
+                                    thead {
+                                        tr {
+                                            th { text("Name") }
+                                            th { text("Email") }
+                                            th { text("Actions") }
+                                        }
+                                    }
+                                    tbody {
+                                        tr {
+                                            td { text("Joe Smith") }
+                                            td { text("joe@smith.org") }
+                                            td {
+                                                button {
+                                                    attrClass("error")
+                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/0')")
+                                                    val fetching = dataIndicator("_fetching")
+                                                    dataAttr("disabled", "$fetching")
+                                                    text("Delete")
+                                                }
+                                            }
+                                        }
+                                        tr {
+                                            td { text("Angie MacDowell") }
+                                            td { text("angie@macdowell.org") }
+                                            td {
+                                                button {
+                                                    attrClass("error")
+                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/1')")
+                                                    val fetching = dataIndicator("_fetching")
+                                                    dataAttr("disabled", "$fetching")
+                                                    text("Delete")
+                                                }
+                                            }
+                                        }
+                                        tr {
+                                            td { text("Fuqua Tarkenton") }
+                                            td { text("fuqua@tarkenton.org") }
+                                            td {
+                                                button {
+                                                    attrClass("error")
+                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/2')")
+                                                    val fetching = dataIndicator("_fetching")
+                                                    dataAttr("disabled", "$fetching")
+                                                    text("Delete")
+                                                }
+                                            }
+                                        }
+                                        tr {
+                                            td { text("Kim Yee") }
+                                            td { text("kim@yee.org") }
+                                            td {
+                                                button {
+                                                    attrClass("error")
+                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/3')")
+                                                    val fetching = dataIndicator("_fetching")
+                                                    dataAttr("disabled", "$fetching")
+                                                    text("Delete")
+                                                }
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                            tr {
-                                td { text("Angie MacDowell") }
-                                td { text("angie@macdowell.org") }
-                                td {
+                                div {
                                     button {
-                                        attrClass("error")
-                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/1')")
-                                        val fetching = dataIndicator("fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        text("Delete")
-                                    }
-                                }
-                            }
-                            tr {
-                                td { text("Fuqua Tarkenton") }
-                                td { text("fuqua@tarkenton.org") }
-                                td {
-                                    button {
-                                        attrClass("error")
-                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/2')")
-                                        val fetching = dataIndicator("fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        text("Delete")
-                                    }
-                                }
-                            }
-                            tr {
-                                td { text("Kim Yee") }
-                                td { text("kim@yee.org") }
-                                td {
-                                    button {
-                                        attrClass("error")
-                                        dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/3')")
-                                        val fetching = dataIndicator("fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        text("Delete")
+                                        attrClass("success")
+                                        dataOn("click", "@patch('/examples/delete_row/reset')")
+                                        i { attrClass("pixelarticons:user-plus") }
+                                        text("Reset")
                                     }
                                 }
                             }
@@ -105,7 +120,6 @@ class DeleteRowTest {
                     }
                 }
             }
-        }
     private val expectedDatastarRx =
         $$"""
          <!DOCTYPE html>
@@ -115,75 +129,84 @@ class DeleteRowTest {
                 </script>
             </head>
             <body>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Email
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                Joe Smith
-                            </td>
-                            <td>
-                                joe@smith.org
-                            </td>
-                            <td>
-                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:fetching="" data-attr:disabled="$fetching">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Angie MacDowell
-                            </td>
-                            <td>
-                                angie@macdowell.org
-                            </td>
-                            <td>
-                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/1')" data-indicator:fetching="" data-attr:disabled="$fetching">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Fuqua Tarkenton
-                            </td>
-                            <td>
-                                fuqua@tarkenton.org
-                            </td>
-                            <td>
-                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/2')" data-indicator:fetching="" data-attr:disabled="$fetching">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Kim Yee
-                            </td>
-                            <td>
-                                kim@yee.org
-                            </td>
-                            <td>
-                                <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/3')" data-indicator:fetching="" data-attr:disabled="$fetching">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>   
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Joe Smith
+                                </td>
+                                <td>
+                                    joe@smith.org
+                                </td>
+                                <td>
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Angie MacDowell
+                                </td>
+                                <td>
+                                    angie@macdowell.org
+                                </td>
+                                <td>
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/1')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Fuqua Tarkenton
+                                </td>
+                                <td>
+                                    fuqua@tarkenton.org
+                                </td>
+                                <td>
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/2')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Kim Yee
+                                </td>
+                                <td>
+                                    kim@yee.org
+                                </td>
+                                <td>
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/3')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <button class="success" data-on:click="@patch('/examples/delete_row/reset')">
+                            <i class="pixelarticons:user-plus">
+                            </i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
             </body>
         </html>
         """

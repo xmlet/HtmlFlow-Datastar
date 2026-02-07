@@ -1,7 +1,7 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
@@ -24,8 +24,7 @@ import kotlin.test.assertEquals
 class OnSignalPatchTest {
     @Test
     fun `On signal patch of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -33,75 +32,78 @@ class OnSignalPatchTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        val (counter, message, allChanges, counterChanges) =
-                            dataSignals(
-                                "counter" to 0,
-                                "message" to "Hello World",
-                                "allChanges" to emptyList<Any>(),
-                                "counterChanges" to emptyList<Any>(),
-                            )
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                            }
+                        }
+                        body {
+                            div {
+                                val (counter, message, allChanges, counterChanges) =
+                                    dataSignals(
+                                        "counter" to 0,
+                                        "message" to "Hello World",
+                                        "allChanges" to emptyList<Any>(),
+                                        "counterChanges" to emptyList<Any>(),
+                                    )
 
-                        div {
-                            attrClass("actions")
-                            button {
-                                dataOn("click", $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
-                                text("Update Message")
-                            }
-                            button {
-                                dataOn("click", "$counter++")
-                                text("Increment Counter")
-                            }
-                            button {
-                                attrClass("error")
-                                dataOn("click", "$allChanges.length = 0; $counterChanges.length = 0")
-                                text("Clear All Changes")
-                            }
-                        }
-                        div {
-                            h3 { text("Current Values") }
-                            p {
-                                text("Counter: ")
-                                span { dataText("$counter") }
-                            }
-                            p {
-                                text("Message: ")
-                                span { dataText("$message") }
-                            }
-                        }
-                        div {
-                            dataOnSignalPatch("$counterChanges.push(patch)")
-                            dataOnSignalPatchFilter("{include: /^counter$/}")
-                            h3 { text("Counter Changes Only") }
-                            pre {
-                                dataJsonSignals("{include: /^counterChanges/}") {
-                                    terse()
+                                div {
+                                    attrClass("actions")
+                                    button {
+                                        dataOn("click", $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
+                                        text("Update Message")
+                                    }
+                                    button {
+                                        dataOn("click", "$counter++")
+                                        text("Increment Counter")
+                                    }
+                                    button {
+                                        attrClass("error")
+                                        dataOn("click", "$allChanges.length = 0; $counterChanges.length = 0")
+                                        text("Clear All Changes")
+                                    }
                                 }
-                            }
-                        }
-                        div {
-                            dataOnSignalPatch("$allChanges.push(patch)")
-                            dataOnSignalPatchFilter("{exclude: /allChanges|counterChanges/}")
-                            h3 { text("All Signal Changes") }
-                            pre {
-                                dataJsonSignals("{include: /^allChanges/}") {
-                                    terse()
+                                div {
+                                    h3 { text("Current Values") }
+                                    p {
+                                        text("Counter: ")
+                                        span { dataText("$counter") }
+                                    }
+                                    p {
+                                        text("Message: ")
+                                        span { dataText("$message") }
+                                    }
+                                }
+                                div {
+                                    dataOnSignalPatch("$counterChanges.push(patch)")
+                                    dataOnSignalPatchFilter("{include: /^counter$/}")
+                                    h3 { text("Counter Changes Only") }
+                                    pre {
+                                        dataJsonSignals("{include: /^counterChanges/}") {
+                                            terse()
+                                        }
+                                    }
+                                }
+                                div {
+                                    dataOnSignalPatch("$allChanges.push(patch)")
+                                    dataOnSignalPatchFilter("{exclude: /allChanges|counterChanges/}")
+                                    h3 { text("All Signal Changes") }
+                                    pre {
+                                        dataJsonSignals("{include: /^allChanges/}") {
+                                            terse()
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = $$"""
         <!DOCTYPE html>

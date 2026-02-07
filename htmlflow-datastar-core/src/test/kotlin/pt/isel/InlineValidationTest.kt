@@ -1,7 +1,7 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -22,8 +22,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class InlineValidationTest {
     @Test
     fun `Inline validation of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -31,71 +30,74 @@ class InlineValidationTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        attrId("demo")
-                        label {
-                            text("Email Address")
-                            input {
-                                attrType(EnumTypeInputType.EMAIL)
-                                attrRequired(true)
-                                addAttr("aria-live", "polite")
-                                addAttr("aria-describedby", "email-info")
-                                dataBind("email")
-                                dataOn("keydown", "@post('/examples/inline_validation/validate')") {
-                                    debounce(500.milliseconds)
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                            }
+                        }
+                        body {
+                            div {
+                                attrId("demo")
+                                label {
+                                    text("Email Address")
+                                    input {
+                                        attrType(EnumTypeInputType.EMAIL)
+                                        attrRequired(true)
+                                        addAttr("aria-live", "polite")
+                                        addAttr("aria-describedby", "email-info")
+                                        dataBind("email")
+                                        dataOn("keydown", "@post('/examples/inline_validation/validate')") {
+                                            debounce(500.milliseconds)
+                                        }
+                                    }
+                                }
+                                p {
+                                    attrId("email-info")
+                                    attrClass("info")
+                                    raw("The only valid email address is \"test@test.com\".")
+                                }
+                                label {
+                                    text("First Name")
+                                    input {
+                                        attrType(EnumTypeInputType.TEXT)
+                                        attrRequired(true)
+                                        addAttr("aria-live", "polite")
+                                        dataBind("first-name")
+                                        dataOn("keydown", "@post('/examples/inline_validation/validate')") {
+                                            debounce(500.milliseconds)
+                                        }
+                                    }
+                                }
+                                label {
+                                    text("Last Name")
+                                    input {
+                                        attrType(EnumTypeInputType.TEXT)
+                                        attrRequired(true)
+                                        addAttr("aria-live", "polite")
+                                        dataBind("last-name")
+                                        dataOn("keydown", "@post('/examples/inline_validation/validate')") {
+                                            debounce(500.milliseconds)
+                                        }
+                                    }
+                                }
+                                button {
+                                    attrClass("success")
+                                    dataOn("click", "@post('/examples/inline_validation')")
+                                    i {
+                                        attrClass("material-symbols:person-add")
+                                    }
+                                    text(" Sign Up")
                                 }
                             }
-                        }
-                        p {
-                            attrId("email-info")
-                            attrClass("info")
-                            raw("The only valid email address is \"test@test.com\".")
-                        }
-                        label {
-                            text("First Name")
-                            input {
-                                attrType(EnumTypeInputType.TEXT)
-                                attrRequired(true)
-                                addAttr("aria-live", "polite")
-                                dataBind("first-name")
-                                dataOn("keydown", "@post('/examples/inline_validation/validate')") {
-                                    debounce(500.milliseconds)
-                                }
-                            }
-                        }
-                        label {
-                            text("Last Name")
-                            input {
-                                attrType(EnumTypeInputType.TEXT)
-                                attrRequired(true)
-                                addAttr("aria-live", "polite")
-                                dataBind("last-name")
-                                dataOn("keydown", "@post('/examples/inline_validation/validate')") {
-                                    debounce(500.milliseconds)
-                                }
-                            }
-                        }
-                        button {
-                            attrClass("success")
-                            dataOn("click", "@post('/examples/inline_validation')")
-                            i {
-                                attrClass("material-symbols:person-add")
-                            }
-                            text(" Sign Up")
                         }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = """
         <!DOCTYPE html>

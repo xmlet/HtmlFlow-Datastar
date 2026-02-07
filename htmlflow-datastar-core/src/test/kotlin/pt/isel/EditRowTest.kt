@@ -1,7 +1,7 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -23,8 +23,7 @@ import kotlin.test.assertEquals
 class EditRowTest {
     @Test
     fun `Edit Row of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -32,67 +31,71 @@ class EditRowTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    table {
-                        thead {
-                            tr {
-                                th { text("Name") }
-                                th { text("Email") }
-                                th { text("Actions") }
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                        tbody {
-                            tr {
-                                td { text("Joe Smith") }
-                                td { text("joe@smith.org") }
-                                td {
-                                    button {
-                                        dataOn("click", "@get('/examples/edit_row/0')")
-                                        text("Edit")
+                        body {
+                            table {
+                                thead {
+                                    tr {
+                                        th { text("Name") }
+                                        th { text("Email") }
+                                        th { text("Actions") }
+                                    }
+                                }
+                                tbody {
+                                    tr {
+                                        td { text("Joe Smith") }
+                                        td { text("joe@smith.org") }
+                                        td {
+                                            button {
+                                                dataOn("click", "@get('/examples/edit_row/0')")
+                                                text("Edit")
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-                    // Updated table after clicking edit
-                    table {
-                        thead {
-                            tr {
-                                th { text("Name") }
-                                th { text("Email") }
-                                th { text("Actions") }
-                            }
-                        }
-                        tbody {
-                            tr {
-                                td {
-                                    input {
-                                        attrType(EnumTypeInputType.TEXT)
-                                        dataBind("name")
+                            // Updated table after clicking edit
+                            table {
+                                thead {
+                                    tr {
+                                        th { text("Name") }
+                                        th { text("Email") }
+                                        th { text("Actions") }
                                     }
                                 }
-                                td {
-                                    input {
-                                        attrType(EnumTypeInputType.TEXT)
-                                        dataBind("email")
-                                    }
-                                }
-                                td {
-                                    button {
-                                        dataOn("click", "@get('/examples/edit_row/cancel')")
-                                        text("Cancel")
-                                    }
-                                    button {
-                                        dataOn("click", "@patch('/examples/edit_row/0')")
-                                        text("Save")
+                                tbody {
+                                    tr {
+                                        td {
+                                            input {
+                                                attrType(EnumTypeInputType.TEXT)
+                                                dataBind("name")
+                                            }
+                                        }
+                                        td {
+                                            input {
+                                                attrType(EnumTypeInputType.TEXT)
+                                                dataBind("email")
+                                            }
+                                        }
+                                        td {
+                                            button {
+                                                dataOn("click", "@get('/examples/edit_row/cancel')")
+                                                text("Cancel")
+                                            }
+                                            button {
+                                                dataOn("click", "@patch('/examples/edit_row/0')")
+                                                text("Save")
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -100,7 +103,6 @@ class EditRowTest {
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx =
         """

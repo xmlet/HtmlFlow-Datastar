@@ -1,7 +1,7 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.head
@@ -16,8 +16,7 @@ import kotlin.test.assertEquals
 class CustomEventTest {
     @Test
     fun `Custom Event of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -25,40 +24,43 @@ class CustomEventTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    p {
-                        attrId("foo")
-                        val eventDetails = dataSignal("eventDetails")
-                        dataOn("myevent", "$eventDetails = evt.detail")
-                        dataText($$"`Last Event Details: ${$$eventDetails}`")
-                    }
-                    script {
-                        raw(
-                            """
-                            const foo = document.getElementById("foo");
-                            setInterval(() => {
-                                foo.dispatchEvent(
-                                    new CustomEvent("myevent", {
-                                        detail: JSON.stringify({
-                                            eventTime: new Date().toLocaleTimeString(),
-                                        }),
-                                    })
-                                );
-                            }, 1000);
-                            """.trimIndent(),
-                        )
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                            }
+                        }
+                        body {
+                            p {
+                                attrId("foo")
+                                val eventDetails = dataSignal("eventDetails")
+                                dataOn("myevent", "$eventDetails = evt.detail")
+                                dataText($$"`Last Event Details: ${$$eventDetails}`")
+                            }
+                            script {
+                                raw(
+                                    """
+                                    const foo = document.getElementById("foo");
+                                    setInterval(() => {
+                                        foo.dispatchEvent(
+                                            new CustomEvent("myevent", {
+                                                detail: JSON.stringify({
+                                                    eventTime: new Date().toLocaleTimeString(),
+                                                }),
+                                            })
+                                        );
+                                    }, 1000);
+                                    """.trimIndent(),
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx =
         $$"""

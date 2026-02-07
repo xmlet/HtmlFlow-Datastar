@@ -1,8 +1,8 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
 import htmlflow.l
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
@@ -21,8 +21,7 @@ import kotlin.test.assertEquals
 class ProgressBarTest {
     @Test
     fun `Progress bar of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -30,73 +29,76 @@ class ProgressBarTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        attrId("progress-bar")
-                        dataInit("@get('/examples/progress_bar/updates', {openWhenHidden: true})")
-                        comment("When progress is less than 100%")
-                        svg {
-                            attrWidth(200)
-                            attrHeight(200)
-                            addAttr("viewbox", "-25 -25 250 250")
-                            attrStyle("transform: rotate(-90deg)")
-
-                            custom("circle")
-                                .addAttr("r", "90")
-                                .addAttr("cx", "100")
-                                .addAttr("cy", "100")
-                                .addAttr("fill", "transparent")
-                                .addAttr("stroke", "#e0e0e0")
-                                .addAttr("stroke-width", "16px")
-                                .addAttr("stroke-dasharray", "565.48px")
-                                .addAttr("stroke-dashoffset", "565px")
-                                .l
-
-                            custom("circle")
-                                .addAttr("r", "90")
-                                .addAttr("cx", "100")
-                                .addAttr("cy", "100")
-                                .addAttr("fill", "transparent")
-                                .addAttr("stroke", "#6bdba7")
-                                .addAttr("stroke-width", "16px")
-                                .addAttr("stroke-linecap", "round")
-                                .addAttr("stroke-dashoffset", "282px")
-                                .addAttr("stroke-dasharray", "565.48px")
-                                .l
-
-                            custom("text")
-                                .addAttr("x", "44")
-                                .addAttr("y", "115")
-                                .addAttr("fill", "#6bdba7")
-                                .addAttr("font-size", "52")
-                                .addAttr("font-weight", "bold")
-                                .addAttr("style", "transform:rotate(90deg) translate(0px, -196px)")
-                                .text("50%")
-                                .l
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                            }
                         }
-                        comment("When progress is 100%")
-                        button {
-                            val fetching = dataIndicator("fetching")
-                            dataAttr("aria-disabled", $$"`${$$fetching}`")
-                            dataOn(
-                                "click",
-                                "!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})",
-                            )
-                            i { attrClass("material-symbols:check-circle") }
-                            text("Completed! Try again?")
+                        body {
+                            div {
+                                attrId("progress-bar")
+                                dataInit("@get('/examples/progress_bar/updates', {openWhenHidden: true})")
+                                comment("When progress is less than 100%")
+                                svg {
+                                    attrWidth(200)
+                                    attrHeight(200)
+                                    addAttr("viewbox", "-25 -25 250 250")
+                                    attrStyle("transform: rotate(-90deg)")
+
+                                    custom("circle")
+                                        .addAttr("r", "90")
+                                        .addAttr("cx", "100")
+                                        .addAttr("cy", "100")
+                                        .addAttr("fill", "transparent")
+                                        .addAttr("stroke", "#e0e0e0")
+                                        .addAttr("stroke-width", "16px")
+                                        .addAttr("stroke-dasharray", "565.48px")
+                                        .addAttr("stroke-dashoffset", "565px")
+                                        .l
+
+                                    custom("circle")
+                                        .addAttr("r", "90")
+                                        .addAttr("cx", "100")
+                                        .addAttr("cy", "100")
+                                        .addAttr("fill", "transparent")
+                                        .addAttr("stroke", "#6bdba7")
+                                        .addAttr("stroke-width", "16px")
+                                        .addAttr("stroke-linecap", "round")
+                                        .addAttr("stroke-dashoffset", "282px")
+                                        .addAttr("stroke-dasharray", "565.48px")
+                                        .l
+
+                                    custom("text")
+                                        .addAttr("x", "44")
+                                        .addAttr("y", "115")
+                                        .addAttr("fill", "#6bdba7")
+                                        .addAttr("font-size", "52")
+                                        .addAttr("font-weight", "bold")
+                                        .addAttr("style", "transform:rotate(90deg) translate(0px, -196px)")
+                                        .text("50%")
+                                        .l
+                                }
+                                comment("When progress is 100%")
+                                button {
+                                    val fetching = dataIndicator("fetching")
+                                    dataAttr("aria-disabled", $$"`${$$fetching}`")
+                                    dataOn(
+                                        "click",
+                                        "!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})",
+                                    )
+                                    i { attrClass("material-symbols:check-circle") }
+                                    text("Completed! Try again?")
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx =
         $$"""

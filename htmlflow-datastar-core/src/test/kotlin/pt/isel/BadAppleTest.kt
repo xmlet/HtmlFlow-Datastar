@@ -2,8 +2,8 @@
 
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataInit
@@ -15,8 +15,7 @@ import kotlin.test.assertEquals
 class BadAppleTest {
     @Test
     fun `BadApple of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -24,39 +23,42 @@ class BadAppleTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        val percentage = dataSignal("percentage", 0)
-                        val contents = dataSignal("contents", "bad apple frames go here")
-                        label {
-                            dataInit("@get('/examples/bad_apple/updates')")
-                            span { dataText($$"`Percentage: ${$$percentage.toFixed(2)}%`") }
-                            input {
-                                attrType(EnumTypeInputType.RANGE)
-                                attrMin("0")
-                                attrMax("100")
-                                attrStep("0.01")
-                                attrDisabled(true)
-                                attrStyle("cursor: default")
-                                dataAttr("value", "$percentage")
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                        pre {
-                            attrStyle("line-height: 100%")
-                            dataText("$contents")
+                        body {
+                            div {
+                                val percentage = dataSignal("percentage", 0)
+                                val contents = dataSignal("contents", "bad apple frames go here")
+                                label {
+                                    dataInit("@get('/examples/bad_apple/updates')")
+                                    span { dataText($$"`Percentage: ${$$percentage.toFixed(2)}%`") }
+                                    input {
+                                        attrType(EnumTypeInputType.RANGE)
+                                        attrMin("0")
+                                        attrMax("100")
+                                        attrStep("0.01")
+                                        attrDisabled(true)
+                                        attrStyle("cursor: default")
+                                        dataAttr("value", "$percentage")
+                                    }
+                                }
+                                pre {
+                                    attrStyle("line-height: 100%")
+                                    dataText("$contents")
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

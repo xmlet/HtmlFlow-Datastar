@@ -1,7 +1,7 @@
 package pt.isel
 
+import htmlflow.doc
 import htmlflow.html
-import htmlflow.view
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.br
@@ -20,8 +20,7 @@ import kotlin.test.assertEquals
 class EventBubblingTest {
     @Test
     fun `Edit Row of the Datastar Frontend Reactivity`() {
-        val out = StringBuilder()
-        demoDastarRx.setOut(out).write()
+        val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -29,91 +28,94 @@ class EventBubblingTest {
     }
 
     private val demoDastarRx =
-        view<Unit> {
-            html {
-                head {
-                    script {
-                        attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                    }
-                }
-                body {
-                    div {
-                        attrId("demo")
-                        val key = dataSignal("key")
-                        text("Key pressed:")
-                        span {
-                            dataText("$key")
-                        }
-                        div {
-                            attrId("button-container")
-                            dataOn("click", "$key = evt.target.dataset.id")
-                            button {
-                                addAttr("data-id", "KEY ELSE")
-                                attrClass("gray")
-                                text("KEY")
-                                br { text("ELSE") }
-                            }
-                            button {
-                                addAttr("data-id", "CM")
-                                text("CM")
-                            }
-                            button {
-                                addAttr("data-id", "OM")
-                                text("OM")
-                            }
-                            button {
-                                addAttr("data-id", "FETCH")
-                                text("FETCH")
-                            }
-                            button {
-                                addAttr("data-id", "SET")
-                                text("SET")
-                            }
-                            button {
-                                addAttr("data-id", "EXEC")
-                                text("EXEC")
-                            }
-                            button {
-                                addAttr("data-id", "TEST ALARM")
-                                attrClass("gray")
-                                text("TEST")
-                                br { text("ALARM") }
-                            }
-                            button {
-                                addAttr("data-id", "3")
-                                text("3")
-                            }
-                            button {
-                                addAttr("data-id", "2")
-                                text("2")
-                            }
-                            button {
-                                addAttr("data-id", "1")
-                                text("1")
-                            }
-                            button {
-                                addAttr("data-id", "ENTER")
-                                text("ENTER")
-                            }
-                            button {
-                                addAttr("data-id", "CLEAR")
-                                text("CLEAR")
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        head {
+                            script {
+                                attrType(EnumTypeScriptType.MODULE)
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
                             }
                         }
-                    }
-                    style {
-                        raw(
-                            """
-                            #button-container {
-                                pointer-events: none;
+                        body {
+                            div {
+                                attrId("demo")
+                                val key = dataSignal("key")
+                                text("Key pressed:")
+                                span {
+                                    dataText("$key")
+                                }
+                                div {
+                                    attrId("button-container")
+                                    dataOn("click", "$key = evt.target.dataset.id")
+                                    button {
+                                        addAttr("data-id", "KEY ELSE")
+                                        attrClass("gray")
+                                        text("KEY")
+                                        br { text("ELSE") }
+                                    }
+                                    button {
+                                        addAttr("data-id", "CM")
+                                        text("CM")
+                                    }
+                                    button {
+                                        addAttr("data-id", "OM")
+                                        text("OM")
+                                    }
+                                    button {
+                                        addAttr("data-id", "FETCH")
+                                        text("FETCH")
+                                    }
+                                    button {
+                                        addAttr("data-id", "SET")
+                                        text("SET")
+                                    }
+                                    button {
+                                        addAttr("data-id", "EXEC")
+                                        text("EXEC")
+                                    }
+                                    button {
+                                        addAttr("data-id", "TEST ALARM")
+                                        attrClass("gray")
+                                        text("TEST")
+                                        br { text("ALARM") }
+                                    }
+                                    button {
+                                        addAttr("data-id", "3")
+                                        text("3")
+                                    }
+                                    button {
+                                        addAttr("data-id", "2")
+                                        text("2")
+                                    }
+                                    button {
+                                        addAttr("data-id", "1")
+                                        text("1")
+                                    }
+                                    button {
+                                        addAttr("data-id", "ENTER")
+                                        text("ENTER")
+                                    }
+                                    button {
+                                        addAttr("data-id", "CLEAR")
+                                        text("CLEAR")
+                                    }
+                                }
                             }
-                            """.trimIndent(),
-                        )
+                            style {
+                                raw(
+                                    """
+                                    #button-container {
+                                        pointer-events: none;
+                                    }
+                                    """.trimIndent(),
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
 
     private val expectedDatastarRx =
         $$"""
