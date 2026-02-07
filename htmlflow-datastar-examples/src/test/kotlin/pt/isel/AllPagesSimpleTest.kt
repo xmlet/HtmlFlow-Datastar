@@ -75,6 +75,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/file-upload/htmlflow")
     }
 
+    @Test
+    fun `demo infinite scroll HTML returns page`() {
+        `demo returns page`("/infinite-scroll/html")
+    }
+
+    @Test
+    fun `demo infinite scroll HtmlFlow returns page`() {
+        `demo returns page`("/infinite-scroll/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
@@ -89,6 +99,7 @@ class AllPagesSimpleTest {
                     demoBulkUpdate()
                     demoClickToEdit()
                     demoFileUpload()
+                    demoInfiniteScroll()
                 }
             }
 

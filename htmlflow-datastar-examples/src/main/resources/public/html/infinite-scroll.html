@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="module" src="/js/datastar.js">
+    </script><link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div    id="demo"
+            data-signals:offset="10"
+            data-signals:limit="5"
+    >Agents</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>ID</th>
+            </tr>
+        </thead>
+        <tbody id="agents">
+            <tr>
+                <td>Agent Smith 0</td>
+                <td>void0@null.org</td>
+                <td>1982e3a7bb241055</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 1</td>
+                <td>void1@null.org</td>
+                <td>65cd25028f98f158</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 2</td>
+                <td>void2@null.org</td>
+                <td>7b95a7322f5da314</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 3</td>
+                <td>void3@null.org</td>
+                <td>7324dc1e7e9474f0</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 4</td>
+                <td>void4@null.org</td>
+                <td>628911027fcf803f</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 5</td>
+                <td>void5@null.org</td>
+                <td>5edb980100c87e72</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 6</td>
+                <td>void6@null.org</td>
+                <td>3564a48862bc4a0d</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 7</td>
+                <td>void7@null.org</td>
+                <td>6eed105b82285fa</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 8</td>
+                <td>void8@null.org</td>
+                <td>664f427c6b2c4bea</td>
+            </tr>
+            <tr>
+                <td>Agent Smith 9</td>
+                <td>void9@null.org</td>
+                <td>28353a066812b268</td>
+            </tr>
+        </tbody>
+    </table>
+    <div data-on-intersect="@get('/infinite-scroll/more')">
+        Loading...
+    </div>
+</body>
+</html>

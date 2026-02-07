@@ -34,7 +34,7 @@ private suspend fun RoutingContext.getClickToLoadHtmlFlow() {
     call.respondText(hfClickToLoad, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getMore() {
+suspend fun RoutingContext.getMore() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
