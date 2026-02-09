@@ -85,6 +85,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/infinite-scroll/htmlflow")
     }
 
+    @Test
+    fun `demo inline validation HTML returns page`() {
+        `demo returns page`("/inline-validation/html")
+    }
+
+    @Test
+    fun `demo inline validation HtmlFlow returns page`() {
+        `demo returns page`("/inline-validation/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
@@ -100,6 +110,7 @@ class AllPagesSimpleTest {
                     demoClickToEdit()
                     demoFileUpload()
                     demoInfiniteScroll()
+                    demoInlineValidation()
                 }
             }
 

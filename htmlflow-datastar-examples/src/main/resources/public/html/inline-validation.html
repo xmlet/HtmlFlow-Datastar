@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="module" src="/js/datastar.js">
+    </script><link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div id="demo">
+    <label>
+        Email Address
+        <input type="email" required="required" aria-live="polite" aria-describedby="email-info" data-bind:email="" data-on:keydown__debounce.500ms="@post('/inline-validation/validate')">
+    </label>
+    <p id="email-info" class="info">
+        The only valid email address is "test@test.com".
+    </p>
+    <label>
+        First Name
+        <input type="text" required="required" aria-live="polite" data-bind:first-name="" data-on:keydown__debounce.500ms="@post('/inline-validation/validate')">
+    </label>
+    <label>
+        Last Name
+        <input type="text" required="required" aria-live="polite" data-bind:last-name="" data-on:keydown__debounce.500ms="@post('/inline-validation/validate')">
+    </label>
+    <button class="success" data-on:click="@post('/inline-validation')">
+        Sign Up
+    </button>
+</div>
+</body>
+</html>

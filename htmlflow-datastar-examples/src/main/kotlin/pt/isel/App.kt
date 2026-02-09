@@ -27,6 +27,7 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoClickToEdit()
         demoFileUpload()
         demoInfiniteScroll()
+        demoInlineValidation()
     }
 
 /**
