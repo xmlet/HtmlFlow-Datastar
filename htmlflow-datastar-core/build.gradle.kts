@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     // HtmlFlow Kotlin dependency
-    implementation("com.github.xmlet:htmlflow-kotlin:5.0.2")
-    api("com.github.xmlet:htmlflow-kotlin:5.0.2")
+    implementation("com.github.xmlet:htmlflow-kotlin:5.0.3")
+    api("com.github.xmlet:htmlflow-kotlin:5.0.3")
 
     testImplementation(kotlin("test"))
 }
