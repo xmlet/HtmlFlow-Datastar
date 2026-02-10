@@ -22,7 +22,7 @@ import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 
-val hfDeleteRow =
+val hfEditRow =
     StringBuilder()
         .apply {
             doc {
@@ -55,11 +55,11 @@ val hfDeleteRow =
                                             td { text(user.email) }
                                             td {
                                                 button {
-                                                    attrClass("error")
-                                                    dataOn("click", "confirm('Are you sure?') && @delete('/delete-row/$index')")
+                                                    attrClass("info")
+                                                    dataOn("click", "@get('/edit-row/$index')")
                                                     val fetching = dataIndicator("_fetching")
                                                     dataAttr("disabled", "$fetching")
-                                                    text("Delete")
+                                                    text("Edit")
                                                 }
                                             }
                                         }
@@ -69,7 +69,7 @@ val hfDeleteRow =
                             div {
                                 button {
                                     attrClass("warning")
-                                    dataOn("click", "@patch('/delete-row/reset')")
+                                    dataOn("click", "@put('/edit-row/reset')")
                                     val fetching = dataIndicator("_fetching")
                                     dataAttr("disabled", "$fetching")
                                     i { attrClass("pixelarticons:user-plus") }

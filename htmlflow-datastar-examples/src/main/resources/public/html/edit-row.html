@@ -6,8 +6,8 @@
     </head>
     <body>
         <div id="demo">
-            <table>
-                <thead>
+        <table>
+            <thead>
                 <tr>
                     <th>
                         Name
@@ -19,8 +19,8 @@
                         Actions
                     </th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 <tr>
                     <td>
                         Joe Smith
@@ -29,8 +29,8 @@
                         joe@smith.org
                     </td>
                     <td>
-                        <button class="error" data-on:click="confirm('Are you sure?') && @delete('/delete-row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
-                            Delete
+                        <button class="info" data-on:click="@get('/edit-row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                            Edit
                         </button>
                     </td>
                 </tr>
@@ -42,8 +42,8 @@
                         angie@macdowell.org
                     </td>
                     <td>
-                        <button class="error" data-on:click="confirm('Are you sure?') && @delete('/delete-row/1')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
-                            Delete
+                        <button class="info" data-on:click="@get('/edit-row/1')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                            Edit
                         </button>
                     </td>
                 </tr>
@@ -55,8 +55,8 @@
                         fuqua@tarkenton.org
                     </td>
                     <td>
-                        <button class="error" data-on:click="confirm('Are you sure?') && @delete('/delete-row/2')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
-                            Delete
+                        <button class="info" data-on:click="@get('/edit-row/2')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                            Edit
                         </button>
                     </td>
                 </tr>
@@ -68,20 +68,20 @@
                         kim@yee.org
                     </td>
                     <td>
-                        <button class="error" data-on:click="confirm('Are you sure?') && @delete('/delete-row/3')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
-                            Delete
+                        <button class="info" data-on:click="@get('/edit-row/3')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                            Edit
                         </button>
                     </td>
                 </tr>
-                </tbody>
-            </table>
-            <div>
-                <button class="warning" data-on:click="@patch('/delete-row/reset')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
-                    <i class="pixelarticons:user-plus">
-                    </i>
-                    Reset
-                </button>
-            </div>
+            </tbody>
+        </table>
+        <div>
+            <button class="warning" data-on:click="@put('/edit-row/reset')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                <i class="pixelarticons:user-plus">
+                </i>
+                Reset
+            </button>
+        </div>
         </div>
     </body>
 </html>

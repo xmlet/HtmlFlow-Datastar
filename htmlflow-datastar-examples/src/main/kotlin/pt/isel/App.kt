@@ -28,6 +28,9 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoFileUpload()
         demoInfiniteScroll()
         demoInlineValidation()
+        demoDeleteRow()
+        demoEditRow()
+        demoLazyLoad()
     }
 
 /**
