@@ -1,4 +1,6 @@
-package pt.isel
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
+package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html

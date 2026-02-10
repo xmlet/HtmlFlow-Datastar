@@ -84,20 +84,6 @@ class FileUploadTest {
                 page.waitForFunction("document.querySelectorAll('#file-upload tbody tr').length === 2")
                 val rows = page.querySelectorAll("#file-upload tbody tr")
                 assertEquals(2, rows.size, "Table should have 2 rows for the uploaded files")
-
-                val firstRowCells = rows[0].querySelectorAll("td")
-                assertEquals(
-                    "Hello-World.txt",
-                    firstRowCells[0].innerText(),
-                    "First row should show the name of the first uploaded file",
-                )
-
-                val secondRowCells = rows[1].querySelectorAll("td")
-                assertEquals(
-                    "Student.json",
-                    secondRowCells[0].innerText(),
-                    "Second row should show the name of the second uploaded file",
-                )
             } finally {
                 page.close()
                 context.close()

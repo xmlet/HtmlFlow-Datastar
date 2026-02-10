@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package pt.isel
+package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html

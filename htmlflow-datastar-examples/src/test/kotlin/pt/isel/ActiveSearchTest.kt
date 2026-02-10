@@ -72,8 +72,8 @@ class ActiveSearchTest {
                 // Verify the content of the filtered row
                 val row = page.querySelectorAll("tbody tr").first()
 
-                val firstName = row.querySelectorAll("td")[0].textContent()
-                val lastName = row.querySelectorAll("td")[1].textContent()
+                val firstName = row.querySelectorAll("td")[0].textContent().trim()
+                val lastName = row.querySelectorAll("td")[1].textContent().trim()
                 assertEquals("Annamarie", firstName, "Filtered row should have first name 'Annamarie'")
                 assertEquals("Rippin", lastName, "Filtered row should have last name 'Rippin'")
 

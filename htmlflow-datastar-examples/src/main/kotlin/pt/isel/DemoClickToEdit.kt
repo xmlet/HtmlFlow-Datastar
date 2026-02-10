@@ -110,6 +110,9 @@ private suspend fun RoutingContext.resetClickToEdit(currentUser: MutableStateFlo
                 DEFAULT_USER.email,
             )
         currentUser.emit(DEFAULT_USER)
+        generator.patchSignals(
+            """ { firstName: "${DEFAULT_USER.firstName}", lastName: "${DEFAULT_USER.lastName}", email: "${DEFAULT_USER.email}" } """,
+        )
         generator.patchElements(defaultHtml)
     }
 }
@@ -120,11 +123,12 @@ private suspend fun RoutingContext.cancelClickToEdit(currentUser: MutableStateFl
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val datastarQueryArg = call.request.queryParameters["datastar"]
-        requireNotNull(datastarQueryArg)
 
         // Retrieve the last saved user details
         val (firstName, lastName, email) = currentUser.value
+        generator.patchSignals(
+            """ { firstName: "$firstName", lastName: "$lastName", email: "$email" } """,
+        )
 
         val htmlViewMode = defaultClickToEditHtml(firstName, lastName, email)
         generator.patchElements(htmlViewMode)

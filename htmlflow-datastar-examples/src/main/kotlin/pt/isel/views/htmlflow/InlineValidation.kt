@@ -9,7 +9,6 @@ import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
-import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link

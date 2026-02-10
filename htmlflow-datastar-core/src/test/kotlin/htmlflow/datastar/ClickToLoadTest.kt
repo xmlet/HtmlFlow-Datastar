@@ -1,16 +1,19 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package pt.isel
+package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.extensions.dataAttr
+import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class AnimationsTest {
+class ClickToLoadTest {
     @Test
-    fun `Animations of the Datastar Frontend Reactivity`() {
+    fun `Click To Load of the Datastar Frontend Reactivity`() {
         val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
@@ -30,17 +33,19 @@ class AnimationsTest {
                             }
                         }
                         body {
-                            div {
-                                attrId("color-throb")
-                                attrStyle("color: var(--blue-8); background-color: var(--orange-5);")
-                                text("blue on orange")
+                            button {
+                                attrClass("info wide")
+                                val fetching = dataIndicator("fetching")
+                                dataAttr("aria-disabled", $$"`${$$fetching}`")
+                                dataOn("click", "!$fetching && @get('/examples/click_to_load/more')")
+                                text("Load More")
                             }
                         }
                     }
                 }
             }
 
-    private val expectedDatastarRx = """
+    private val expectedDatastarRx = $$"""
     <!DOCTYPE html>
 <html>
     <head>
@@ -48,9 +53,9 @@ class AnimationsTest {
         </script>
     </head>
 <body>
-    <div id="color-throb" style="color: var(--blue-8); background-color: var(--orange-5);"> 
-        blue on orange
-    </div>
+    <button class="info wide" data-indicator:fetching="" data-attr:aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/click_to_load/more')">
+        Load More
+    </button>
 </body>
 </html>
     """

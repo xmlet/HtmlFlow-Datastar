@@ -95,9 +95,12 @@ class ClickToEditTest {
                 assertEquals("Smith", lastNameAfterCancel, "Last name should remain Smith after cancel")
                 assertEquals("alice.smith@org.com", emailAfterCancel, "Email should remain alice.smith@org.com after cancel")
 
-                // Click the Reset button
+                // Click the Reset button and wait for the default details to be displayed
                 page.click("button:has-text('Reset')")
-
+                page.waitForSelector("p:has-text('First Name')")
+                page.waitForSelector("p:has-text('Last Name')")
+                page.waitForSelector("p:has-text('Email')")
+				
                 // Verify default user details are restored
                 val defaultFirstName = page.textContent("p:has-text('First Name')").substringAfter(":").trim()
                 val defaultLastName = page.textContent("p:has-text('Last Name')").substringAfter(":").trim()

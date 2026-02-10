@@ -1,17 +1,16 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package pt.isel
+package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataInit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LazyLoadTest {
+class AnimationsTest {
     @Test
-    fun `Lazy Load of the Datastar Frontend Reactivity`() {
+    fun `Animations of the Datastar Frontend Reactivity`() {
         val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
@@ -32,9 +31,9 @@ class LazyLoadTest {
                         }
                         body {
                             div {
-                                attrId("graph")
-                                dataInit("@get('/examples/lazy_load/graph')")
-                                text("Loading...")
+                                attrId("color-throb")
+                                attrStyle("color: var(--blue-8); background-color: var(--orange-5);")
+                                text("blue on orange")
                             }
                         }
                     }
@@ -49,8 +48,8 @@ class LazyLoadTest {
         </script>
     </head>
 <body>
-    <div id="graph" data-init="@get('/examples/lazy_load/graph')"> 
-        Loading...
+    <div id="color-throb" style="color: var(--blue-8); background-color: var(--orange-5);"> 
+        blue on orange
     </div>
 </body>
 </html>
