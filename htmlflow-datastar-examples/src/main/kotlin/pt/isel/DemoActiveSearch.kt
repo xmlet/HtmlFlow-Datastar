@@ -1,6 +1,9 @@
 package pt.isel
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
+import htmlflow.HtmlView
+import htmlflow.div
+import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
@@ -12,8 +15,11 @@ import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.views.htmlflow.hfActiveSearch
+import pt.isel.views.htmlflow.hfActiveSearchTable
 
 private val html = loadResource("public/html/active-search.html")
+
+private val hfTableFragment: HtmlView<List<Contact>> = view { div { hfActiveSearchTable() } }
 
 fun Route.demoActiveSearch() {
     route("/active-search") {
@@ -28,7 +34,7 @@ private suspend fun RoutingContext.getActiveSearchHtml() {
 }
 
 private suspend fun RoutingContext.getActiveSearchHtmlFlow() {
-    call.respondText(hfActiveSearch, ContentType.Text.Html)
+    call.respondText(hfActiveSearch.render(initialContacts), ContentType.Text.Html)
 }
 
 private suspend fun RoutingContext.searchContacts() {
@@ -51,20 +57,10 @@ private suspend fun RoutingContext.searchContacts() {
                         it.lastName.contains(search, ignoreCase = true)
                 }
             }
-        val html = """<div id="demo"> <input type="text" placeholder="Search..." data-bind:search data-on:input__debounce.200ms="@get('/active-search/search')"><table><thead><tr><th>First Name</th><th>Last Name</th></tr></thead><tbody>${foundContactsRows(
-            filteredContacts,
-        )}</tbody></table></div>"""
+        val html = hfTableFragment.render(filteredContacts)
         generator.patchElements(html)
     }
 }
-
-private const val ROW = """<tr><td>%s</td><td>%s</td></tr>"""
-
-private fun foundContactsRows(contacts: List<Contact>): String =
-    contacts
-        .joinToString("\n") { cnt ->
-            ROW.format(cnt.firstName, cnt.lastName)
-        }
 
 @Serializable
 data class ActiveSearchSignals(
@@ -76,7 +72,7 @@ data class Contact(
     val lastName: String,
 )
 
-private val initialContacts =
+val initialContacts =
     listOf(
         Contact("Abraham", "Altenwerth"),
         Contact("Adan", "Padberg"),
