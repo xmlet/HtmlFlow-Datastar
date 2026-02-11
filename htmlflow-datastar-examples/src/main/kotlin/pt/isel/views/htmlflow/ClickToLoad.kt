@@ -1,7 +1,10 @@
 package pt.isel.views.htmlflow
 
 import htmlflow.doc
+import htmlflow.dyn
 import htmlflow.html
+import htmlflow.tr
+import htmlflow.view
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -13,9 +16,11 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
+import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.Agent
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -71,3 +76,14 @@ val hfClickToLoad: String =
                 }
             }
         }.toString()
+
+val hfAgentRowView =
+    view<Agent> {
+        tr {
+            dyn { agent: Agent ->
+                td { text(agent.name) }
+                td { text(agent.email) }
+                td { text(agent.id) }
+            }
+        }
+    }

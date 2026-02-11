@@ -1,6 +1,10 @@
 package pt.isel
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
+import htmlflow.HtmlView
+import htmlflow.dyn
+import htmlflow.span
+import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -12,6 +16,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.xmlet.htmlapifaster.span
 
 private val html = loadResource("public/html/counter.html")
 
@@ -48,7 +53,7 @@ private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<In
         val generator = ServerSentEventGenerator(response)
 
         counter.collect { event ->
-            generator.patchElements("""<span id="counter">$event</span>""")
+            generator.patchElements(hfCounterEventView.render(event))
 
             if (event == 3) {
                 generator.executeScript("""alert('Thanks for trying Datastar!')""")
@@ -56,6 +61,16 @@ private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<In
         }
     }
 }
+
+val hfCounterEventView: HtmlView<Int> =
+    view {
+        span {
+            attrId("counter")
+            dyn { count: Int ->
+                text(count.toString())
+            }
+        }
+    }
 
 private fun RoutingContext.postCounterIncrement(counter: MutableStateFlow<Int>) {
     counter.value++
