@@ -6,7 +6,6 @@ import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
-import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
