@@ -80,27 +80,30 @@ class ClickToLoadTest {
                     assertEquals(3, cells.size, "Each row should have 3 cells")
 
                     // Verify the name column
-                    val name = cells[0].textContent()
+                    val name = cells[0].textContent().trim()
                     assertEquals("Agent Smith $i", name, "Row $i should have correct name")
 
                     // Verify the email column
-                    val email = cells[1].textContent()
+                    val email = cells[1].textContent().trim()
                     assertEquals("void$i@null.org", email, "Row $i should have correct email")
 
                     // Verify the ID column exists and is non-empty
-                    val id = cells[2].textContent()
+                    val id = cells[2].textContent().trim()
                     assertTrue(id?.isNotEmpty() == true, "Row $i should have a non-empty ID")
                     assertTrue(id?.length == 16, "ID should be 16 characters (8 hex bytes)")
                 }
 
                 // Verify the HTML structure matches the expected format
-                val tableHTML = page.querySelector("tbody#agents")?.innerHTML() ?: ""
+                val tableHTML =
+                    page.querySelector("tbody#agents")?.innerHTML() ?: ""
+
+                val formatedTable = tableHTML.replace("\n", "").replace("\t", "")
                 assertTrue(
-                    tableHTML.contains("<tr><td>Agent Smith 0</td><td>void0@null.org</td>"),
+                    formatedTable.contains("<tr><td>Agent Smith 0</td><td>void0@null.org</td>"),
                     "Table HTML should contain Agent Smith 0 row",
                 )
                 assertTrue(
-                    tableHTML.contains("<tr><td>Agent Smith 4</td><td>void4@null.org</td>"),
+                    formatedTable.contains("<tr><td>Agent Smith 4</td><td>void4@null.org</td>"),
                     "Table HTML should contain Agent Smith 4 row",
                 )
             } finally {

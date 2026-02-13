@@ -77,7 +77,7 @@ class InfiniteScrollTest {
                 assert(finalCount > initialCount) {
                     "Expected more agents after scrolling, but got $finalCount"
                 }
-                val lastAgentName = page.textContent("#agents tr:last-child td:first-child")
+                val lastAgentName = page.textContent("#agents tr:last-child td:first-child").trim()
 
                 assert(lastAgentName!!.startsWith("Agent Smith")) { "Unexpected agent name: $lastAgentName" }
             } finally {
