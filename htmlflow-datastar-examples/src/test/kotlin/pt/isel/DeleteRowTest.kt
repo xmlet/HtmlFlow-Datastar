@@ -63,25 +63,22 @@ class DeleteRowTest {
                 assertEquals(200, response?.status(), "Navigation to $url should return 200")
 
                 page.waitForSelector("table")
-
-                // Verifica se o Datastar carregou
-                val datastarLoaded = page.evaluate("typeof window.Datastar !== 'undefined'")
-                println("Datastar loaded: $datastarLoaded")
+                page.click("button.warning") // Click the Reset button to ensure we start with default users
+                page.waitForTimeout(200.0) // Wait for the patch to be applied
 
                 val initialUsersCount = page.querySelectorAll("tbody tr").size
                 assertEquals(4, initialUsersCount, "Initial table should have 4 users")
 
                 val firstUserName = page.querySelector("tbody tr:first-child td:first-child")?.innerText()
                 assertEquals("Joe Smith", firstUserName, "First user should be Joe Smith")
-
-                // Override window.confirm
-                page.evaluate("window.confirm = () => { console.log('Confirm called'); return true; }")
+				
+                page.evaluate("window.confirm = () => { return true }")
 
                 // Tenta clicar e espera por network idle
                 page.click("tbody tr:first-child button.error")
+                page.waitForTimeout(200.0) // Wait for the patch to be applied
 
                 val usersCountAfterDelete = page.querySelectorAll("tbody tr").size
-                println("Users after delete: $usersCountAfterDelete")
 
                 assertEquals(3, usersCountAfterDelete, "Table should have 3 users after deletion")
 
@@ -149,7 +146,6 @@ class DeleteRowTest {
 
                     // Verify the count decreased
                     val currentCount = page.querySelectorAll("tbody tr").size
-                    println("After deletion ${index + 1}: $currentCount users remaining")
                     assertEquals(4 - (index + 1), currentCount, "Should have ${4 - (index + 1)} users after ${index + 1} deletion(s)")
                 }
 

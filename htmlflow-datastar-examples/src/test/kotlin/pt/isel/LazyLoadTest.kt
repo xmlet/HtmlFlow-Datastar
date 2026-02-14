@@ -55,24 +55,13 @@ class LazyLoadTest {
                 val response = page.navigate(url)
                 assertEquals(200, response?.status(), "Navigation to $url should return 200")
 
-                // Debug: Print the page content to see what we're getting
-                val pageContent = page.content()
-                println("=== PAGE CONTENT ===")
-                println(pageContent)
-                println("===================")
-
                 // Wait for body to ensure page loaded
                 page.waitForSelector("body")
 
                 // Try to find the div - it might have a different selector
                 val divExists = page.querySelector("#graph") != null
                 if (!divExists) {
-                    println("ERROR: #graph not found!")
-                    println("Available divs:")
                     val allDivs = page.querySelectorAll("div")
-                    allDivs.forEach { div ->
-                        println("  - id: ${div.getAttribute("id")}, classes: ${div.getAttribute("class")}")
-                    }
                 }
 
                 // Wait for the graph div to be visible
