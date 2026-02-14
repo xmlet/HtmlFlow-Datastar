@@ -29,7 +29,8 @@ subprojects {
     }
     sonar {
         properties {
-            property("sonar.coverage.jacoco.xmlReportPaths", "${projectDir.parentFile.path}**/build/reports/kover/report.xml")
+            property("sonar.coverage.jacoco.xmlReportPaths", "${projectDir.parentFile.path}/build/reports/kover/report.xml")
+            property("sonar.junit.reportPaths", "${projectDir.parentFile.path}/build/test-results/test")
         }
     }
 }
