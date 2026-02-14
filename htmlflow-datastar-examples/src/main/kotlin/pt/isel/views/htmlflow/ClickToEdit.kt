@@ -18,11 +18,11 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.Profile
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.ktor.Profile
 
 val hfClickToEdit: HtmlView<Profile> =
     view {

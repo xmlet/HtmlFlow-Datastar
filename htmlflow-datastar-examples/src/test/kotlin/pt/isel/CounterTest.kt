@@ -7,6 +7,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
+import pt.isel.ktor.demoHtmlFlowDatastarRouting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

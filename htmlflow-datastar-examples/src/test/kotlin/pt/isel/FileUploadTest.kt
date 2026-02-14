@@ -6,6 +6,8 @@ import com.microsoft.playwright.Playwright
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
+import pt.isel.ktor.demoHtmlFlowDatastarRouting
+import pt.isel.ktor.getResourcePath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.use

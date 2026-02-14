@@ -1,4 +1,4 @@
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions

@@ -19,9 +19,9 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.InlineValidationSignals
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.ktor.InlineValidationSignals
 import kotlin.time.Duration.Companion.milliseconds
 
 val hfInlineValidationView: HtmlView<InlineValidationSignals> =

@@ -1,4 +1,4 @@
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import htmlflow.div

@@ -20,9 +20,9 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.Contact
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.ktor.Contact
 import kotlin.time.Duration.Companion.milliseconds
 
 val hfActiveSearch: HtmlView<List<Contact>> =

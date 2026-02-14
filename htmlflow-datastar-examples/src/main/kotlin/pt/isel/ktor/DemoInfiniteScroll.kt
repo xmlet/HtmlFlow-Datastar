@@ -1,4 +1,4 @@
-package pt.isel
+package pt.isel.ktor
 
 import io.ktor.http.ContentType
 import io.ktor.server.response.respondText

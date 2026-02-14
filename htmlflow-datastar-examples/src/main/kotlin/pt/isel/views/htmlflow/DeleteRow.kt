@@ -17,10 +17,10 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.DEFAULT_USERS
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.ktor.DEFAULT_USERS
 
 val hfDeleteRow =
     StringBuilder()

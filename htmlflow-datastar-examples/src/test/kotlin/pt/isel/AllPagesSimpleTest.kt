@@ -5,6 +5,16 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import pt.isel.ktor.demoActiveSearch
+import pt.isel.ktor.demoBulkUpdate
+import pt.isel.ktor.demoClickToEdit
+import pt.isel.ktor.demoClickToLoad
+import pt.isel.ktor.demoCounter
+import pt.isel.ktor.demoCounterSignals
+import pt.isel.ktor.demoFileUpload
+import pt.isel.ktor.demoInfiniteScroll
+import pt.isel.ktor.demoInlineValidation
+import pt.isel.ktor.demoProgressiveLoad
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -95,6 +105,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/inline-validation/htmlflow")
     }
 
+    @Test
+    fun `demo progressive load HTML returns page`() {
+        `demo returns page`("/progressive-load/html")
+    }
+
+    @Test
+    fun `demo progressive load HtmlFlow returns page`() {
+        `demo returns page`("/progressive-load/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
@@ -111,6 +131,7 @@ class AllPagesSimpleTest {
                     demoFileUpload()
                     demoInfiniteScroll()
                     demoInlineValidation()
+                    demoProgressiveLoad()
                 }
             }
 
