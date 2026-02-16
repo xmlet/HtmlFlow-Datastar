@@ -1,7 +1,10 @@
 package pt.isel.views.htmlflow
 
-import htmlflow.doc
+import htmlflow.HtmlView
+import htmlflow.dyn
 import htmlflow.html
+import htmlflow.view
+import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -20,64 +23,67 @@ import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
-import pt.isel.ktor.DEFAULT_USERS
+import pt.isel.ktor.TableState
 
-val hfDeleteRow =
-    StringBuilder()
-        .apply {
-            doc {
-                html {
-                    head {
-                        script {
-                            attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
-                        }
-                    }
-                    body {
-                        div {
-                            attrId("demo")
-                            table {
-                                thead {
-                                    tr {
-                                        th { text("Name") }
-                                        th { text("Email") }
-                                        th { text("Actions") }
-                                    }
-                                }
-                                tbody {
-                                    DEFAULT_USERS.forEachIndexed { index, user ->
-                                        tr {
-                                            td { text(user.name) }
-                                            td { text(user.email) }
-                                            td {
-                                                button {
-                                                    attrClass("error")
-                                                    dataOn("click", "confirm('Are you sure?') && @delete('/delete-row/$index')")
-                                                    val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", "$fetching")
-                                                    text("Delete")
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            div {
-                                button {
-                                    attrClass("warning")
-                                    dataOn("click", "@patch('/delete-row/reset')")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
-                                    i { attrClass("pixelarticons:user-plus") }
-                                    text("Reset")
-                                }
+val hfDeleteRow: HtmlView<TableState> =
+    view {
+        html {
+            head {
+                script {
+                    attrType(EnumTypeScriptType.MODULE)
+                    attrSrc("/js/datastar.js")
+                }
+                link {
+                    attrRel(EnumRelType.STYLESHEET)
+                    attrHref("/css/styles.css")
+                }
+            }
+            body {
+                div {
+                    hfDeleteRowTable()
+                }
+            }
+        }
+    }
+
+fun Div<*>.hfDeleteRowTable() {
+    attrId("demo")
+    table {
+        thead {
+            tr {
+                th { text("Name") }
+                th { text("Email") }
+                th { text("Actions") }
+            }
+        }
+        tbody {
+            dyn { state: TableState ->
+                state.users.forEachIndexed { index, user ->
+                    tr {
+                        td { text(user.name) }
+                        td { text(user.email) }
+                        td {
+                            button {
+                                attrClass("error")
+                                dataOn("click", "confirm('Are you sure?') && @delete('/delete-row/$index')")
+                                val fetching = dataIndicator("_fetching")
+                                dataAttr("disabled", "$fetching")
+                                text("Delete")
                             }
                         }
                     }
                 }
             }
-        }.toString()
+        }
+    }
+    div {
+        button {
+            attrClass("warning")
+            dataOn("click", "@patch('/delete-row/reset')")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", "$fetching")
+            i { attrClass("pixelarticons:user-plus") }
+            text("Reset")
+        }
+    }
+}

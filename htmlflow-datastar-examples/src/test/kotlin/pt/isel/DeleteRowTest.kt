@@ -65,10 +65,6 @@ class DeleteRowTest {
 
                 page.waitForSelector("table")
 
-                // Verifica se o Datastar carregou
-                val datastarLoaded = page.evaluate("typeof window.Datastar !== 'undefined'")
-                println("Datastar loaded: $datastarLoaded")
-
                 val initialUsersCount = page.querySelectorAll("tbody tr").size
                 assertEquals(4, initialUsersCount, "Initial table should have 4 users")
 
@@ -78,9 +74,8 @@ class DeleteRowTest {
                 // Override window.confirm
                 page.evaluate("window.confirm = () => { console.log('Confirm called'); return true; }")
 
-                // Tenta clicar e espera por network idle
                 page.click("tbody tr:first-child button.error")
-
+                page.waitForTimeout(200.0)
                 val usersCountAfterDelete = page.querySelectorAll("tbody tr").size
                 println("Users after delete: $usersCountAfterDelete")
 
