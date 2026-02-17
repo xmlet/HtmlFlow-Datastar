@@ -67,7 +67,7 @@ class FileUploadTest {
         </p>
         <input type="file" data-bind:files multiple="">
     </label>
-    <button class="warning" data-signals-files="" data-on:click="$files.length && @post('/examples/file_upload')" data-attr:aria-disabled="`${!$files.length}`">
+    <button class="warning" data-signals:files="" data-on:click="$files.length && @post('/examples/file_upload')" data-attr:aria-disabled="`${!$files.length}`">
         Submit
     </button>
 </body>

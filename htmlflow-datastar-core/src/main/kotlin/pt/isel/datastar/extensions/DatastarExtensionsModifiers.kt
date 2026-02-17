@@ -2,6 +2,7 @@ package pt.isel.datastar.extensions
 
 import org.xmlet.htmlapifaster.Element
 import pt.isel.datastar.Signal
+import pt.isel.datastar.modifiers.attributes.DataClassModifiers
 import pt.isel.datastar.modifiers.attributes.DataComputedModifiers
 import pt.isel.datastar.modifiers.attributes.DataInitModifiers
 import pt.isel.datastar.modifiers.attributes.DataJsonSignalsModifiers
@@ -33,8 +34,11 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
             else -> "$value"
         }
 
-    this.visitor.visitAttribute("data-signals-$name$modifiers", res)
-    return Signal(name)
+    this.visitor.visitAttribute("data-signals:$name$modifiers", res)
+
+    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
+
+    return Signal(signalName)
 }
 
 /**
@@ -53,14 +57,12 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
     modifiers: DataSignalModifiers.() -> Unit,
 ): List<Signal> {
     signals.toList().toJson().also {
-        val mods =
-            DataSignalModifiers()
-                .apply(modifiers)
-                .toString()
+        val mods = DataSignalModifiers().apply(modifiers).toString()
         this.visitor.visitAttribute("data-signals$mods", it)
     }
     return signals.map { (name) ->
-        Signal(name)
+        val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
+        Signal(signalName)
     }
 }
 
@@ -82,10 +84,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     value: R?,
     modifiers: DataSignalModifiers.() -> Unit,
 ): Signal {
-    val mods =
-        DataSignalModifiers()
-            .apply(modifiers)
-            .toString()
+    val mods = DataSignalModifiers().apply(modifiers).toString()
     return dataSignal(name, value, mods)
 }
 
@@ -120,10 +119,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
     js: String,
     modifiers: DataOnModifiers.() -> Unit,
 ) {
-    val mods =
-        DataOnModifiers()
-            .apply(modifiers)
-            .toString()
+    val mods = DataOnModifiers().apply(modifiers).toString()
     return dataOn(event, js, mods)
 }
 
@@ -141,9 +137,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(
     js: String,
     modifiers: DataInitModifiers.() -> Unit,
 ) {
-    val mods =
-        DataInitModifiers()
-            .apply(modifiers)
+    val mods = DataInitModifiers().apply(modifiers)
     this.visitor.visitAttribute("data-init$mods", js)
 }
 
@@ -165,7 +159,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     modifiers: String = "",
 ): Signal {
     this.visitor.visitAttribute("data-computed-$name$modifiers", js)
-    return Signal(name)
+    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
+    return Signal(signalName)
 }
 
 /**
@@ -185,10 +180,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     js: String,
     modifiers: DataComputedModifiers.() -> Unit,
 ): Signal {
-    val mods =
-        DataComputedModifiers()
-            .apply(modifiers)
-            .toString()
+    val mods = DataComputedModifiers().apply(modifiers).toString()
     return dataComputed(name, js, mods)
 }
 
@@ -225,9 +217,25 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
     jsObj: String = "",
     mods: DataJsonSignalsModifiers.() -> Unit,
 ) {
-    val modifiers =
-        DataJsonSignalsModifiers()
-            .apply(mods)
-            .toString()
+    val modifiers = DataJsonSignalsModifiers().apply(mods).toString()
     this.visitor.visitAttribute("data-json-signals$modifiers", jsObj)
+}
+
+/**
+ *
+ * Adds or removes a class from an element based on an expression.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-class attribute will be added
+ * @param className the name of the class from the element
+ * @param predicate a JavaScript expression that if true adds the class to element otherwise removes it.
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
+    className: String,
+    predicate: String,
+    modifiers: DataClassModifiers.() -> Unit,
+) {
+    val mods = DataClassModifiers().apply(modifiers).toString()
+    this.visitor.visitAttribute("data-class:$className$mods", predicate)
 }

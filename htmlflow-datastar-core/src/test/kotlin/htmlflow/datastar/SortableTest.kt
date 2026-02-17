@@ -78,7 +78,7 @@ class SortableTest {
         </script>
     </head>
 <body>
-    <div data-signals-order-info="'Initial order'" data-text="$order-info"> 
+    <div data-signals:order-info="'Initial order'" data-text="$orderInfo"> 
     </div>
     <div id="sortContainer" data-on:reordered="$orderInfo = event.detail.orderInfo">
         <button>
