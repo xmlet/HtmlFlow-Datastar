@@ -32,7 +32,8 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoEditRow()
         demoLazyLoad()
         demoLazyTabs()
-        // demoProgressiveLoad()
+        demoProgressiveLoad()
+        demoTodoMvc()
     }
 
 /**

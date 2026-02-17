@@ -18,6 +18,8 @@ import pt.isel.ktor.demoInfiniteScroll
 import pt.isel.ktor.demoInlineValidation
 import pt.isel.ktor.demoLazyLoad
 import pt.isel.ktor.demoLazyTabs
+import pt.isel.ktor.demoProgressiveLoad
+import pt.isel.ktor.demoTodoMvc
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -158,6 +160,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/lazy-tabs/htmlflow")
     }
 
+    @Test
+    fun `demo todo mvc HTML returns page`() {
+        `demo returns page`("/todo-mvc/html")
+    }
+
+    @Test
+    fun `demo todo mvc HtmlFlow returns page`() {
+        `demo returns page`("/todo-mvc/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
@@ -178,7 +190,8 @@ class AllPagesSimpleTest {
                     demoEditRow()
                     demoLazyLoad()
                     demoLazyTabs()
-                    // demoProgressiveLoad()
+                    demoProgressiveLoad()
+                    demoTodoMvc()
                 }
             }
 
