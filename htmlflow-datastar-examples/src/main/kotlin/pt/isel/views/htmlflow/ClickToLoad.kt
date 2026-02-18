@@ -20,12 +20,12 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.Agent
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.datastar.extensions.dataText
+import pt.isel.ktor.Agent
 
 val hfClickToLoad: String =
     StringBuilder()

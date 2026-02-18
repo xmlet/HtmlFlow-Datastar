@@ -7,6 +7,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
+import pt.isel.ktor.demoHtmlFlowDatastarRouting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

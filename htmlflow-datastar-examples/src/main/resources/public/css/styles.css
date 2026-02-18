@@ -63,3 +63,11 @@ table tbody tr:nth-child(even) {
 table tbody tr:hover {
     background: #e3f2fd;
 }
+
+.indicator {
+    visibility: hidden;
+}
+
+.indicator.loading {
+    visibility: visible;
+}

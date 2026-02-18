@@ -1,6 +1,6 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.*

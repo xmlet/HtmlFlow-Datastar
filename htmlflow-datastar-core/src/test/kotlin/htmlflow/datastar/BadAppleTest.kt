@@ -68,7 +68,7 @@ class BadAppleTest {
         </script>
     </head>
 <body>
-    <div data-signals-percentage="0" data-signals-contents="'bad apple frames go here'"> 
+    <div data-signals:percentage="0" data-signals:contents="'bad apple frames go here'"> 
        <label data-init="@get('/examples/bad_apple/updates')">
             <span data-text="`Percentage: ${$percentage.toFixed(2)}%`">
             </span>

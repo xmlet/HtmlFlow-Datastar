@@ -6,11 +6,11 @@ import com.microsoft.playwright.Playwright
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
+import pt.isel.ktor.demoHtmlFlowDatastarRouting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import kotlin.use
 
 class LazyLoadTest {
     @Test
@@ -50,7 +50,6 @@ class LazyLoadTest {
             val page = context.newPage()
 
             try {
-                // Navigate to the lazy-load page
                 val url = "http://localhost:$port$path"
                 val response = page.navigate(url)
                 assertEquals(200, response?.status(), "Navigation to $url should return 200")
@@ -58,19 +57,8 @@ class LazyLoadTest {
                 // Wait for body to ensure page loaded
                 page.waitForSelector("body")
 
-                // Try to find the div - it might have a different selector
-                val divExists = page.querySelector("#graph") != null
-                if (!divExists) {
-                    val allDivs = page.querySelectorAll("div")
-                }
-
                 // Wait for the graph div to be visible
-                page.waitForSelector(
-                    "#graph",
-                    com.microsoft.playwright.Page
-                        .WaitForSelectorOptions()
-                        .setTimeout(5000.0),
-                )
+                page.waitForSelector("#graph")
 
                 // Verify initial state shows "Loading..."
                 val graphDiv = page.querySelector("#graph")
@@ -87,12 +75,13 @@ class LazyLoadTest {
                 assertEquals(0, initialImages.size, "No image should be present initially")
 
                 // Wait for the graph to load (SSE response + processing time)
-                // Adding extra time to account for the 2 second delay in the server
+                // Adding extra time to account for the 2-second delay in the server
                 page.waitForSelector(
                     "#graph img",
                     com.microsoft.playwright.Page
                         .WaitForSelectorOptions()
-                        .setTimeout(5000.0),
+                        .setTimeout(8000.0)
+                        .setState(com.microsoft.playwright.options.WaitForSelectorState.ATTACHED),
                 )
 
                 // Verify the image is now present

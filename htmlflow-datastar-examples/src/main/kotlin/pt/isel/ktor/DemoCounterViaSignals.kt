@@ -1,10 +1,6 @@
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import htmlflow.HtmlView
-import htmlflow.dyn
-import htmlflow.span
-import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -16,15 +12,17 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.xmlet.htmlapifaster.span
+import pt.isel.views.htmlflow.hfCounterViaSignals
 
-private val html = loadResource("public/html/counter.html")
+private val html = loadResource("public/html/counter-signals.html")
 
-fun Route.demoCounter() {
+fun Route.demoCounterSignals() {
     val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    route("/counter") {
+    route("/counter-signals") {
         get("/html", RoutingContext::getCounterPageHtml)
+
+        get("/htmlflow", RoutingContext::getCounterPageHtmlFlow)
 
         get("/events") {
             getCounterEvents(counter)
@@ -44,6 +42,10 @@ private suspend fun RoutingContext.getCounterPageHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 
+private suspend fun RoutingContext.getCounterPageHtmlFlow() {
+    call.respondText(hfCounterViaSignals, ContentType.Text.Html)
+}
+
 private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<Int>) {
     call.respondTextWriter(
         status = OK,
@@ -52,25 +54,11 @@ private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<In
         val response = response(this)
         val generator = ServerSentEventGenerator(response)
 
-        counter.collect { event ->
-            generator.patchElements(hfCounterEventView.render(event))
-
-            if (event == 3) {
-                generator.executeScript("""alert('Thanks for trying Datastar!')""")
-            }
+        counter.collect {
+            generator.patchSignals("{count: ${counter.value}}")
         }
     }
 }
-
-val hfCounterEventView: HtmlView<Int> =
-    view {
-        span {
-            attrId("counter")
-            dyn { count: Int ->
-                text(count.toString())
-            }
-        }
-    }
 
 private fun RoutingContext.postCounterIncrement(counter: MutableStateFlow<Int>) {
     counter.value++

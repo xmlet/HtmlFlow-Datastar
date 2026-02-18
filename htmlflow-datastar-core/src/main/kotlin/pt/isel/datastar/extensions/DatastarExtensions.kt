@@ -58,7 +58,8 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(vararg
         this.visitor.visitAttribute("data-signals", it)
     }
     return signals.map { (name) ->
-        Signal(name)
+        val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
+        Signal(signalName)
     }
 }
 
@@ -86,7 +87,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String): Signal {
     require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
     this.visitor.visitAttribute("data-bind:$name", "")
-    return Signal(name)
+    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
+    return Signal(signalName)
 }
 
 /**
@@ -181,7 +183,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(js: String) 
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal {
     this.visitor.visitAttribute("data-indicator:$name", "")
-    return Signal(name)
+    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
+    return Signal(signalName)
 }
 
 /**
@@ -290,4 +293,21 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(jsObj: String = "") {
     this.visitor.visitAttribute("data-json-signals", jsObj)
+}
+
+/**
+ *
+ * Adds or removes a class from an element based on an expression.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-class attribute will be added
+ * @param className the name of the class from the element
+ * @param predicate a JavaScript expression that if true adds the class to element otherwise removes it.
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
+    className: String,
+    predicate: String,
+) {
+    this.visitor.visitAttribute("data-class:$className", predicate)
 }

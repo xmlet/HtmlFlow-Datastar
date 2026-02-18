@@ -1,4 +1,4 @@
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.Response
 import io.ktor.server.application.Application
@@ -31,6 +31,9 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoDeleteRow()
         demoEditRow()
         demoLazyLoad()
+        demoLazyTabs()
+        demoProgressiveLoad()
+        demoTodoMvc()
     }
 
 /**
