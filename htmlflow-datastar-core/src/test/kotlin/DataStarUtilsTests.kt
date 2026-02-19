@@ -1,5 +1,3 @@
-package htmlflow.datastar
-
 import pt.isel.datastar.extensions.convertToValidSignalName
 import pt.isel.datastar.extensions.isValidSignalName
 import kotlin.test.Test
