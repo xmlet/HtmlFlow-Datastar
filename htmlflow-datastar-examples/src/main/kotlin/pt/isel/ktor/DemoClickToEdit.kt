@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
@@ -20,6 +20,7 @@ import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.views.htmlflow.hfClickToEdit
+import pt.isel.views.htmlflow.hfEditModeDoc
 
 private val html = loadResource("public/html/click-to-edit.html")
 
@@ -40,17 +41,20 @@ private suspend fun RoutingContext.getClickToEditHtml() {
 }
 
 private suspend fun RoutingContext.getClickToEditHtmlFlow() {
-    call.respondText(hfClickToEdit, ContentType.Text.Html)
+    call.respondText(
+        hfClickToEdit.render(DEFAULT_USER),
+        ContentType.Text.Html,
+    )
 }
 
 private val DEFAULT_USER =
-    ClickToEditSignals(
+    Profile(
         firstName = "John",
         lastName = "Doe",
         email = "joe@blow.com",
     )
 
-private suspend fun RoutingContext.editClickToEdit(currentUser: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.editClickToEdit(currentUser: MutableStateFlow<Profile>) {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
@@ -64,51 +68,27 @@ private suspend fun RoutingContext.editClickToEdit(currentUser: MutableStateFlow
             try {
                 Json.decodeFromString<ClickToEditSignals>(datastarQueryArg)
             } catch (_: MissingFieldException) {
-                DEFAULT_USER
+                ClickToEditSignals(DEFAULT_USER.firstName, DEFAULT_USER.lastName, DEFAULT_USER.email)
             }
 
         // Send the patches to enter edit mode with current values
         generator.patchSignals(
             """ { firstName: "$firstName", lastName: "$lastName", email: "$email" } """,
         )
-        if (currentUser.value.firstName != firstName && currentUser.value.lastName != lastName && currentUser.value.email != email) {
-            currentUser.emit(ClickToEditSignals(firstName, lastName, email))
+        if (currentUser.value != Profile(firstName, lastName, email)) {
+            currentUser.emit(Profile(firstName, lastName, email))
         }
-
-        val htmlEditMode =
-            $$"""
-            <div id="demo">
-                    <label>First Name 
-                        <input type="text" data-bind:first-name data-attr:disabled="$_fetching">
-                    </label> 
-                    <label>Last Name 
-                        <input type="text" data-bind:last-name data-attr:disabled="$_fetching">
-                    </label> 
-                    <label>Email 
-                        <input type="email" data-bind:email data-attr:disabled="$_fetching">
-                    </label>
-                    <div role="group">
-                        <button class="success" data-indicator:_fetching data-attr:disabled="$_fetching" data-on:click="@put('/click-to-edit')">Save</button> 
-                        <button class="error" data-indicator:_fetching data-attr:disabled="$_fetching" data-on:click="@get('/click-to-edit/cancel')">Cancel</button>
-                    </div>
-                </div>
-            """.trimIndent().replace("\n", "")
-        generator.patchElements(htmlEditMode)
+        generator.patchElements(hfEditModeDoc)
     }
 }
 
-private suspend fun RoutingContext.resetClickToEdit(currentUser: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.resetClickToEdit(currentUser: MutableStateFlow<Profile>) {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val defaultHtml =
-            defaultClickToEditHtml(
-                DEFAULT_USER.firstName,
-                DEFAULT_USER.lastName,
-                DEFAULT_USER.email,
-            )
+        val defaultHtml = hfClickToEdit.render(DEFAULT_USER)
         currentUser.emit(DEFAULT_USER)
         generator.patchSignals(
             """ { firstName: "${DEFAULT_USER.firstName}", lastName: "${DEFAULT_USER.lastName}", email: "${DEFAULT_USER.email}" } """,
@@ -117,7 +97,7 @@ private suspend fun RoutingContext.resetClickToEdit(currentUser: MutableStateFlo
     }
 }
 
-private suspend fun RoutingContext.cancelClickToEdit(currentUser: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.cancelClickToEdit(currentUser: MutableStateFlow<Profile>) {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
@@ -130,12 +110,11 @@ private suspend fun RoutingContext.cancelClickToEdit(currentUser: MutableStateFl
             """ { firstName: "$firstName", lastName: "$lastName", email: "$email" } """,
         )
 
-        val htmlViewMode = defaultClickToEditHtml(firstName, lastName, email)
-        generator.patchElements(htmlViewMode)
+        generator.patchElements(hfClickToEdit.render(Profile(firstName, lastName, email)))
     }
 }
 
-private suspend fun RoutingContext.saveClickToEdit(currentUser: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.saveClickToEdit(currentUser: MutableStateFlow<Profile>) {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
@@ -145,9 +124,10 @@ private suspend fun RoutingContext.saveClickToEdit(currentUser: MutableStateFlow
 
         // Decode the signals from the request body
         val (firstName, lastName, email) = Json.decodeFromString<ClickToEditSignals>(datastarBodyArgs)
-        val htmlViewMode = defaultClickToEditHtml(firstName, lastName, email)
-        currentUser.emit(currentUser.value.copy(firstName = firstName, lastName = lastName, email = email))
-        generator.patchElements(htmlViewMode)
+        val newProfile = Profile(firstName, lastName, email)
+
+        currentUser.emit(newProfile)
+        generator.patchElements(hfClickToEdit.render(newProfile))
     }
 }
 
@@ -158,28 +138,8 @@ data class ClickToEditSignals(
     val email: String,
 )
 
-private fun defaultClickToEditHtml(
-    firstName: String,
-    lastName: String,
-    email: String,
-) = $$"""
-    <div id="demo">
-        <p>First Name: $$firstName</p>
-        <p>Last Name: $$lastName</p>
-        <p>Email: $$email</p>
-        <div>
-            <button class="info" data
-                data-indicator:_fetching=""
-                data-attr:disabled="$_fetching"
-                data-on:click="@get('/click-to-edit/edit')">
-                Edit
-            </button>
-            <button class="warning"
-                data-indicator:_fetching=""
-                data-attr:disabled="$_fetching"
-                data-on:click="@patch('/click-to-edit/reset')">
-                Reset
-            </button>
-        </div>
-    </div>
-    """.trimIndent().replace("\n", "")
+data class Profile(
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+)

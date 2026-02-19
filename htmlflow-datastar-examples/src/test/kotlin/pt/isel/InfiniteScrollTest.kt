@@ -6,6 +6,7 @@ import com.microsoft.playwright.Playwright
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
+import pt.isel.ktor.demoHtmlFlowDatastarRouting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.use
@@ -77,7 +78,7 @@ class InfiniteScrollTest {
                 assert(finalCount > initialCount) {
                     "Expected more agents after scrolling, but got $finalCount"
                 }
-                val lastAgentName = page.textContent("#agents tr:last-child td:first-child")
+                val lastAgentName = page.textContent("#agents tr:last-child td:first-child").trim()
 
                 assert(lastAgentName!!.startsWith("Agent Smith")) { "Unexpected agent name: $lastAgentName" }
             } finally {

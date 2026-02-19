@@ -1,7 +1,10 @@
 package pt.isel.views.htmlflow
 
-import htmlflow.doc
+import htmlflow.HtmlView
+import htmlflow.dyn
 import htmlflow.html
+import htmlflow.view
+import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -19,87 +22,56 @@ import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.ktor.Contact
 import kotlin.time.Duration.Companion.milliseconds
 
-val hfActiveSearch =
-    StringBuilder()
-        .apply {
-            doc {
-                html {
-                    head {
-                        script {
-                            attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
-                        }
-                    }
-                    body {
+val hfActiveSearch: HtmlView<List<Contact>> =
+    view {
+        html {
+            head {
+                script {
+                    attrType(EnumTypeScriptType.MODULE)
+                    attrSrc("/js/datastar.js")
+                }
+                link {
+                    attrRel(EnumRelType.STYLESHEET)
+                    attrHref("/css/styles.css")
+                }
+            }
+            body {
+                div {
+                    hfActiveSearchTable()
+                }
+            }
+        }
+    }
 
-                        div {
-                            attrId("demo")
-                            input {
-                                attrType(EnumTypeInputType.TEXT)
-                                attrPlaceholder("Search...")
-                                dataBind("search")
-                                dataOn("input", "@get('/active-search/search')") {
-                                    debounce(200.milliseconds)
-                                }
-                            }
-                            table {
-                                thead {
-                                    tr {
-                                        th { text("First Name") }
-                                        th { text("Last Name") }
-                                    }
-                                }
-                                tbody {
-                                    tr {
-                                        td { text("Abraham") }
-                                        td { text("Altenwerth") }
-                                    }
-                                    tr {
-                                        td { text("Adan") }
-                                        td { text("Padberg") }
-                                    }
-                                    tr {
-                                        td { text("Aiden") }
-                                        td { text("Haley") }
-                                    }
-                                    tr {
-                                        td { text("Alec") }
-                                        td { text("Kris") }
-                                    }
-                                    tr {
-                                        td { text("Alfredo") }
-                                        td { text("Nitzsche") }
-                                    }
-                                    tr {
-                                        td { text("Alisha") }
-                                        td { text("Rogahn") }
-                                    }
-                                    tr {
-                                        td { text("Alvah") }
-                                        td { text("Bins") }
-                                    }
-                                    tr {
-                                        td { text("Anabel") }
-                                        td { text("Lehner") }
-                                    }
-                                    tr {
-                                        td { text("Angela") }
-                                        td { text("Swift") }
-                                    }
-                                    tr {
-                                        td { text("Annamarie") }
-                                        td { text("Rippin") }
-                                    }
-                                }
-                            }
-                        }
+fun Div<*>.hfActiveSearchTable() {
+    attrId("demo")
+    input {
+        attrType(EnumTypeInputType.TEXT)
+        attrPlaceholder("Search...")
+        dataBind("search")
+        dataOn("input", "@get('/active-search/search')") {
+            debounce(200.milliseconds)
+        }
+    }
+    table {
+        thead {
+            tr {
+                th { text("First Name") }
+                th { text("Last Name") }
+            }
+        }
+        tbody {
+            dyn { contacts: List<Contact> ->
+                contacts.forEach { cnt ->
+                    tr {
+                        td { text(cnt.firstName) }
+                        td { text(cnt.lastName) }
                     }
                 }
             }
-        }.toString()
+        }
+    }
+}

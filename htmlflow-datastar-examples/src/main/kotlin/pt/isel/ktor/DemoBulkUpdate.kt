@@ -1,4 +1,4 @@
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
@@ -31,7 +31,7 @@ private suspend fun RoutingContext.getBulkUpdateHtml() {
 }
 
 private suspend fun RoutingContext.getBulkUpdateHtmlFlow() {
-    call.respondText(hfBulkUpdate, ContentType.Text.Html)
+    call.respondText(hfBulkUpdate.render(users), ContentType.Text.Html)
 }
 
 val users =
@@ -61,7 +61,7 @@ private suspend fun RoutingContext.activateUsers() {
                 users[index] = users[index].copy(status = UserStatus.ACTIVE)
             }
         }
-        val html = buildBulkUpdateHtml(users)
+        val html = hfBulkUpdate.render(users).trimIndent().replace("\n", "")
         generator.patchElements(html)
     }
 }
@@ -85,67 +85,11 @@ private suspend fun RoutingContext.deactivateUsers() {
                 users[index] = users[index].copy(status = UserStatus.INACTIVE)
             }
         }
-        val html = buildBulkUpdateHtml(users)
+        val html = hfBulkUpdate.render(users)
 
         generator.patchElements(html)
     }
 }
-
-private fun buildBulkUpdateHtml(updatedUsers: List<User>): String =
-    $$"""
-    <div id="demo" data-signals__ifmissing="{_fetching: false, selections: Array($${updatedUsers.size}).fill(false)}">
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        <input 
-                            type="checkbox" 
-                            data-on:change="@setAll(el.checked, {include: /^selections/})" 
-                            data-effect="el.checked = $selections.every(Boolean)" 
-                            data-attr:disabled="$_fetching"
-                        >                    
-                    </th>
-                    </th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                $${updatedUserRows(updatedUsers)}
-            </tbody>
-        </table>
-        <div role="group">
-            <button class="success" data-on:click="@put('/bulk-update/activate')" data-indicator:_fetching="" data-attr-disabled="$_fetching">
-                <i class="pixelarticons:user-plus"></i>
-                Activate
-            </button>
-            <button class="error" data-on:click="@put('/bulk-update/deactivate')" data-indicator:_fetching="" data-attr-disabled="$_fetching">
-                <i class="pixelarticons:user-x"></i>
-                Deactivate
-            </button>
-        </div>
-    </div>
-    """.trimIndent().replace("\n", "")
-
-private const val ROW = $$"""
-    <tr>
-        <td><input type="checkbox" data-bind:selections data-attr:disabled="$_fetching"></td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-    </tr>
-"""
-
-private fun updatedUserRows(users: List<User>): String =
-    users
-        .joinToString("\n") { user ->
-            ROW.format(
-                user.name,
-                user.email,
-                user.status.syntax,
-            )
-        }
 
 @Serializable
 data class BulkUpdateSignals(

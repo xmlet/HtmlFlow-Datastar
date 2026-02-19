@@ -1,0 +1,46 @@
+package pt.isel.ktor
+
+import dev.datastar.kotlin.sdk.ServerSentEventGenerator
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.server.response.respondText
+import io.ktor.server.response.respondTextWriter
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.RoutingContext
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
+import pt.isel.views.htmlflow.TAB_CONTENTS
+import pt.isel.views.htmlflow.hfLazyTabs
+import pt.isel.views.htmlflow.hfTabPanelView
+
+private val html = loadResource("public/html/lazy-tabs.html")
+
+fun Route.demoLazyTabs() {
+    route("/lazy-tabs") {
+        get("/html", RoutingContext::getLazyTabsHtml)
+        get("/htmlflow", RoutingContext::getLazyTabsHtmlFlow)
+        get("/{index}", RoutingContext::getLazyTabsText)
+    }
+}
+
+private suspend fun RoutingContext.getLazyTabsHtml() {
+    call.respondText(html, ContentType.Text.Html)
+}
+
+private suspend fun RoutingContext.getLazyTabsHtmlFlow() {
+    call.respondText(hfLazyTabs, ContentType.Text.Html)
+}
+
+private suspend fun RoutingContext.getLazyTabsText() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        val index = call.pathParameters["index"]?.toIntOrNull()
+        requireNotNull(index)
+
+        val content = TAB_CONTENTS.getOrNull(index) ?: return@respondTextWriter
+        generator.patchElements(hfTabPanelView.render(content))
+    }
+}

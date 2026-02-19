@@ -1,4 +1,4 @@
-package pt.isel
+package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions
@@ -14,6 +14,7 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfClickToLoad
 
 private val html = loadResource("public/html/click-to-load.html")
@@ -51,12 +52,13 @@ suspend fun RoutingContext.getMore() {
 
         // Generate the new rows to be added to the table
         // and send the patch to the client
-        val htmlRow =
-            newAgents(offset, offset + limit).joinToString("\n") { agent ->
-                ROW.format(agent.name, agent.email, agent.id)
-            }
+
+        val agents = newAgents(offset, offset + limit)
+
+        val htmlRows = agents.map { agent: Agent -> hfAgentRowView.render(agent) }.joinToString(separator = "") { it }
+
         generator.patchElements(
-            htmlRow,
+            htmlRows,
             PatchElementsOptions(
                 selector = "#agents",
                 mode = ElementPatchMode.Append,
@@ -64,8 +66,6 @@ suspend fun RoutingContext.getMore() {
         )
     }
 }
-
-private const val ROW = """<tr><td>%s</td><td>%s</td><td>%s</td></tr>"""
 
 private fun newAgents(
     from: Int,
@@ -83,7 +83,7 @@ data class Signals(
     val limit: Int,
 )
 
-private data class Agent(
+data class Agent(
     val name: String,
     val email: String,
     val id: String,

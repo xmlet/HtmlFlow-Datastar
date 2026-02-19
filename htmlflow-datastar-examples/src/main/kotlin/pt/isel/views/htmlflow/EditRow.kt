@@ -6,12 +6,15 @@ import htmlflow.html
 import htmlflow.view
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
+import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tr
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.i
+import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.table
@@ -24,8 +27,9 @@ import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.TableState
+import pt.isel.ktor.TableUser
 
-val hfDeleteRow: HtmlView<TableState> =
+val hfEditRow: HtmlView<TableState> =
     view {
         html {
             head {
@@ -40,13 +44,13 @@ val hfDeleteRow: HtmlView<TableState> =
             }
             body {
                 div {
-                    hfDeleteRowTable()
+                    hfEditRowTable()
                 }
             }
         }
     }
 
-fun Div<*>.hfDeleteRowTable() {
+fun Div<*>.hfEditRowTable() {
     attrId("demo")
     table {
         thead {
@@ -60,16 +64,10 @@ fun Div<*>.hfDeleteRowTable() {
             dyn { state: TableState ->
                 state.users.forEachIndexed { index, user ->
                     tr {
-                        td { text(user.name) }
-                        td { text(user.email) }
-                        td {
-                            button {
-                                attrClass("error")
-                                dataOn("click", "confirm('Are you sure?') && @delete('/delete-row/$index')")
-                                val fetching = dataIndicator("_fetching")
-                                dataAttr("disabled", "$fetching")
-                                text("Delete")
-                            }
+                        if (state.editingIndex == index) {
+                            editRow(index)
+                        } else {
+                            viewRow(user, index)
                         }
                     }
                 }
@@ -79,11 +77,65 @@ fun Div<*>.hfDeleteRowTable() {
     div {
         button {
             attrClass("warning")
-            dataOn("click", "@patch('/delete-row/reset')")
+            dataOn("click", "@put('/edit-row/reset')")
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", "$fetching")
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
+        }
+    }
+}
+
+private fun Tr<*>.viewRow(
+    tableUser: TableUser,
+    index: Int,
+) {
+    td { text(tableUser.name) }
+    td { text(tableUser.email) }
+    td {
+        button {
+            attrClass("info")
+            dataOn("click", "@get('/edit-row/$index')")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", "$fetching")
+            text("Edit")
+        }
+    }
+}
+
+private fun Tr<*>.editRow(index: Int) {
+    td {
+        input {
+            attrType(EnumTypeInputType.TEXT)
+            addAttr("data-bind", "name")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", "$fetching")
+        }
+    }
+    td {
+        input {
+            attrType(EnumTypeInputType.EMAIL)
+            addAttr("data-bind", "email")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", "$fetching")
+        }
+    }
+    td {
+        button {
+            attrClass("success")
+            dataOn("click", "@patch('/edit-row/$index')")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", "$fetching")
+            i { attrClass("pixelarticons:check") }
+            text("Save")
+        }
+        button {
+            attrClass("error")
+            dataOn("click", "@get('/edit-row/cancel')")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", "$fetching")
+            i { attrClass("pixelarticons:close") }
+            text("Cancel")
         }
     }
 }
