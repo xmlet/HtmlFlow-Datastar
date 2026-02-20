@@ -65,19 +65,20 @@ class DeleteRowTest {
 
                 page.waitForSelector("table")
 
+                page.click("button.warning") // Click the Reset button to ensure we start with default users
+                page.waitForTimeout(200.0) // Wait for the patch to be applied
+
                 val initialUsersCount = page.querySelectorAll("tbody tr").size
                 assertEquals(4, initialUsersCount, "Initial table should have 4 users")
 
                 val firstUserName = page.querySelector("tbody tr:first-child td:first-child")?.innerText()
                 assertEquals("Joe Smith", firstUserName, "First user should be Joe Smith")
 
-                // Override window.confirm
-                page.evaluate("window.confirm = () => { console.log('Confirm called'); return true; }")
+                page.evaluate("window.confirm = () => { return true }")
 
                 page.click("tbody tr:first-child button.error")
                 page.waitForTimeout(200.0)
                 val usersCountAfterDelete = page.querySelectorAll("tbody tr").size
-                println("Users after delete: $usersCountAfterDelete")
 
                 assertEquals(3, usersCountAfterDelete, "Table should have 3 users after deletion")
 

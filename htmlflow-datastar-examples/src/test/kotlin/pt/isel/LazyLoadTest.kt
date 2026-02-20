@@ -23,6 +23,10 @@ class LazyLoadTest {
         `lazy load shows loading then graph`("/lazy-load/htmlflow")
     }
 
+    /**
+     * Tests that the lazy load initially shows "Loading..."
+     * and then replaces it with the graph image after the SSE response.
+     */
     fun `lazy load shows loading then graph`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {

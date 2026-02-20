@@ -58,8 +58,7 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(vararg
         this.visitor.visitAttribute("data-signals", it)
     }
     return signals.map { (name) ->
-        val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
-        Signal(signalName)
+        Signal(name)
     }
 }
 
@@ -87,8 +86,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String): Signal {
     require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
     this.visitor.visitAttribute("data-bind:$name", "")
-    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
-    return Signal(signalName)
+    return Signal(name)
 }
 
 /**
@@ -183,8 +181,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(js: String) 
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal {
     this.visitor.visitAttribute("data-indicator:$name", "")
-    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
-    return Signal(signalName)
+    return Signal(name)
 }
 
 /**
