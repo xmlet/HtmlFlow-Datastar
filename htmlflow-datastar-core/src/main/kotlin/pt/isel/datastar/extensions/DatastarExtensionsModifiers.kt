@@ -35,10 +35,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
         }
 
     this.visitor.visitAttribute("data-signals:$name$modifiers", res)
-
-    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
-
-    return Signal(signalName)
+    return Signal(name)
 }
 
 /**
@@ -61,8 +58,7 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
         this.visitor.visitAttribute("data-signals$mods", it)
     }
     return signals.map { (name) ->
-        val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
-        Signal(signalName)
+        Signal(name)
     }
 }
 
@@ -159,8 +155,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     modifiers: String = "",
 ): Signal {
     this.visitor.visitAttribute("data-computed-$name$modifiers", js)
-    val signalName = if (!isValidSignalName(name)) convertToValidSignalName(name) else name
-    return Signal(signalName)
+    return Signal(name)
 }
 
 /**

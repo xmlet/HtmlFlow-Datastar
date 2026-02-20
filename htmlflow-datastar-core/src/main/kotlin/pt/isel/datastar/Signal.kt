@@ -43,5 +43,30 @@ data class Signal(
         ) { "Signal names cannot begin with nor contain a double underscore, due to its use as a modifier delimiter." }
     }
 
-    override fun toString(): String = "$" + this.name
+    override fun toString(): String = "$" + convertToCamelCasePreservingPrefix(name)
+}
+
+private fun splitLeadingUnderscores(name: String): Pair<String, String> {
+    val match = "^_+".toRegex().find(name)
+    val prefix = match?.value ?: ""
+    val rest = name.removePrefix(prefix)
+    return prefix to rest
+}
+
+fun convertToCamelCasePreservingPrefix(name: String): String {
+    val (prefix, core) = splitLeadingUnderscores(name)
+
+    val converted =
+        core
+            .split('-', '_')
+            .filter { it.isNotEmpty() }
+            .mapIndexed { index, part ->
+                if (index == 0) {
+                    part
+                } else {
+                    part.replaceFirstChar { it.uppercase() }
+                }
+            }.joinToString("")
+
+    return prefix + converted
 }
