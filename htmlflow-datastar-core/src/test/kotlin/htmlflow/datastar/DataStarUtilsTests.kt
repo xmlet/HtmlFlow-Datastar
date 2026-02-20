@@ -1,33 +1,32 @@
 package htmlflow.datastar
 
-import pt.isel.datastar.extensions.convertToValidSignalName
-import pt.isel.datastar.extensions.isValidSignalName
+import pt.isel.datastar.Signal
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class DataStarUtilsTests {
     @Test
-    fun ` verify if isValidSignalName returns true for valid signal names`() {
-        assertTrue(isValidSignalName("validSignal"))
-        assertTrue(isValidSignalName("anotherValidSignal"))
+    fun ` verify if signal name in snake case toString() returns camel case name `() {
+        val firstName = Signal("first_name")
+        val expected = $$"$firstName"
+        assertEquals(firstName.toString(), expected)
     }
 
     @Test
-    fun ` verify if isValidSignalName returns false for invalid signal names`() {
-        assertTrue(!isValidSignalName("invalid-signal"))
-        assertTrue(!isValidSignalName("another-invalid-signal"))
+    fun ` verify if signal name is in kebab case toString() returns camel case name`() {
+        val firstName = Signal("first-name")
+        val expected = $$"$firstName"
+        assertEquals(firstName.toString(), expected)
     }
 
     @Test
-    fun `convertValidSignalName should convert invalid signal names to valid ones`() {
-        assertEquals(convertToValidSignalName("invalid-signal"), "invalidSignal")
-        assertEquals(convertToValidSignalName("another-invalid-signal"), "anotherInvalidSignal")
-    }
+    fun `verify leading '_' don't get removed after being converted to camel case`() {
+        val signal = Signal("_my_signal")
+        val expected = $$"$_mySignal"
+        assertEquals(signal.toString(), expected)
 
-    @Test
-    fun `convertValidSignalName should return the same name if it's already valid`() {
-        assertEquals(convertToValidSignalName("validSignal"), "validSignal")
-        assertEquals(convertToValidSignalName("anotherValidSignal"), "anotherValidSignal")
+        val signal2 = Signal("_my-signal")
+        val expected2 = $$"$_mySignal"
+        assertEquals(signal2.toString(), expected2)
     }
 }
