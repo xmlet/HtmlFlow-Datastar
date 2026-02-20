@@ -71,3 +71,7 @@ table tbody tr:hover {
 .indicator.loading {
     visibility: visible;
 }
+
+.hidden {
+    display: none;
+}

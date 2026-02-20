@@ -24,7 +24,7 @@ fun Application.demoHtmlFlowDatastarRouting() =
         demoClickToLoad()
         demoActiveSearch()
         demoBulkUpdate()
-        demoClickToEdit()
+        demoClickToEditViaSignals()
         demoFileUpload()
         demoInfiniteScroll()
         demoInlineValidation()

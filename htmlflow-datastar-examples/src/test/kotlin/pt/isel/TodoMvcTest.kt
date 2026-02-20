@@ -23,8 +23,8 @@ class TodoMvcTest {
     }
 
     /**
-     * Test that the Todo-Mvc app works as expected, by performing the following steps:
-     * 1. Navigate to the Todo-Mvc page.
+     * Test that the to do-Mvc app works as expected, by performing the following steps:
+     * 1. Navigate to the To do-Mvc page.
      * 2. Add a new task and verify that it appears in the list.
      * 3. Toggle the task's status and verify that it updates correctly.
      * 4. Edit the task's description and verify that it updates correctly.

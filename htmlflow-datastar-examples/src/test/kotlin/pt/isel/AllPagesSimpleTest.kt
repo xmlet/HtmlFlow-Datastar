@@ -7,7 +7,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import pt.isel.ktor.demoActiveSearch
 import pt.isel.ktor.demoBulkUpdate
-import pt.isel.ktor.demoClickToEdit
+import pt.isel.ktor.demoClickToEditViaSignals
 import pt.isel.ktor.demoClickToLoad
 import pt.isel.ktor.demoCounter
 import pt.isel.ktor.demoCounterSignals
@@ -71,13 +71,13 @@ class AllPagesSimpleTest {
     }
 
     @Test
-    fun `demo click to edit HTML returns page`() {
-        `demo returns page`("/click-to-edit/html")
+    fun `demo click to edit via signals HTML returns page`() {
+        `demo returns page`("/click-to-edit-signals/html")
     }
 
     @Test
-    fun `demo click to edit HtmlFlow returns page`() {
-        `demo returns page`("/click-to-edit/htmlflow")
+    fun `demo click to edit via signalsHtmlFlow returns page`() {
+        `demo returns page`("/click-to-edit-signals/htmlflow")
     }
 
     @Test
@@ -182,7 +182,7 @@ class AllPagesSimpleTest {
                     demoClickToLoad()
                     demoActiveSearch()
                     demoBulkUpdate()
-                    demoClickToEdit()
+                    demoClickToEditViaSignals()
                     demoFileUpload()
                     demoInfiniteScroll()
                     demoInlineValidation()

@@ -2,7 +2,9 @@ package pt.isel
 
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
+import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
+import com.microsoft.playwright.options.WaitForSelectorState
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
@@ -13,13 +15,13 @@ import kotlin.use
 
 class ClickToEditTest {
     @Test
-    fun `click to edit user details and save changes on HTML`() {
-        `click to edit user details and save changes`("/click-to-edit/html")
+    fun `click to edit user details and save changes via signals on HTML`() {
+        `click to edit user details and save changes`("/click-to-edit-signals/html")
     }
 
     @Test
-    fun `click to edit user details and save changes on HtmlFlow`() {
-        `click to edit user details and save changes`("/click-to-edit/htmlflow")
+    fun `click to edit user details and save changes via signals on HtmlFlow`() {
+        `click to edit user details and save changes`("/click-to-edit-signals/htmlflow")
     }
 
     /**
@@ -87,6 +89,8 @@ class ClickToEditTest {
                 page.getByLabel("Email").fill("bob.jonhson@email.com")
                 // Click the Cancel button
                 page.click("button:has-text('Cancel')")
+
+                page.waitForSelector("#edit-form", Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN))
 
                 // Verify original details are retained
                 val firstNameAfterCancel = page.textContent("p:has-text('First Name')").substringAfter(":").trim()
