@@ -130,7 +130,7 @@ class DBmonTest {
                     <div role="group">
                         <label>
                             Mutation Rate %
-                            <input type="number" min="0" max="100" value="20" data-on:focus="$editing = true" data-on:blur="@put('/examples/dbmon/inputs'); $editing = false" data-bind:mutation-rate="" data-attr:data-bind:mutationRate="$editing" data-bind:_mutation-rate="" data-attr:data-bind:_mutationRate="!$editing">
+                            <input type="number" min="0" max="100" value="20" data-on:focus="$editing = true" data-on:blur="@put('/examples/dbmon/inputs'); $editing = false" data-bind:mutation-rate="" data-attr:data-bind:mutation-rate="$editing" data-bind:_mutation-rate="" data-attr:data-bind:_mutation-rate="!$editing">
                         </label>
                         <label>
                             FPS
