@@ -8,6 +8,8 @@ import pt.isel.datastar.modifiers.attributes.DataInitModifiers
 import pt.isel.datastar.modifiers.attributes.DataJsonSignalsModifiers
 import pt.isel.datastar.modifiers.attributes.DataOnModifiers
 import pt.isel.datastar.modifiers.attributes.DataSignalModifiers
+import pt.isel.datastar.modifiers.attributes.DataSignalsModifiers
+import pt.isel.datastar.modifiers.extractCaseStyle
 
 /**
  *
@@ -35,7 +37,10 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
         }
 
     this.visitor.visitAttribute("data-signals:$name$modifiers", res)
-    return Signal(name)
+
+    val caseStyle = extractCaseStyle(modifiers)
+
+    return Signal(name, caseStyle)
 }
 
 /**
@@ -51,10 +56,10 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
  */
 fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
     vararg signals: Pair<String, Any?>,
-    modifiers: DataSignalModifiers.() -> Unit,
+    modifiers: DataSignalsModifiers.() -> Unit,
 ): List<Signal> {
     signals.toList().toJson().also {
-        val mods = DataSignalModifiers().apply(modifiers).toString()
+        val mods = DataSignalsModifiers().apply(modifiers).toString()
         this.visitor.visitAttribute("data-signals$mods", it)
     }
     return signals.map { (name) ->
@@ -155,7 +160,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     modifiers: String = "",
 ): Signal {
     this.visitor.visitAttribute("data-computed-$name$modifiers", js)
-    return Signal(name)
+    val caseStyle = extractCaseStyle(modifiers)
+    return Signal(name, caseStyle)
 }
 
 /**
