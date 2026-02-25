@@ -70,3 +70,7 @@ class DataSignalModifiers :
     CaseModifiers {
     fun ifMissing() = addModifier("__ifmissing")
 }
+
+class DataSignalsModifiers : ModifierBuilder() {
+    fun ifMissing() = addModifier("__ifmissing")
+}
