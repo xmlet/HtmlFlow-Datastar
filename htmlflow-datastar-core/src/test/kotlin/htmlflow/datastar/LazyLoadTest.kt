@@ -4,7 +4,9 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.actions.Action
 import pt.isel.datastar.extensions.dataInit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,13 +35,18 @@ class LazyLoadTest {
                         body {
                             div {
                                 attrId("graph")
-                                dataInit("@get('/examples/lazy_load/graph')")
+                                dataInit {
+                                    code { _ -> Action.get(::loadGraph) }
+                                }
                                 text("Loading...")
                             }
                         }
                     }
                 }
             }
+
+    @Path("/examples/lazy_load/graph")
+    private fun loadGraph() {}
 
     private val expectedDatastarRx = """
     <!DOCTYPE html>

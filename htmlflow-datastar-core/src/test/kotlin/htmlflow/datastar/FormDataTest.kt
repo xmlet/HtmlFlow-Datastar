@@ -52,16 +52,22 @@ class FormDataTest {
                                     attrValue("baz")
                                 }
                                 button {
-                                    dataOn("click", "@get('/endpoint', {contentType: 'form'})")
+                                    dataOn("click") {
+                                        code { _ -> "@get('/endpoint', {contentType: 'form'})" }
+                                    }
                                     text("Submit GET request")
                                 }
                                 button {
-                                    dataOn("click", "@post('/endpoint', {contentType: 'form'})")
+                                    dataOn("click") {
+                                        code { _ -> "@post('/endpoint', {contentType: 'form'})" }
+                                    }
                                     text("Submit POST request")
                                 }
                             }
                             button {
-                                dataOn("click", "@get('/endpoint', {contentType: 'form', selector: '#myform'})")
+                                dataOn("click") {
+                                    code { _ -> "@get('/endpoint', {contentType: 'form', selector: '#myform'})" }
+                                }
                                 text("Submit GET request from outside the form")
                             }
                         }

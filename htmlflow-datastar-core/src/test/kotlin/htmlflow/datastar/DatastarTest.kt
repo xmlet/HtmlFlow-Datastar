@@ -66,26 +66,39 @@ class DatastarTest {
                             div {
                                 val response = dataSignal("response")
                                 val answer = dataSignal("answer", "bread")
-                                val correct = dataComputed("correct", "$response.toLowerCase() == $answer")
+                                val correct =
+                                    dataComputed("correct") {
+                                        code { _ -> "$response".lowercase() == "$answer" }
+                                    }
                                 div {
                                     attrId("question")
                                     text("What do you put in a toaster?")
                                 }
                                 button {
-                                    dataOn("click", "$response = prompt('Answer:') ?? ''")
+                                    dataOn("click") {
+                                        code { _ -> "$response = prompt('Answer:') ?? ''" }
+                                    }
                                     text("BUZZ")
                                 }
                                 div {
-                                    dataShow("$response != ''")
+                                    dataShow {
+                                        code { _ -> "$response != ''" }
+                                    }
                                     raw("You answered \"")
-                                    span { dataText("$response") }
+                                    span {
+                                        dataText {
+                                            code { _ ->	"$response" }
+                                        }
+                                    }
                                     raw("\".")
                                     span {
                                         dataShow(correct)
                                         text("That is correct ✅")
                                     }
                                     span {
-                                        dataShow("!$correct")
+                                        dataShow {
+                                            code { _ -> "!$correct" }
+                                        }
                                         raw("The correct answer is \"")
                                         span { dataText(answer) }
                                         raw("\" 🤷")

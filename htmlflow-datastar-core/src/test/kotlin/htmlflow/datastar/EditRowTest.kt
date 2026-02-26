@@ -1,4 +1,4 @@
-package pt.isel
+package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
@@ -56,7 +56,9 @@ class EditRowTest {
                                         td { text("joe@smith.org") }
                                         td {
                                             button {
-                                                dataOn("click", "@get('/examples/edit_row/0')")
+                                                dataOn("click") {
+                                                    code { _ -> "@get('/examples/edit_row/0')" }
+                                                }
                                                 text("Edit")
                                             }
                                         }
@@ -88,11 +90,15 @@ class EditRowTest {
                                         }
                                         td {
                                             button {
-                                                dataOn("click", "@get('/examples/edit_row/cancel')")
+                                                dataOn("click") {
+                                                    code { _ -> "@get('/examples/edit_row/cancel')" }
+                                                }
                                                 text("Cancel")
                                             }
                                             button {
-                                                dataOn("click", "@patch('/examples/edit_row/0')")
+                                                dataOn("click") {
+                                                    code { _ -> "@patch('/examples/edit_row/0')" }
+                                                }
                                                 text("Save")
                                             }
                                         }

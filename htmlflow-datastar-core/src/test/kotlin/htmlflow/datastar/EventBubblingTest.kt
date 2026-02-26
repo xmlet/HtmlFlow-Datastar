@@ -44,11 +44,13 @@ class EventBubblingTest {
                                 val key = dataSignal("key")
                                 text("Key pressed:")
                                 span {
-                                    dataText("$key")
+                                    dataText(key)
                                 }
                                 div {
                                     attrId("button-container")
-                                    dataOn("click", "$key = evt.target.dataset.id")
+                                    dataOn("click") {
+                                        code { _ -> "$key = evt.target.dataset.id" }
+                                    }
                                     button {
                                         addAttr("data-id", "KEY ELSE")
                                         attrClass("gray")

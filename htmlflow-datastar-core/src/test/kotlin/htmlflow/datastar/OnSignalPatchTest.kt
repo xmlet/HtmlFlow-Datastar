@@ -55,16 +55,22 @@ class OnSignalPatchTest {
                                 div {
                                     attrClass("actions")
                                     button {
-                                        dataOn("click", $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
+                                        dataOn("click") {
+                                            code { _ -> $$"$$message = `Updated: ${performance.now().toFixed(2)}`" }
+                                        }
                                         text("Update Message")
                                     }
                                     button {
-                                        dataOn("click", "$counter++")
+                                        dataOn("click") {
+                                            code { _ -> "$counter++" }
+                                        }
                                         text("Increment Counter")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click", "$allChanges.length = 0; $counterChanges.length = 0")
+                                        dataOn("click") {
+                                            code { _ -> "$allChanges.length = 0; $counterChanges.length = 0" }
+                                        }
                                         text("Clear All Changes")
                                     }
                                 }
@@ -72,30 +78,32 @@ class OnSignalPatchTest {
                                     h3 { text("Current Values") }
                                     p {
                                         text("Counter: ")
-                                        span { dataText("$counter") }
+                                        span { dataText(counter) }
                                     }
                                     p {
                                         text("Message: ")
-                                        span { dataText("$message") }
+                                        span { dataText(message) }
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch("$counterChanges.push(patch)")
+                                    dataOnSignalPatch { code { _ -> "$counterChanges.push(patch)" } }
                                     dataOnSignalPatchFilter("{include: /^counter$/}")
                                     h3 { text("Counter Changes Only") }
                                     pre {
                                         dataJsonSignals("{include: /^counterChanges/}") {
-                                            terse()
+                                            mods { terse() }
                                         }
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch("$allChanges.push(patch)")
+                                    dataOnSignalPatch {
+                                        code { _ -> "$allChanges.push(patch)" }
+                                    }
                                     dataOnSignalPatchFilter("{exclude: /allChanges|counterChanges/}")
                                     h3 { text("All Signal Changes") }
                                     pre {
                                         dataJsonSignals("{include: /^allChanges/}") {
-                                            terse()
+                                            mods { terse() }
                                         }
                                     }
                                 }

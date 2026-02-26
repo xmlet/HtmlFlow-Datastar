@@ -38,8 +38,12 @@ class CustomEventTest {
                             p {
                                 attrId("foo")
                                 val eventDetails = dataSignal("eventDetails")
-                                dataOn("myevent", "$eventDetails = evt.detail")
-                                dataText($$"`Last Event Details: ${$$eventDetails}`")
+                                dataOn("myevent") {
+                                    code { _ -> "$eventDetails = evt.detail" }
+                                }
+                                dataText {
+                                    code { _ -> $$"`Last Event Details: ${$$eventDetails}`" }
+                                }
                             }
                             script {
                                 raw(

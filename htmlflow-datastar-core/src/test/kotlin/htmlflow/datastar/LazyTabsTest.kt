@@ -38,19 +38,25 @@ class LazyTabsTest {
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "true")
-                                        dataOn("click", "@get('/examples/lazy_tabs/0')")
+                                        dataOn("click") {
+                                            code { _ -> "@get('/examples/lazy_tabs/0')" }
+                                        }
                                         text("Tab 0")
                                     }
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "false")
-                                        dataOn("click", "@get('/examples/lazy_tabs/1')")
+                                        dataOn("click") {
+                                            code { _ ->	"@get('/examples/lazy_tabs/1')" }
+                                        }
                                         text("Tab 1")
                                     }
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "false")
-                                        dataOn("click", "@get('/examples/lazy_tabs/2')")
+                                        dataOn("click") {
+                                            code { _ -> "@get('/examples/lazy_tabs/2')" }
+                                        }
                                         text("Tab 2")
                                     }
                                 }

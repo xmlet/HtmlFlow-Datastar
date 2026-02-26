@@ -35,11 +35,13 @@ class SortableTest {
                         body {
                             div {
                                 val orderInfo = dataSignal("order-info", "Initial order")
-                                dataText("$orderInfo")
+                                dataText(orderInfo)
                             }
                             div {
                                 attrId("sortContainer")
-                                dataOn("reordered", $$"$orderInfo = event.detail.orderInfo")
+                                dataOn("reordered") {
+                                    code { _ -> $$"$orderInfo = event.detail.orderInfo" }
+                                }
                                 button { text("Item 1") }
                                 button { text("Item 2") }
                                 button { text("Item 3") }

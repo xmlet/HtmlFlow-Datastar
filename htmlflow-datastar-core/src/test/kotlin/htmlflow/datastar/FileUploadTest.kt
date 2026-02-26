@@ -4,7 +4,9 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.actions.Action
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -44,14 +46,21 @@ class FileUploadTest {
                             button {
                                 attrClass("warning")
                                 val files = dataSignal("files")
-                                dataOn("click", "$files.length && @post('/examples/file_upload')")
-                                dataAttr("aria-disabled", $$"`${!$$files.length}`")
+                                dataOn("click") {
+                                    code { _ -> "$files.length && ${Action.post(::uploadFiles)}" }
+                                }
+                                dataAttr("aria-disabled") {
+                                    code { _ -> $$"`${!$$files.length}`" }
+                                }
                                 text("Submit")
                             }
                         }
                     }
                 }
             }
+
+    @Path("/examples/file_upload")
+    private fun uploadFiles() {}
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

@@ -40,8 +40,12 @@ class ProgressiveLoadTest {
                                     button {
                                         attrId("load-button")
                                         val loadDisabled = dataSignal("load-disabled", false)
-                                        dataOn("click", "$loadDisabled=true; @get('/examples/progressive_load/updates')")
-                                        dataAttr("disabled", "$loadDisabled")
+                                        dataOn("click") {
+                                            code { _ -> "$loadDisabled=true; @get('/examples/progressive_load/updates')" }
+                                        }
+                                        dataAttr("disabled") {
+                                            code { _ -> "$loadDisabled" }
+                                        }
                                         dataIndicator("progressive-Load")
                                         text("Load")
                                     }

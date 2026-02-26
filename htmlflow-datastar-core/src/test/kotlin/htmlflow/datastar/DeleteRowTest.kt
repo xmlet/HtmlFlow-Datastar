@@ -2,6 +2,7 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
@@ -15,6 +16,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.actions.Action
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -59,9 +61,13 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/0')")
+                                                    dataOn("click") {
+                                                        code { _ -> "confirm('Are you sure?') && @delete('/examples/delete_row/0')" }
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", "$fetching")
+                                                    dataAttr("disabled") {
+                                                        code { _ -> "$fetching" }
+                                                    }
                                                     text("Delete")
                                                 }
                                             }
@@ -72,9 +78,13 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/1')")
+                                                    dataOn("click") {
+                                                        code { _ -> "confirm('Are you sure?') && @delete('/examples/delete_row/1')" }
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", "$fetching")
+                                                    dataAttr("disabled") {
+                                                        code { _ -> "$fetching" }
+                                                    }
                                                     text("Delete")
                                                 }
                                             }
@@ -85,9 +95,13 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/2')")
+                                                    dataOn("click") {
+                                                        code { _ -> "confirm('Are you sure?') && @delete('/examples/delete_row/2')" }
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", "$fetching")
+                                                    dataAttr("disabled") {
+                                                        code { _ -> "$fetching" }
+                                                    }
                                                     text("Delete")
                                                 }
                                             }
@@ -98,9 +112,13 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn("click", "confirm('Are you sure?') && @delete('/examples/delete_row/3')")
+                                                    dataOn("click") {
+                                                        code { _ -> "confirm('Are you sure?') && @delete('/examples/delete_row/3')" }
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", "$fetching")
+                                                    dataAttr("disabled") {
+                                                        code { _ -> "$fetching" }
+                                                    }
                                                     text("Delete")
                                                 }
                                             }
@@ -110,7 +128,9 @@ class DeleteRowTest {
                                 div {
                                     button {
                                         attrClass("success")
-                                        dataOn("click", "@patch('/examples/delete_row/reset')")
+                                        dataOn("click") {
+                                            code { _ -> Action.patch(::restoreRows) }
+                                        }
                                         i { attrClass("pixelarticons:user-plus") }
                                         text("Reset")
                                     }
@@ -120,6 +140,10 @@ class DeleteRowTest {
                     }
                 }
             }
+
+    @Path("/examples/delete_row/reset")
+    private fun restoreRows() {}
+
     private val expectedDatastarRx =
         $$"""
          <!DOCTYPE html>

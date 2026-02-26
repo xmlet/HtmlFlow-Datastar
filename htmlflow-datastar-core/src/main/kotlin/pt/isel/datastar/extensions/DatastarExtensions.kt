@@ -29,6 +29,7 @@ import org.xmlet.htmlapifaster.Input
 import org.xmlet.htmlapifaster.Select
 import org.xmlet.htmlapifaster.Textarea
 import pt.isel.datastar.Signal
+import pt.isel.datastar.builders.CodeBuilder
 import kotlin.collections.joinToString
 
 fun List<Pair<String, Any?>>.toJson(): String =
@@ -107,32 +108,19 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(signal: Signal
 
 /**
  *
- * Runs an expression when the attribute is initialized.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-init attribute will be added
- * @param js a JavaScript expression that computes the value of the signal
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(js: String) {
-    this.visitor.visitAttribute("data-init", js)
-}
-
-/**
- *
  * Binds any HTML attribute to an expression, keeping it synchronized.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-attr attribute will be added
  * @param name the name of the HTML attribute to set the value to the expression
- * @param js the JavaScript expression that the attribute value will be set to
- * @return a Signal instance with the given name and value
+ * @param codeBuilder the builder lambda for JavaScript code (String or Any)
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
     name: String,
-    js: String,
+    codeBuilder: CodeBuilder.() -> Unit,
 ) {
+    val js = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-attr:$name", js)
 }
 
@@ -163,9 +151,10 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: 
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-effect attribute will be added
- * @param js an expression on page load and whenever any signals in the expression change
+ * @param codeBuilder the builder lambda for JavaScript code (String or Any)
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(js: String) {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(codeBuilder: CodeBuilder.() -> Unit) {
+    val js = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-effect", js)
 }
 
@@ -191,10 +180,10 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: Str
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-show attribute will be added
- * @param js a JavaScript expression that computes the value of the signal
- * @return a Signal instance with the given name
+ * @param codeBuilder the builder lambda for JavaScript code
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(js: String) {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(codeBuilder: CodeBuilder.() -> Unit) {
+    val js = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-show", js)
 }
 
@@ -219,10 +208,10 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(signal: Signal
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-text attribute will be added
- * @param js a JavaScript expression that computes the value of the signal
- * @return a Signal instance with the given name
+ * @param codeBuilder the builder lambda for JavaScript code
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(js: String) {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(codeBuilder: CodeBuilder.() -> Unit) {
+    val js = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-text", js)
 }
 
@@ -247,9 +236,10 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(signal: Signal
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-intersect attribute will be added
- * @param js a JavaScript expression that is run when the element intersects the viewport
+ * @param codeBuilder the builder lambda for JavaScript code
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(js: String) {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(codeBuilder: CodeBuilder.() -> Unit) {
+    val js = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-on-intersect", js)
 }
 
@@ -260,9 +250,10 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(js: Str
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-signal-patch attribute will be added
- * @param js a JavaScript expression that is run when any signal is patched
+ * @param codeBuilder the builder lambda for JavaScript code
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(js: String) {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(codeBuilder: CodeBuilder.() -> Unit) {
+    val js = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-on-signal-patch", js)
 }
 
@@ -300,11 +291,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(jsObj: 
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-class attribute will be added
  * @param className the name of the class from the element
- * @param predicate a JavaScript expression that if true adds the class to element otherwise removes it.
+ * @param codeBuilder the builder lambda for JavaScript code
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
     className: String,
-    predicate: String,
+    codeBuilder: CodeBuilder.() -> Unit,
 ) {
+    val predicate = CodeBuilder().apply(codeBuilder).code
     this.visitor.visitAttribute("data-class:$className", predicate)
 }

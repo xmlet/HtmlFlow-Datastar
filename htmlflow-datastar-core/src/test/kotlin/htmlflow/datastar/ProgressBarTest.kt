@@ -42,7 +42,11 @@ class ProgressBarTest {
                         body {
                             div {
                                 attrId("progress-bar")
-                                dataInit("@get('/examples/progress_bar/updates', {openWhenHidden: true})")
+                                dataInit {
+                                    code { _ ->
+                                        "@get('/examples/progress_bar/updates', {openWhenHidden: true})"
+                                    }
+                                }
                                 comment("When progress is less than 100%")
                                 svg {
                                     attrWidth(200)
@@ -86,11 +90,10 @@ class ProgressBarTest {
                                 comment("When progress is 100%")
                                 button {
                                     val fetching = dataIndicator("fetching")
-                                    dataAttr("aria-disabled", $$"`${$$fetching}`")
-                                    dataOn(
-                                        "click",
-                                        "!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})",
-                                    )
+                                    dataAttr("aria-disabled") { code { _ -> $$"`${$$fetching}`" } }
+                                    dataOn("click") {
+                                        code { _ -> "!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})" }
+                                    }
                                     i { attrClass("material-symbols:check-circle") }
                                     text("Completed! Try again?")
                                 }
