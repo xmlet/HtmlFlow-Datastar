@@ -16,7 +16,7 @@ class SignalsCaseTests {
 
         cases.forEach { (input, expected) ->
             // Act
-            val signal = Signal(input)
+            val signal = Signal(input, null)
 
             // Assert
             assertEquals(
@@ -37,7 +37,7 @@ class SignalsCaseTests {
             )
 
         cases.forEach { (input, expected) ->
-            val signal = Signal(input)
+            val signal = Signal(input, null)
 
             assertEquals(
                 expected,
@@ -49,7 +49,7 @@ class SignalsCaseTests {
 
     @Test
     fun `already camelCase signal names remain unchanged`() {
-        val signal = Signal("alreadyCamelCase")
+        val signal = Signal("alreadyCamelCase", null)
 
         assertEquals(
             $$"$alreadyCamelCase",
@@ -78,7 +78,7 @@ class SignalsCaseTests {
 
         cases.forEach { (input, style, expected) ->
             // Act
-            val signal = Signal(input, style)
+            val signal = Signal(input, null, style)
 
             // Assert
             assertEquals(

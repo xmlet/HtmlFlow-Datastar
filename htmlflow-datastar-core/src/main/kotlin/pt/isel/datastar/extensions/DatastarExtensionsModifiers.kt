@@ -28,7 +28,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R?,
     modifiers: String = "",
-): Signal {
+): Signal<R?> {
     val res =
         when (value) {
             is String -> "'$value'"
@@ -40,7 +40,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 
     val caseStyle = extractCaseStyle(modifiers)
 
-    return Signal(name, caseStyle)
+    return Signal(name, value, caseStyle)
 }
 
 /**
@@ -57,13 +57,13 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
     vararg signals: Pair<String, Any?>,
     modifiers: DataSignalsModifiers.() -> Unit,
-): List<Signal> {
+): List<Signal<Any?>> {
     signals.toList().toJson().also {
         val mods = DataSignalsModifiers().apply(modifiers).toString()
         this.visitor.visitAttribute("data-signals$mods", it)
     }
-    return signals.map { (name) ->
-        Signal(name)
+    return signals.map { (name, value) ->
+        Signal(name, value)
     }
 }
 
@@ -84,7 +84,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R?,
     modifiers: DataSignalModifiers.() -> Unit,
-): Signal {
+): Signal<R?> {
     val mods = DataSignalModifiers().apply(modifiers).toString()
     return dataSignal(name, value, mods)
 }
@@ -102,7 +102,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     name: String,
     modifiers: DataSignalModifiers.() -> Unit,
-): Signal = dataSignal(name, null, modifiers)
+): Signal<Any?> = dataSignal(name, null, modifiers)
 
 /**
  *
@@ -158,10 +158,10 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     name: String,
     js: String,
     modifiers: String = "",
-): Signal {
+): Signal<Any> {
     this.visitor.visitAttribute("data-computed-$name$modifiers", js)
     val caseStyle = extractCaseStyle(modifiers)
-    return Signal(name, caseStyle)
+    return Signal(name, js, caseStyle)
 }
 
 /**
@@ -180,7 +180,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     name: String,
     js: String,
     modifiers: DataComputedModifiers.() -> Unit,
-): Signal {
+): Signal<Any> {
     val mods = DataComputedModifiers().apply(modifiers).toString()
     return dataComputed(name, js, mods)
 }

@@ -2,7 +2,7 @@ import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
-import pt.isel.datastar.actions.Action
+import pt.isel.datastar.expressions.DataStarAction
 import pt.isel.datastar.extensions.dataSignal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,33 +16,33 @@ class DataStarActionsTests {
                     html {
                         div {
                             val bar = dataSignal("bar", "initialValue")
-                            val peekAction = Action.peek { "() => $bar" }
-                            assertEquals("@peek(() => $bar)", peekAction.toString())
+                            val peekDataStarAction = DataStarAction.peek("() => $bar")
+                            assertEquals("@peek(() => $bar)", peekDataStarAction.toString())
                         }
                     }
                 }
             }
 
-        val setAllActions = Action.setAll(true, "{include: /^foo$/}")
+        val setAllActions = DataStarAction.setAll(true, "{include: /^foo$/}")
         assertEquals("@setAll(true, {include: /^foo$/})", setAllActions.toString())
 
-        val toggleAllAction = Action.toggleAll("{include: /^foo$/}")
-        assertEquals("@toggleAll({include: /^foo$/})", toggleAllAction.toString())
+        val toggleAllDataStarAction = DataStarAction.toggleAll("{include: /^foo$/}")
+        assertEquals("@toggleAll({include: /^foo$/})", toggleAllDataStarAction.toString())
 
-        val getAction = Action.get(::getUsers)
-        assertEquals("@get('/users')", getAction.toString())
+        val getDataStarAction = DataStarAction.get(::getUsers)
+        assertEquals("@get('/users')", getDataStarAction.toString())
 
-        val patchAction = Action.patch(::patchUsers)
-        assertEquals("@patch('/users')", patchAction.toString())
+        val patchDataStarAction = DataStarAction.patch(::patchUsers)
+        assertEquals("@patch('/users')", patchDataStarAction.toString())
 
-        val postAction = Action.post(::createUser)
-        assertEquals("@post('/users')", postAction.toString())
+        val postDataStarAction = DataStarAction.post(::createUser)
+        assertEquals("@post('/users')", postDataStarAction.toString())
 
-        val putAction = Action.put(::editUser)
-        assertEquals("@put('/users/{id}')", putAction.toString())
+        val putDataStarAction = DataStarAction.put(::editUser)
+        assertEquals("@put('/users')", putDataStarAction.toString())
 
-        val deleteAction = Action.delete(::deleteUser)
-        assertEquals("@delete('/users/{id}')", deleteAction.toString())
+        val deleteDataStarAction = DataStarAction.delete(::deleteUser)
+        assertEquals("@delete('/users')", deleteDataStarAction.toString())
     }
 
     @Path("/users")
@@ -54,10 +54,9 @@ class DataStarActionsTests {
     @Path("/users")
     fun createUser() { }
 
-    // TODO: Parameterized paths are not supported by the current implementation of DataStarActions, so the path is defined as a string literal.
-    @Path("/users/{id}")
+    @Path("/users")
     fun editUser() { }
 
-    @Path("/users/{id}")
+    @Path("/users")
     fun deleteUser() { }
 }
