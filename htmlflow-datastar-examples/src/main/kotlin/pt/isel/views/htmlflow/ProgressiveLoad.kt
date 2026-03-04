@@ -41,7 +41,7 @@ val hfProgressiveLoad =
                     body {
                         div {
                             attrClass("actions")
-                            var progressiveLoad: Signal? = null
+                            var progressiveLoad: Signal<Boolean>? = null
                             button {
                                 attrId("load-button")
                                 val loadDisabled = dataSignal("load-disabled", false)

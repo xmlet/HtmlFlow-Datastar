@@ -2,8 +2,6 @@ package pt.isel.datastar.extensions
 
 import org.xmlet.htmlapifaster.Element
 import pt.isel.datastar.Signal
-import pt.isel.datastar.builders.ModBuilder
-import pt.isel.datastar.builders.ModCodeBuilder
 import pt.isel.datastar.modifiers.attributes.DataClassModifiers
 import pt.isel.datastar.modifiers.attributes.DataComputedModifiers
 import pt.isel.datastar.modifiers.attributes.DataInitModifiers
@@ -30,7 +28,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R?,
     modifiers: String = "",
-): Signal {
+): Signal<R?> {
     val res =
         when (value) {
             is String -> "'$value'"
@@ -42,7 +40,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 
     val caseStyle = extractCaseStyle(modifiers)
 
-    return Signal(name, caseStyle)
+    return Signal(name, value, caseStyle)
 }
 
 /**
@@ -53,19 +51,19 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signals attribute will be added
  * @param signals pairs of signal names and their corresponding values
- * @param modifiersBuilder configuration lambda for signal modifiers
+ * @param modifiers configuration lambda for signal modifiers
  * @return a list of Signal instances with the given names
  */
 fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
     vararg signals: Pair<String, Any?>,
-    modifiersBuilder: ModBuilder<DataSignalsModifiers>.() -> Unit,
-): List<Signal> {
-    val mods = ModBuilder(::DataSignalsModifiers).apply(modifiersBuilder).mods
+    modifiers: DataSignalsModifiers.() -> Unit,
+): List<Signal<Any?>> {
     signals.toList().toJson().also {
+        val mods = DataSignalsModifiers().apply(modifiers).toString()
         this.visitor.visitAttribute("data-signals$mods", it)
     }
-    return signals.map { (name) ->
-        Signal(name)
+    return signals.map { (name, value) ->
+        Signal(name, value)
     }
 }
 
@@ -79,15 +77,15 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
  * @param value the value of the signal
- * @param modifiersBuilder configuration lambda for signal modifiers
+ * @param modifiers configuration lambda for signal modifiers (delegates to the String overload)
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R?,
-    modifiersBuilder: ModBuilder<DataSignalModifiers>.() -> Unit,
-): Signal {
-    val mods = ModBuilder(::DataSignalModifiers).apply(modifiersBuilder).mods
+    modifiers: DataSignalModifiers.() -> Unit,
+): Signal<R?> {
+    val mods = DataSignalModifiers().apply(modifiers).toString()
     return dataSignal(name, value, mods)
 }
 
@@ -98,79 +96,112 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
- * @param modifiersBuilder configuration lambda for signal modifiers
+ * @param modifiers configuration lambda for signal modifiers (delegates to the value overload with null)
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     name: String,
-    modifiersBuilder: ModBuilder<DataSignalModifiers>.() -> Unit,
-): Signal {
-    val mods = ModBuilder(::DataSignalModifiers).apply(modifiersBuilder).mods
-    return dataSignal(name, null, mods)
+    modifiers: DataSignalModifiers.() -> Unit,
+): Signal<Any?> = dataSignal(name, null, modifiers)
+
+/**
+ *
+ * Attaches an event handler to this element with modifiers.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on attribute will be added
+ * @param event the event to handle
+ * @param js a JavaScript expression that computes the value of the signal
+ * @param modifiers configuration lambda for event modifiers (delegates to the String overload)
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
+    event: String,
+    js: String,
+    modifiers: DataOnModifiers.() -> Unit,
+) {
+    val mods = DataOnModifiers().apply(modifiers).toString()
+    return dataOn(event, js, mods)
 }
 
 /**
  *
- * Runs an expression once when an element is initialized, with optional modifiers and script lambdas.
+ * Runs an expression once when an element is initialized, with modifiers.
  *
- * @param modCodeBuilder Builder lambda where you can call code { ... } for JS code and mod { ... } for modifiers.
- * Example:
- *   dataInit {
- *     code { "console.log('init')" }
- *     mod { delay(100) }
- *   }
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-init attribute will be added
+ * @param js a JavaScript expression that computes the value of the signal
+ * @param modifiers configuration lambda for initialization modifiers
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(modCodeBuilder: ModCodeBuilder<DataInitModifiers>.() -> Unit) {
-    val builder = ModCodeBuilder(::DataInitModifiers).apply(modCodeBuilder)
-    val js = builder.script
-    val mods = builder.mods
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(
+    js: String,
+    modifiers: DataInitModifiers.() -> Unit,
+) {
+    val mods = DataInitModifiers().apply(modifiers)
     this.visitor.visitAttribute("data-init$mods", js)
 }
 
 /**
  *
- * Creates a computed signal whose value is derived from an expression, with optional modifiers and script lambdas.
+ * Creates a computed signal whose value is derived from an expression.
  *
- * @param name The name of the signal.
- * @param modCodeBuilder Builder lambda where you can call code { ... } for JS code and mod { ... } for modifiers.
- * Example:
- *   dataComputed("foo") {
- *     code { "return bar + 1;" }
- *     mod { case(CaseStyle.PASCAL) }
- *   }
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-computed attribute will be added
+ * @param name the name of the signal
+ * @param js a JavaScript expression that computes the value of the signal
+ * @param modifiers optional modifiers for the computed signal attribute
+ * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     name: String,
-    modCodeBuilder: ModCodeBuilder<DataComputedModifiers>.() -> Unit,
-): Signal {
-    val builder = ModCodeBuilder(::DataComputedModifiers).apply(modCodeBuilder)
-    val js = builder.script
-    val mods = builder.mods
-    this.visitor.visitAttribute("data-computed-$name$mods", js)
-    val caseStyle = extractCaseStyle(mods)
-    return Signal(name, caseStyle)
+    js: String,
+    modifiers: String = "",
+): Signal<Any> {
+    this.visitor.visitAttribute("data-computed-$name$modifiers", js)
+    val caseStyle = extractCaseStyle(modifiers)
+    return Signal(name, js, caseStyle)
 }
 
 /**
  *
- * Attaches an event handler to this element with optional modifiers and script lambdas.
+ * Creates a computed signal whose value is derived from an expression, with modifiers.
  *
- * @param event The event to handle.
- * @param modCodeBuilder Builder lambda where you can call code { ... } for JS code and mod { ... } for modifiers.
- * Example:
- *   dataOn("click") {
- *     code { "alert('clicked')" }
- *     mod { debounce(200) }
- *   }
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-computed attribute will be added
+ * @param name the name of the signal
+ * @param js a JavaScript expression that computes the value of the signal
+ * @param modifiers configuration lambda for computed signal modifiers (delegates to the String overload)
+ * @return a Signal instance with the given name
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
+    name: String,
+    js: String,
+    modifiers: DataComputedModifiers.() -> Unit,
+): Signal<Any> {
+    val mods = DataComputedModifiers().apply(modifiers).toString()
+    return dataComputed(name, js, mods)
+}
+
+/**
+ *
+ * Attaches an event handler to an element.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on attribute will be added
+ * @param event the event to handle
+ * @param js a JavaScript expression that computes the value of the signal
+ * @param modifiers optional modifiers for the event handler
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
     event: String,
-    modCodeBuilder: ModCodeBuilder<DataOnModifiers>.() -> Unit,
+    js: String,
+    modifiers: String = "",
 ) {
-    val builder = ModCodeBuilder(::DataOnModifiers).apply(modCodeBuilder)
-    val js = builder.script
-    val mods = builder.mods
-    this.visitor.visitAttribute("data-on:$event$mods", js)
+    this.visitor.visitAttribute("data-on:$event$modifiers", js)
 }
 
 /**
@@ -181,13 +212,13 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-json-signals attribute will be added
  * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
- * @param modifiersBuilder configuration lambda for JSON signals modifiers
+ * @param mods configuration lambda for JSON signals modifiers
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
     jsObj: String = "",
-    modifiersBuilder: ModBuilder<DataJsonSignalsModifiers>.() -> Unit,
+    mods: DataJsonSignalsModifiers.() -> Unit,
 ) {
-    val modifiers = ModBuilder(::DataJsonSignalsModifiers).apply(modifiersBuilder).mods
+    val modifiers = DataJsonSignalsModifiers().apply(mods).toString()
     this.visitor.visitAttribute("data-json-signals$modifiers", jsObj)
 }
 
@@ -199,14 +230,13 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-class attribute will be added
  * @param className the name of the class from the element
- * @param modCodeBuilder Builder lambda where you can call code { ... } for JS code and mod { ... } for modifiers.
+ * @param predicate a JavaScript expression that if true adds the class to element otherwise removes it.
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
     className: String,
-    modCodeBuilder: ModCodeBuilder<DataClassModifiers>.() -> Unit,
+    predicate: String,
+    modifiers: DataClassModifiers.() -> Unit,
 ) {
-    val builder = ModCodeBuilder(::DataClassModifiers).apply(modCodeBuilder)
-    val predicate = builder.script
-    val mods = builder.mods
+    val mods = DataClassModifiers().apply(modifiers).toString()
     this.visitor.visitAttribute("data-class:$className$mods", predicate)
 }

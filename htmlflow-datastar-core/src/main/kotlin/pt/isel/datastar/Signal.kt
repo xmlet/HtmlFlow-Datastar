@@ -36,8 +36,9 @@ import pt.isel.datastar.modifiers.CaseStyle
  *
  * @property name the name that identifies the signal
  */
-data class Signal(
+data class Signal<T>(
     val name: String,
+    val value: T? = null,
     private val case: CaseStyle = CaseStyle.CAMEL,
 ) {
     init {

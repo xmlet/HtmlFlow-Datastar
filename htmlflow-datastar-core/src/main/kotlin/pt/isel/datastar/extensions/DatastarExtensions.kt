@@ -52,14 +52,14 @@ fun List<Pair<String, Any?>>.toJson(): String =
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signals attribute will be added
  * @param signals pairs of signal names and their corresponding values
- * @return a list of Signal instances with the given names
+ * @return a list of Signal instances with the given names and values
  */
-fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(vararg signals: Pair<String, Any?>): List<Signal> {
+fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(vararg signals: Pair<String, Any?>): List<Signal<Any?>> {
     signals.toList().toJson().also {
         this.visitor.visitAttribute("data-signals", it)
     }
-    return signals.map { (name) ->
-        Signal(name)
+    return signals.map { (name, value) ->
+        Signal(name, value)
     }
 }
 
@@ -70,13 +70,12 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(vararg
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
- * @return a Signal instance with the given name
+ * @return a Signal instance with the given name and a null value
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String): Signal = dataSignal(name, null)
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String): Signal<*> = dataSignal(name, null)
 
 /**
- * Creates a signal (if one doesn’t already exist)
- * and sets up two-way data binding between it and an element’s value.
+ * Creates a signal and sets up two-way data binding between it and an element’s value.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
@@ -84,15 +83,15 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String
  * @param name the name of the signal to bind
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String): Signal {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String): Signal<Any> {
     require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
     this.visitor.visitAttribute("data-bind:$name", "")
-    return Signal(name)
+    return Signal(name, null)
 }
 
 /**
  *
- * Creates two-way data binding between a signal and an element's value.
+ * Creates a signal and sets up two-way data binding between it and an element’s value.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
@@ -100,7 +99,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String):
  * @param signal the Signal to bind to (its value takes precedence)
  * @return the same Signal instance
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(signal: Signal): Signal {
+fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataBind(signal: Signal<R>): Signal<R> {
     require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
     this.visitor.visitAttribute("data-bind:${signal.name}", "")
     return signal
@@ -135,7 +134,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
  * @param attrs a JavaScript expression that computes the values of multiple attributes on an element using a set of key-value pairs
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: Pair<String, Signal>) {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: Pair<String, Signal<*>>) {
     attrs
         .joinToString(prefix = "{", postfix = "}", separator = ", ") { (name, value) ->
             "$name: $value"
@@ -168,9 +167,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(codeBuilder:
  * @param name the name of the indicator signal
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal {
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal<Boolean> {
     this.visitor.visitAttribute("data-indicator:$name", "")
-    return Signal(name)
+    return Signal(name, true)
 }
 
 /**
@@ -197,8 +196,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(codeBuilder: C
  * @param signal the Signal whose value will be used for the attribute
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(signal: Signal) {
-    this.visitor.visitAttribute("data-show", signal.toString())
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(signal: Signal<*>) {
+    this.visitor.visitAttribute("data-show", "$signal")
 }
 
 /**
@@ -225,8 +224,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(codeBuilder: C
  * @param signal the Signal whose value will be used for the attribute
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(signal: Signal) {
-    this.visitor.visitAttribute("data-text", signal.toString())
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(signal: Signal<*>) {
+    this.visitor.visitAttribute("data-text", "$signal")
 }
 
 /**
