@@ -7,6 +7,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import pt.isel.ktor.demoActiveSearch
 import pt.isel.ktor.demoBulkUpdate
+import pt.isel.ktor.demoClickToEdit
 import pt.isel.ktor.demoClickToEditViaSignals
 import pt.isel.ktor.demoClickToLoad
 import pt.isel.ktor.demoCounter
@@ -18,6 +19,7 @@ import pt.isel.ktor.demoInfiniteScroll
 import pt.isel.ktor.demoInlineValidation
 import pt.isel.ktor.demoLazyLoad
 import pt.isel.ktor.demoLazyTabs
+import pt.isel.ktor.demoProgressBar
 import pt.isel.ktor.demoProgressiveLoad
 import pt.isel.ktor.demoTodoMvc
 import kotlin.test.Test
@@ -78,6 +80,16 @@ class AllPagesSimpleTest {
     @Test
     fun `demo click to edit via signalsHtmlFlow returns page`() {
         `demo returns page`("/click-to-edit-signals/htmlflow")
+    }
+
+    @Test
+    fun `demo click to edit HTML returns page`() {
+        `demo returns page`("/click-to-edit/html")
+    }
+
+    @Test
+    fun `demo click to edit HtmlFlow returns page`() {
+        `demo returns page`("/click-to-edit/htmlflow")
     }
 
     @Test
@@ -170,6 +182,16 @@ class AllPagesSimpleTest {
         `demo returns page`("/todo-mvc/htmlflow")
     }
 
+    @Test
+    fun `demo progress bar HTML returns page`() {
+        `demo returns page`("/progress-bar/html")
+    }
+
+    @Test
+    fun `demo progress bar HtmlFlow returns page`() {
+        `demo returns page`("/progress-bar/htmlflow")
+    }
+
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
@@ -192,6 +214,8 @@ class AllPagesSimpleTest {
                     demoLazyTabs()
                     demoProgressiveLoad()
                     demoTodoMvc()
+                    demoProgressBar()
+                    demoClickToEdit()
                 }
             }
 

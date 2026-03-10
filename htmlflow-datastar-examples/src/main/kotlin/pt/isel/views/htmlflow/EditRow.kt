@@ -24,6 +24,7 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.extensions.dataAttr
+import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.TableState
@@ -107,7 +108,7 @@ private fun Tr<*>.editRow(index: Int) {
     td {
         input {
             attrType(EnumTypeInputType.TEXT)
-            addAttr("data-bind", "name")
+            dataBind("name")
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", "$fetching")
         }
@@ -115,7 +116,7 @@ private fun Tr<*>.editRow(index: Int) {
     td {
         input {
             attrType(EnumTypeInputType.EMAIL)
-            addAttr("data-bind", "email")
+            dataBind("email")
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", "$fetching")
         }

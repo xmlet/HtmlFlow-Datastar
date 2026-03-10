@@ -20,14 +20,16 @@ import pt.isel.views.htmlflow.hfEditRow
 private val html = loadResource("public/html/edit-row.html")
 
 fun Route.demoEditRow() {
-    val state = MutableStateFlow(TableState(users = DEFAULT_USERS))
+    val users = DEFAULT_USERS.toMutableList()
+    val editingIndex = MutableStateFlow<Int?>(null)
+
     route("/edit-row") {
         get("/html", RoutingContext::getEditRowHtml)
-        get("/htmlflow", RoutingContext::getEditRowHtmlFlow)
-        get("/{index}") { editRow(state) }
-        put("/reset") { resetUsers(state) }
-        get("/cancel") { cancelEditRow(state) }
-        patch("/{index}") { saveEditRow(state) }
+        get("/htmlflow") { getEditRowHtmlFlow(TableState(users, editingIndex.value)) }
+        get("/{index}") { editRow(users, editingIndex) }
+        put("/reset") { resetUsers(users, editingIndex) }
+        get("/cancel") { cancelEditRow(users, editingIndex) }
+        patch("/{index}") { saveEditRow(users, editingIndex) }
     }
 }
 
@@ -35,11 +37,14 @@ private suspend fun RoutingContext.getEditRowHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getEditRowHtmlFlow() {
-    call.respondText(hfEditRow.render(TableState(DEFAULT_USERS)), ContentType.Text.Html)
+private suspend fun RoutingContext.getEditRowHtmlFlow(tableState: TableState) {
+    call.respondText(hfEditRow.render(tableState), ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.editRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.editRow(
+    users: MutableList<TableUser>,
+    editingIndex: MutableStateFlow<Int?>,
+) {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -48,39 +53,51 @@ private suspend fun RoutingContext.editRow(state: MutableStateFlow<TableState>) 
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
 
-        val user = state.value.users.getOrNull(index) ?: return@respondTextWriter
-
+        val user =
+            users
+                .getOrNull(index) ?: return@respondTextWriter
         generator.patchSignals(
             """ { "name": "${user.name}", "email": "${user.email}" } """,
         )
-        state.emit(state.value.copy(editingIndex = index))
-        generator.patchElements(hfEditRow.render(state.value))
+        editingIndex.emit(index)
+        generator.patchElements(hfEditRow.render(TableState(users, editingIndex.value)))
     }
 }
 
-private suspend fun RoutingContext.cancelEditRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.cancelEditRow(
+    users: MutableList<TableUser>,
+    editingIndex: MutableStateFlow<Int?>,
+) {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        state.emit(state.value.copy(editingIndex = null))
-        generator.patchElements(hfEditRow.render(state.value))
+        editingIndex.emit(null)
+        generator.patchElements(hfEditRow.render(TableState(users, null)))
     }
 }
 
-private suspend fun RoutingContext.resetUsers(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.resetUsers(
+    users: MutableList<TableUser>,
+    editingIndex: MutableStateFlow<Int?>,
+) {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        state.emit(TableState(DEFAULT_USERS))
-        generator.patchElements(hfEditRow.render(state.value))
+        users.clear()
+        users.addAll(DEFAULT_USERS)
+        editingIndex.emit(null)
+        generator.patchElements(hfEditRow.render(TableState(users, null)))
     }
 }
 
-private suspend fun RoutingContext.saveEditRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.saveEditRow(
+    users: MutableList<TableUser>,
+    editingIndex: MutableStateFlow<Int?>,
+) {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -90,18 +107,11 @@ private suspend fun RoutingContext.saveEditRow(state: MutableStateFlow<TableStat
         requireNotNull(index)
 
         val datastarBodyArgs = call.request.call.receiveText()
-
         val editedUser = Json.decodeFromString<TableUser>(datastarBodyArgs)
 
-        if (index in state.value.users.indices) {
-            val updatedUsers =
-                state.value.users
-                    .toMutableList()
-                    .apply { this[index] = editedUser }
-            state.emit(TableState(users = updatedUsers))
-        }
-
-        generator.patchElements(hfEditRow.render(state.value))
+        users[index] = editedUser
+        editingIndex.emit(null)
+        generator.patchElements(hfEditRow.render(TableState(users, null)))
     }
 }
 
@@ -112,6 +122,6 @@ data class TableUser(
 )
 
 data class TableState(
-    val users: List<TableUser>,
+    val users: MutableList<TableUser>,
     val editingIndex: Int? = null,
 )

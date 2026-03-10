@@ -9,11 +9,21 @@
             <p>First Name: John</p>
             <p>Last Name: Doe</p>
             <p>Email: joe@blow.com</p>
-            <div>
-                <button class="info" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@get('/click-to-edit/edit')">
+            <div role="group">
+                <button
+                        class="info"
+                        data-indicator:_fetching
+                        data-attr:disabled="$_fetching"
+                        data-on:click="@get('/click-to-edit/edit')"
+                >
                     Edit
                 </button>
-                <button class="warning" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@patch('/click-to-edit/reset')">
+                <button
+                        class="warning"
+                        data-indicator:_fetching
+                        data-attr:disabled="$_fetching"
+                        data-on:click="@patch('/click-to-edit/reset')"
+                >
                     Reset
                 </button>
             </div>
