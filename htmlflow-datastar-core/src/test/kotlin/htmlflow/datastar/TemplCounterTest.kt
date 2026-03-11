@@ -9,7 +9,8 @@ import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.actions.Action
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
@@ -38,25 +39,19 @@ class TemplCounterTest {
                         }
                         body {
                             div {
-                                dataInit {
-                                    code { _ -> Action.get(::getCounterUpdates) }
-                                }
+                                dataInit(get(::getCounterUpdates))
                                 comment("Global Counter")
                                 button {
                                     attrId("global")
                                     attrClass("info")
-                                    dataOn("click") {
-                                        code { _ -> Action.patch(::globalCounter) }
-                                    }
+                                    dataOn("click", patch(::globalCounter))
                                     text("Global Clicks: 0")
                                 }
                                 comment("User Counter")
                                 button {
                                     attrId("user")
                                     attrClass("success")
-                                    dataOn("click") {
-                                        code { _ -> Action.patch(::userCounter) }
-                                    }
+                                    dataOn("click", patch(::userCounter))
                                     text("User Clicks: 0")
                                 }
                             }

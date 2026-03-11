@@ -6,7 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.actions.Action
+import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -46,12 +46,8 @@ class FileUploadTest {
                             button {
                                 attrClass("warning")
                                 val files = dataSignal("files")
-                                dataOn("click") {
-                                    code { _ -> "$files.length && ${Action.post(::uploadFiles)}" }
-                                }
-                                dataAttr("aria-disabled") {
-                                    code { _ -> $$"`${!$$files.length}`" }
-                                }
+                                dataOn("click", "$files.length && ${post(::uploadFiles)}")
+                                dataAttr("aria-disabled", $$"`${!$$files.length}`")
                                 text("Submit")
                             }
                         }

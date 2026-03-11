@@ -6,7 +6,8 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.actions.Action
+import pt.isel.datastar.expressions.put
+import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataEffect
@@ -51,15 +52,9 @@ class BulkUpdateTest {
                                             th {
                                                 input {
                                                     attrType(EnumTypeInputType.CHECKBOX)
-                                                    dataOn("change") {
-                                                        code { el -> Action.setAll("el.checked", "{include: /^selections/})") }
-                                                    }
-                                                    dataEffect {
-                                                        code { _ -> $$"el.checked = $selections.every(Boolean)" }
-                                                    }
-                                                    dataAttr("disabled") {
-                                                        code { _ ->	"$fetching" }
-                                                    }
+                                                    dataOn("change", setAll("el.checked", "{include: /^selections/}"))
+                                                    dataEffect($$"el.checked = $selections.every(Boolean)")
+                                                    dataAttr("disabled", fetching)
                                                 }
                                             }
                                             th { text("Name") }
@@ -73,9 +68,7 @@ class BulkUpdateTest {
                                                 input {
                                                     attrType(EnumTypeInputType.CHECKBOX)
                                                     dataBind(selections)
-                                                    dataAttr("disabled") {
-                                                        code { _ -> "$fetching" }
-                                                    }
+                                                    dataAttr("disabled", fetching)
                                                 }
                                             }
                                             td { text("Joe Smith") }
@@ -87,25 +80,17 @@ class BulkUpdateTest {
                                 div {
                                     button {
                                         attrClass("success")
-                                        dataOn("click") {
-                                            code { _ -> Action.put(::activate) }
-                                        }
+                                        dataOn("click", put(::activate))
                                         dataIndicator(fetching.name)
-                                        dataAttr("disabled") {
-                                            code { _ -> "$fetching" }
-                                        }
+                                        dataAttr("disabled", fetching)
                                         i { attrClass("pixelarticons:user-plus") }
                                         text("Activate")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click") {
-                                            code { _ -> Action.put(::deactivate) }
-                                        }
+                                        dataOn("click", put(::deactivate))
                                         dataIndicator(fetching.name)
-                                        dataAttr("disabled") {
-                                            code { _ -> "$fetching" }
-                                        }
+                                        dataAttr("disabled", fetching)
                                         i { attrClass("pixelarticons:user-x") }
                                         text("Deactivate")
                                     }

@@ -2,7 +2,14 @@ import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
-import pt.isel.datastar.expressions.DataStarAction
+import pt.isel.datastar.expressions.delete
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.patch
+import pt.isel.datastar.expressions.peek
+import pt.isel.datastar.expressions.post
+import pt.isel.datastar.expressions.put
+import pt.isel.datastar.expressions.setAll
+import pt.isel.datastar.expressions.toggleAll
 import pt.isel.datastar.extensions.dataSignal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,32 +23,32 @@ class DataStarActionsTests {
                     html {
                         div {
                             val bar = dataSignal("bar", "initialValue")
-                            val peekDataStarAction = DataStarAction.peek("() => $bar")
+                            val peekDataStarAction = peek("() => $bar")
                             assertEquals("@peek(() => $bar)", peekDataStarAction.toString())
                         }
                     }
                 }
             }
 
-        val setAllActions = DataStarAction.setAll(true, "{include: /^foo$/}")
+        val setAllActions = setAll(true, "{include: /^foo$/}")
         assertEquals("@setAll(true, {include: /^foo$/})", setAllActions.toString())
 
-        val toggleAllDataStarAction = DataStarAction.toggleAll("{include: /^foo$/}")
+        val toggleAllDataStarAction = toggleAll("{include: /^foo$/}")
         assertEquals("@toggleAll({include: /^foo$/})", toggleAllDataStarAction.toString())
 
-        val getDataStarAction = DataStarAction.get(::getUsers)
+        val getDataStarAction = get(::getUsers)
         assertEquals("@get('/users')", getDataStarAction.toString())
 
-        val patchDataStarAction = DataStarAction.patch(::patchUsers)
+        val patchDataStarAction = patch(::patchUsers)
         assertEquals("@patch('/users')", patchDataStarAction.toString())
 
-        val postDataStarAction = DataStarAction.post(::createUser)
+        val postDataStarAction = post(::createUser)
         assertEquals("@post('/users')", postDataStarAction.toString())
 
-        val putDataStarAction = DataStarAction.put(::editUser)
+        val putDataStarAction = put(::editUser)
         assertEquals("@put('/users')", putDataStarAction.toString())
 
-        val deleteDataStarAction = DataStarAction.delete(::deleteUser)
+        val deleteDataStarAction = delete(::deleteUser)
         assertEquals("@delete('/users')", deleteDataStarAction.toString())
     }
 

@@ -16,7 +16,11 @@ import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
 import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.actions.Action
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.not
+import pt.isel.datastar.expressions.put
+import pt.isel.datastar.expressions.semiColon
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
@@ -49,9 +53,7 @@ class DBmonTest {
                         body {
                             div {
                                 attrId("demo")
-                                dataInit {
-                                    code { _ -> Action.get(::dbmonUpdates) }
-                                }
+                                dataInit(get(::dbmonUpdates))
                                 val editing =
                                     dataSignal("editing", false) {
                                         mods { ifMissing() }
@@ -68,23 +70,12 @@ class DBmonTest {
                                             attrMin("0")
                                             attrMax("100")
                                             attrValue("20")
-                                            dataOn("focus") {
-                                                code { _ -> "$editing = true" }
-                                            }
-                                            dataOn("blur") {
-                                                code { _ ->
-                                                    Action.put(::dbmonInputs)
-                                                    "$editing = false"
-                                                }
-                                            }
+                                            dataOn("focus", editing setValue true)
+                                            dataOn("blur", put(::dbmonInputs) semiColon (editing setValue false))
                                             val mutationRate = dataBind("mutation-rate")
-                                            dataAttr("data-bind:${mutationRate.name}") {
-                                                code { _ -> "$editing" }
-                                            }
+                                            dataAttr("data-bind:${mutationRate.name}", editing)
                                             val mutRate = dataBind("_mutation-rate")
-                                            dataAttr("data-bind:${mutRate.name}") {
-                                                code { _ -> "!$editing" }
-                                            }
+                                            dataAttr("data-bind:${mutRate.name}", !editing)
                                         }
                                     }
                                     label {
@@ -94,23 +85,15 @@ class DBmonTest {
                                             attrMin("1")
                                             attrMax("144")
                                             attrValue("60")
-                                            dataOn("focus") {
-                                                code { _ -> "$editing = true" }
-                                            }
-                                            dataOn("blur") {
-                                                code { _ ->
-                                                    Action.put(::dbmonInputs)
-                                                    "$editing = false"
-                                                }
-                                            }
+                                            dataOn("focus", editing setValue true)
+                                            dataOn(
+                                                "blur",
+                                                put(::dbmonInputs) semiColon (editing setValue false),
+                                            )
                                             val framesPerSecond = dataBind("fps")
-                                            dataAttr("data-bind:${framesPerSecond.name}") {
-                                                code { _ -> "$editing" }
-                                            }
+                                            dataAttr("data-bind:${framesPerSecond.name}", editing)
                                             val fps = dataBind("_fps")
-                                            dataAttr("data-bind:${fps.name}") {
-                                                code { _ -> "!$editing" }
-                                            }
+                                            dataAttr("data-bind:${fps.name}", !editing)
                                         }
                                     }
                                 }

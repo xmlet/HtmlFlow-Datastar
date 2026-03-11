@@ -4,6 +4,7 @@ import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
@@ -23,6 +24,9 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.patch
+import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -77,9 +81,9 @@ fun Div<*>.hfEditRowTable() {
     div {
         button {
             attrClass("warning")
-            dataOn("click", "@put('/edit-row/reset')")
+            dataOn("click", put(::editRowReset))
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
         }
@@ -95,9 +99,9 @@ private fun Tr<*>.viewRow(
     td {
         button {
             attrClass("info")
-            dataOn("click", "@get('/edit-row/$index')")
+            dataOn("click", get("/edit-row/$index"))
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
             text("Edit")
         }
     }
@@ -109,7 +113,7 @@ private fun Tr<*>.editRow(index: Int) {
             attrType(EnumTypeInputType.TEXT)
             addAttr("data-bind", "name")
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
         }
     }
     td {
@@ -117,25 +121,31 @@ private fun Tr<*>.editRow(index: Int) {
             attrType(EnumTypeInputType.EMAIL)
             addAttr("data-bind", "email")
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
         }
     }
     td {
         button {
             attrClass("success")
-            dataOn("click", "@patch('/edit-row/$index')")
+            dataOn("click", patch("/edit-row/$index"))
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:check") }
             text("Save")
         }
         button {
             attrClass("error")
-            dataOn("click", "@get('/edit-row/cancel')")
+            dataOn("click", get(::editRowCancel))
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:close") }
             text("Cancel")
         }
     }
 }
+
+@Path("/edit-row/reset")
+private fun editRowReset() {}
+
+@Path("/edit-row/cancel")
+private fun editRowCancel() {}

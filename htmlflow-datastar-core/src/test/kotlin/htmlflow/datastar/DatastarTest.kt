@@ -33,6 +33,9 @@ import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.expressions.equals
+import pt.isel.datastar.expressions.not
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataComputed
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataShow
@@ -66,29 +69,20 @@ class DatastarTest {
                             div {
                                 val response = dataSignal("response")
                                 val answer = dataSignal("answer", "bread")
-                                val correct =
-                                    dataComputed("correct") {
-                                        code { _ -> "$response".lowercase() == "$answer" }
-                                    }
+                                val correct = dataComputed("correct", "$response.lowercase() == $answer")
                                 div {
                                     attrId("question")
                                     text("What do you put in a toaster?")
                                 }
                                 button {
-                                    dataOn("click") {
-                                        code { _ -> "$response = prompt('Answer:') ?? ''" }
-                                    }
+                                    dataOn("click", "$response = prompt('Answer:') ?? ''")
                                     text("BUZZ")
                                 }
                                 div {
-                                    dataShow {
-                                        code { _ -> "$response != ''" }
-                                    }
+                                    dataShow("$response != ''")
                                     raw("You answered \"")
                                     span {
-                                        dataText {
-                                            code { _ ->	"$response" }
-                                        }
+                                        dataText(response)
                                     }
                                     raw("\".")
                                     span {
@@ -96,9 +90,7 @@ class DatastarTest {
                                         text("That is correct ✅")
                                     }
                                     span {
-                                        dataShow {
-                                            code { _ -> "!$correct" }
-                                        }
+                                        dataShow(!correct)
                                         raw("The correct answer is \"")
                                         span { dataText(answer) }
                                         raw("\" 🤷")

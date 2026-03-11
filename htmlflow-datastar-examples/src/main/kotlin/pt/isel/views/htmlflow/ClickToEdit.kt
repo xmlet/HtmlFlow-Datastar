@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -18,6 +19,9 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.patch
+import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
@@ -49,15 +53,15 @@ val hfClickToEdit: HtmlView<Profile> =
                         button {
                             attrClass("info")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
-                            dataOn("click", "@get('/click-to-edit/edit')")
+                            dataAttr("disabled", fetching)
+                            dataOn("click", get(::clickToEditEdit))
                             text("Edit")
                         }
                         button {
                             attrClass("warning")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
-                            dataOn("click", "@patch('/click-to-edit/reset')")
+                            dataAttr("disabled", fetching)
+                            dataOn("click", patch(::clickToEditReset))
                             text("Reset")
                         }
                     }
@@ -78,7 +82,7 @@ val hfEditModeDoc =
                             attrType(EnumTypeInputType.TEXT)
                             dataBind("first-name")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
+                            dataAttr("disabled", fetching)
                         }
                     }
                     label {
@@ -87,7 +91,7 @@ val hfEditModeDoc =
                             attrType(EnumTypeInputType.TEXT)
                             dataBind("last-name")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
+                            dataAttr("disabled", fetching)
                         }
                     }
                     label {
@@ -96,7 +100,7 @@ val hfEditModeDoc =
                             attrType(EnumTypeInputType.EMAIL)
                             dataBind("email")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
+                            dataAttr("disabled", fetching)
                         }
                     }
                     div {
@@ -104,18 +108,30 @@ val hfEditModeDoc =
                         button {
                             attrClass("success")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
-                            dataOn("click", "@put('/click-to-edit')")
+                            dataAttr("disabled", fetching)
+                            dataOn("click", put(::clickToEdit))
                             text("Save")
                         }
                         button {
                             attrClass("error")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", "$fetching")
-                            dataOn("click", "@get('/click-to-edit/cancel')")
+                            dataAttr("disabled", fetching)
+                            dataOn("click", get(::clickToEditCancel))
                             text("Cancel")
                         }
                     }
                 }
             }
         }.toString()
+
+@Path("/click-to-edit")
+private fun clickToEdit() {}
+
+@Path("/click-to-edit/edit")
+private fun clickToEditEdit() {}
+
+@Path("/click-to-edit/reset")
+private fun clickToEditReset() {}
+
+@Path("/click-to-edit/cancel")
+private fun clickToEditCancel() {}

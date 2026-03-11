@@ -4,7 +4,10 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -52,28 +55,26 @@ class FormDataTest {
                                     attrValue("baz")
                                 }
                                 button {
-                                    dataOn("click") {
-                                        code { _ -> "@get('/endpoint', {contentType: 'form'})" }
-                                    }
+                                    dataOn("click", get(::endpoint, "{contentType: 'form'}"))
                                     text("Submit GET request")
                                 }
                                 button {
-                                    dataOn("click") {
-                                        code { _ -> "@post('/endpoint', {contentType: 'form'})" }
-                                    }
+                                    dataOn("click", post(::endpoint, "{contentType: 'form'}"))
                                     text("Submit POST request")
                                 }
                             }
                             button {
-                                dataOn("click") {
-                                    code { _ -> "@get('/endpoint', {contentType: 'form', selector: '#myform'})" }
-                                }
+                                dataOn("click", get(::endpoint, "{contentType: 'form', selector: '#myform'}"))
                                 text("Submit GET request from outside the form")
                             }
                         }
                     }
                 }
             }
+
+    @Path("/endpoint")
+    private fun endpoint() {}
+
     private val expectedDatastarRx = """
     <!DOCTYPE html>
 <html>

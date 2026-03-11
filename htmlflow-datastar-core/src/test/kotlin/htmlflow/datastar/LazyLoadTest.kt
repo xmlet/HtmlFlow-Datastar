@@ -6,7 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.actions.Action
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,9 +35,7 @@ class LazyLoadTest {
                         body {
                             div {
                                 attrId("graph")
-                                dataInit {
-                                    code { _ -> Action.get(::loadGraph) }
-                                }
+                                dataInit(get(::loadGraph))
                                 text("Loading...")
                             }
                         }

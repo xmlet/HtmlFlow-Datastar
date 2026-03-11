@@ -24,6 +24,7 @@
 
 package pt.isel.datastar
 
+import pt.isel.datastar.expressions.DataStarExpression
 import pt.isel.datastar.modifiers.CaseStyle
 
 /**
@@ -36,16 +37,19 @@ import pt.isel.datastar.modifiers.CaseStyle
  *
  * @property name the name that identifies the signal
  */
-data class Signal<T>(
+class Signal<T>(
     val name: String,
     val value: T? = null,
-    private val case: CaseStyle = CaseStyle.CAMEL,
-) {
+    case: CaseStyle = CaseStyle.CAMEL,
+) : DataStarExpression(makeExpression(name, case)) {
     init {
         require(
             !name.startsWith("__"),
         ) { "Signal names cannot begin with nor contain a double underscore, due to its use as a modifier delimiter." }
     }
-
-    override fun toString(): String = "$" + case.apply(name)
 }
+
+private fun makeExpression(
+    name: String,
+    case: CaseStyle = CaseStyle.CAMEL,
+): String = "$" + case.apply(name)

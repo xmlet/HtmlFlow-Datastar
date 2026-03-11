@@ -5,6 +5,7 @@ package htmlflow.datastar
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
@@ -39,9 +40,7 @@ class SortableTest {
                             }
                             div {
                                 attrId("sortContainer")
-                                dataOn("reordered") {
-                                    code { _ -> $$"$orderInfo = event.detail.orderInfo" }
-                                }
+                                dataOn("reordered", $$"$orderInfo = event.detail.orderInfo")
                                 button { text("Item 1") }
                                 button { text("Item 2") }
                                 button { text("Item 3") }

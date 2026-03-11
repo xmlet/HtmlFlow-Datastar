@@ -55,22 +55,16 @@ class OnSignalPatchTest {
                                 div {
                                     attrClass("actions")
                                     button {
-                                        dataOn("click") {
-                                            code { _ -> $$"$$message = `Updated: ${performance.now().toFixed(2)}`" }
-                                        }
+                                        dataOn("click", $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
                                         text("Update Message")
                                     }
                                     button {
-                                        dataOn("click") {
-                                            code { _ -> "$counter++" }
-                                        }
+                                        dataOn("click", "$counter++")
                                         text("Increment Counter")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click") {
-                                            code { _ -> "$allChanges.length = 0; $counterChanges.length = 0" }
-                                        }
+                                        dataOn("click", "$allChanges.length = 0; $counterChanges.length = 0")
                                         text("Clear All Changes")
                                     }
                                 }
@@ -86,7 +80,7 @@ class OnSignalPatchTest {
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch { code { _ -> "$counterChanges.push(patch)" } }
+                                    dataOnSignalPatch("$counterChanges.push(patch)")
                                     dataOnSignalPatchFilter("{include: /^counter$/}")
                                     h3 { text("Counter Changes Only") }
                                     pre {
@@ -96,9 +90,7 @@ class OnSignalPatchTest {
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch {
-                                        code { _ -> "$allChanges.push(patch)" }
-                                    }
+                                    dataOnSignalPatch("$allChanges.push(patch)")
                                     dataOnSignalPatchFilter("{exclude: /allChanges|counterChanges/}")
                                     h3 { text("All Signal Changes") }
                                     pre {
