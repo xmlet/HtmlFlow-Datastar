@@ -25,6 +25,12 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:3.4.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.0")
 
+    // Http4k dependencies
+    implementation(platform("org.http4k:http4k-bom:6.33.0.0"))
+    implementation("org.http4k:http4k-core")
+    implementation("org.http4k:http4k-server-jetty")
+    implementation("org.http4k:http4k-web-datastar")
+
     implementation(project(":htmlflow-datastar-core"))
 
     // Datastar Kotlin dependencies
