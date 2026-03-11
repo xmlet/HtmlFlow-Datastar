@@ -14,6 +14,8 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfClickToLoad
 

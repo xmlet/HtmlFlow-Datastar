@@ -11,6 +11,8 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
 import io.ktor.server.routing.route
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfDeleteRow
 
 private val html = loadResource("public/html/delete-row.html")

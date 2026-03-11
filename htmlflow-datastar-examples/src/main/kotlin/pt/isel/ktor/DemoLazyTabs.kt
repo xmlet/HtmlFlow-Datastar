@@ -9,6 +9,8 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.TAB_CONTENTS
 import pt.isel.views.htmlflow.hfLazyTabs
 import pt.isel.views.htmlflow.hfTabPanelView

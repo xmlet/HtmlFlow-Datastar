@@ -6,6 +6,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
+import pt.isel.utils.loadResource
 import pt.isel.views.htmlflow.hfInfiniteScroll
 
 private val html = loadResource("public/html/infinite-scroll.html")

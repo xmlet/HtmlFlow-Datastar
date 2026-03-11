@@ -7,7 +7,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
 import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import pt.isel.ktor.getResourcePath
+import pt.isel.utils.getResourcePath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.use

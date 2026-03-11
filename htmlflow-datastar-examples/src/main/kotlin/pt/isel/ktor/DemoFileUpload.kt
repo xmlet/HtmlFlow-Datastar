@@ -9,6 +9,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfFileUpload
 import java.security.MessageDigest
 import kotlin.io.encoding.Base64

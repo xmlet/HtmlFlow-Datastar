@@ -15,6 +15,8 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfClickToEdit
 import pt.isel.views.htmlflow.hfDisplayFragment
 import pt.isel.views.htmlflow.hfEditModeFragment

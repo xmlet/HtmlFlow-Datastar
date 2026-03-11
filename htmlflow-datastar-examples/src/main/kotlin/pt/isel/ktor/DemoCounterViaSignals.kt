@@ -12,6 +12,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfCounterViaSignals
 
 private val html = loadResource("public/html/counter-signals.html")

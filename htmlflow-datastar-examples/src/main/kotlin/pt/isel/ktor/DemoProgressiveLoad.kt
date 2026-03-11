@@ -14,6 +14,8 @@ import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfProgressiveLoad
 import pt.isel.views.htmlflow.loadDiv
 

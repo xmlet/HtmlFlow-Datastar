@@ -14,6 +14,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfActiveSearch
 import pt.isel.views.htmlflow.hfActiveSearchTable
 

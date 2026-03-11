@@ -16,6 +16,8 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfInlineValidationView
 import pt.isel.views.htmlflow.hfSignUpDoc
 import pt.isel.views.htmlflow.inputFields
