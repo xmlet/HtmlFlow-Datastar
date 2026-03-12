@@ -7,7 +7,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
+import pt.isel.ktor.demosKtorRouting
 import kotlin.test.assertEquals
 import kotlin.use
 
@@ -35,7 +35,7 @@ class TodoMvcTest {
     fun `todo mvc app works as expected`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
+                demosKtorRouting()
             }.start()
 
         val port =

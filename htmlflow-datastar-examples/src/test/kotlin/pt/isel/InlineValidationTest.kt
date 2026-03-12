@@ -7,7 +7,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
+import pt.isel.ktor.demosKtorRouting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -31,7 +31,7 @@ class InlineValidationTest {
     fun `input fields should be validated inline`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
+                demosKtorRouting()
             }.start()
 
         val port =

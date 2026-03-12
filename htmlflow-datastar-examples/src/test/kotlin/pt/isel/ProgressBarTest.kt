@@ -10,7 +10,7 @@ import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
+import pt.isel.ktor.demosKtorRouting
 import kotlin.test.Test
 
 class ProgressBarTest {
@@ -27,7 +27,7 @@ class ProgressBarTest {
     fun `progress bar updates progressively`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
+                demosKtorRouting()
             }.start()
 
         val port =

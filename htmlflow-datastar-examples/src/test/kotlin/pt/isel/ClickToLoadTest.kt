@@ -6,7 +6,7 @@ import com.microsoft.playwright.Playwright
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
+import pt.isel.ktor.demosKtorRouting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -29,7 +29,7 @@ class ClickToLoadTest {
     fun `click load more button fetches and appends 5 rows to table`(path: String) {
         val server =
             embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
+                demosKtorRouting()
             }.start()
 
         val port =
