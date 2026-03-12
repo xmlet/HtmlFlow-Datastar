@@ -15,6 +15,7 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.expressions.not
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataClass
@@ -53,7 +54,7 @@ val hfClickToEditSignals =
                         dataInit("@get('/click-to-edit-signals/events')")
                         div {
                             attrId("Info")
-                            dataClass("hidden", "$editMode")
+                            dataClass("hidden", editMode)
                             p {
                                 text("First Name: ")
                                 span { dataText("$firstName") }
@@ -85,7 +86,7 @@ val hfClickToEditSignals =
                         }
                         div {
                             attrId("edit-form")
-                            dataClass("hidden", "!$editMode")
+                            dataClass("hidden", !editMode)
                             label {
                                 text("First Name")
                                 input {

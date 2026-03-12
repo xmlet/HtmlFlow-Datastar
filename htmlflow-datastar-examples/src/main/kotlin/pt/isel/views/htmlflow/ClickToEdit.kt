@@ -20,9 +20,6 @@ import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
-import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
@@ -46,20 +43,20 @@ val hfDisplayFragment: HtmlView<Profile> =
                 p { text("Email: ${profile.email}") }
             }
             div {
-				button {
-					attrClass("info")
-					val fetching = dataIndicator("_fetching")
-					dataAttr("disabled", fetching)
-					dataOn("click", get(::clickToEditEdit))
-					text("Edit")
-				}
-				button {
-					attrClass("warning")
-					val fetching = dataIndicator("_fetching")
-					dataAttr("disabled", fetching)
-					dataOn("click", patch(::clickToEditReset))
-					text("Reset")
-				}
+                button {
+                    attrClass("info")
+                    val fetching = dataIndicator("_fetching")
+                    dataAttr("disabled", fetching)
+                    dataOn("click", get(::clickToEditEdit))
+                    text("Edit")
+                }
+                button {
+                    attrClass("warning")
+                    val fetching = dataIndicator("_fetching")
+                    dataAttr("disabled", fetching)
+                    dataOn("click", patch(::clickToEditReset))
+                    text("Reset")
+                }
             }
         }
     }
@@ -104,20 +101,20 @@ val hfEditModeFragment: HtmlView<Profile> =
             }
             div {
                 addAttr("role", "group")
-				button {
-					attrClass("success")
-					val fetching = dataIndicator("_fetching")
-					dataAttr("disabled", fetching)
-					dataOn("click", put(::clickToEdit))
-					text("Save")
-				}
-				button {
-					attrClass("error")
-					val fetching = dataIndicator("_fetching")
-					dataAttr("disabled", fetching)
-					dataOn("click", get(::clickToEditCancel))
-					text("Cancel")
-				}
+                button {
+                    attrClass("success")
+                    val fetching = dataIndicator("_fetching")
+                    dataAttr("disabled", fetching)
+                    dataOn("click", put(::clickToEdit))
+                    text("Save")
+                }
+                button {
+                    attrClass("error")
+                    val fetching = dataIndicator("_fetching")
+                    dataAttr("disabled", fetching)
+                    dataOn("click", get(::clickToEditCancel))
+                    text("Cancel")
+                }
             }
         }
     }

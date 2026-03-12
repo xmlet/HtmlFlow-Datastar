@@ -51,7 +51,7 @@ val hfCounterViaSignals: String =
                             div {
                                 button {
                                     attrId("decrement")
-									dataOn("click", post(::decrement))
+                                    dataOn("click", post(::decrement))
                                     text("−")
                                 }
                                 button {
