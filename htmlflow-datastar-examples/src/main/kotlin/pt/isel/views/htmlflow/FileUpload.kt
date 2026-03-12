@@ -25,16 +25,17 @@ val hfFileUpload: String =
                         }
                     }
                     body {
+                        val files = dataSignal("files")
                         label {
                             p { text("Pick anything less than 1MB") }
                             input {
                                 attrType(EnumTypeInputType.FILE)
-                                dataBind("files")
+                                dataBind(files)
+                                attrMultiple(true)
                             }
                         }
                         button {
                             attrClass("warning")
-                            val files = dataSignal("files")
                             dataOn("click", "$files.length && ${post("/file-upload")}")
                             dataAttr("aria-disabled", $$"`${!$$files.length}`")
                             text("Submit")

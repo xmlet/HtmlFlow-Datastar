@@ -69,7 +69,7 @@ class DatastarTest {
                             div {
                                 val response = dataSignal("response")
                                 val answer = dataSignal("answer", "bread")
-                                val correct = dataComputed("correct", "$response.lowercase() == $answer")
+                                val correct = dataComputed("correct", "$response.toLowerCase() == $answer")
                                 div {
                                     attrId("question")
                                     text("What do you put in a toaster?")
