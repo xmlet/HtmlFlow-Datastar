@@ -37,6 +37,8 @@ dependencies {
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.slf4j:slf4j-simple:2.0.16")
+    // Jakarta web service annotations API for using annotation @Path
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
 
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

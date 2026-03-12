@@ -5,6 +5,7 @@ import htmlflow.div
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -16,6 +17,12 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.patch
+import pt.isel.datastar.expressions.put
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.patch
+import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
@@ -39,20 +46,20 @@ val hfDisplayFragment: HtmlView<Profile> =
                 p { text("Email: ${profile.email}") }
             }
             div {
-                button {
-                    attrClass("info")
-                    val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
-                    dataOn("click", "@get('/click-to-edit/edit')")
-                    text("Edit")
-                }
-                button {
-                    attrClass("warning")
-                    val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
-                    dataOn("click", "@patch('/click-to-edit/reset')")
-                    text("Reset")
-                }
+				button {
+					attrClass("info")
+					val fetching = dataIndicator("_fetching")
+					dataAttr("disabled", fetching)
+					dataOn("click", get(::clickToEditEdit))
+					text("Edit")
+				}
+				button {
+					attrClass("warning")
+					val fetching = dataIndicator("_fetching")
+					dataAttr("disabled", fetching)
+					dataOn("click", patch(::clickToEditReset))
+					text("Reset")
+				}
             }
         }
     }
@@ -97,20 +104,20 @@ val hfEditModeFragment: HtmlView<Profile> =
             }
             div {
                 addAttr("role", "group")
-                button {
-                    attrClass("success")
-                    val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
-                    dataOn("click", "@put('/click-to-edit')")
-                    text("Save")
-                }
-                button {
-                    attrClass("error")
-                    val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
-                    dataOn("click", "@get('/click-to-edit/cancel')")
-                    text("Cancel")
-                }
+				button {
+					attrClass("success")
+					val fetching = dataIndicator("_fetching")
+					dataAttr("disabled", fetching)
+					dataOn("click", put(::clickToEdit))
+					text("Save")
+				}
+				button {
+					attrClass("error")
+					val fetching = dataIndicator("_fetching")
+					dataAttr("disabled", fetching)
+					dataOn("click", get(::clickToEditCancel))
+					text("Cancel")
+				}
             }
         }
     }
@@ -135,3 +142,15 @@ val hfClickToEdit: HtmlView<Profile> =
             }
         }
     }
+
+@Path("/click-to-edit")
+private fun clickToEdit() {}
+
+@Path("/click-to-edit/edit")
+private fun clickToEditEdit() {}
+
+@Path("/click-to-edit/reset")
+private fun clickToEditReset() {}
+
+@Path("/click-to-edit/cancel")
+private fun clickToEditCancel() {}

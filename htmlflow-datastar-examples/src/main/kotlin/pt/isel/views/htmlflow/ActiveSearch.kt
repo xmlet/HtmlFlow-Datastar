@@ -4,6 +4,7 @@ import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
@@ -20,6 +21,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.Contact
@@ -52,8 +54,8 @@ fun Div<*>.hfActiveSearchTable() {
         attrType(EnumTypeInputType.TEXT)
         attrPlaceholder("Search...")
         dataBind("search")
-        dataOn("input", "@get('/active-search/search')") {
-            debounce(200.milliseconds)
+        dataOn("input", get(::activeSearch)) {
+            mods { debounce(200.milliseconds) }
         }
     }
     table {
@@ -75,3 +77,6 @@ fun Div<*>.hfActiveSearchTable() {
         }
     }
 }
+
+@Path("/active-search/search")
+private fun activeSearch() {}

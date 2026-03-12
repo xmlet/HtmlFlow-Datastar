@@ -14,6 +14,11 @@ dependencies {
     implementation("com.github.xmlet:htmlflow-kotlin:5.0.3")
     api("com.github.xmlet:htmlflow-kotlin:5.0.3")
 
+    // Jakarta web service annotations API for using annotation @Path
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
+    // Kotlin reflection library
+    implementation(kotlin("reflect"))
+
     testImplementation(kotlin("test"))
 }
 

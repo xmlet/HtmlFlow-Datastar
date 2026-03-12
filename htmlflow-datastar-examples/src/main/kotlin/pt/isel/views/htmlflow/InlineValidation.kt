@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
@@ -19,6 +20,7 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.InlineValidationSignals
@@ -61,8 +63,8 @@ fun Div<*>.inputFields() {
                 addAttr("aria-live", "polite")
                 addAttr("aria-describedby", "email-info")
                 dataBind("email")
-                dataOn("keydown", "@post('/inline-validation/validate')") {
-                    debounce(500.milliseconds)
+                dataOn("keydown", post(::validateInline)) {
+                    mods { debounce(500.milliseconds) }
                 }
             }
         }
@@ -85,8 +87,8 @@ fun Div<*>.inputFields() {
                 attrRequired(true)
                 addAttr("aria-live", "polite")
                 dataBind("first-name")
-                dataOn("keydown", "@post('/inline-validation/validate')") {
-                    debounce(500.milliseconds)
+                dataOn("keydown", post(::validateInline)) {
+                    mods { debounce(500.milliseconds) }
                 }
             }
         }
@@ -104,8 +106,8 @@ fun Div<*>.inputFields() {
                 attrRequired(true)
                 addAttr("aria-live", "polite")
                 dataBind("last-name")
-                dataOn("keydown", "@post('/inline-validation/validate')") {
-                    debounce(500.milliseconds)
+                dataOn("keydown", post(::validateInline)) {
+                    mods { debounce(500.milliseconds) }
                 }
             }
         }
@@ -118,7 +120,7 @@ fun Div<*>.inputFields() {
         }
         button {
             attrClass("success")
-            dataOn("click", "@post('/inline-validation')")
+            dataOn("click", post(::submitForm))
             if (!canSubmit) addAttr("aria-disabled", "true")
             text(" Sign Up")
         }
@@ -135,3 +137,9 @@ val hfSignUpDoc =
                 }
             }
         }.toString()
+
+@Path("/inline-validation/validate")
+private fun validateInline() {}
+
+@Path("/inline-validation")
+private fun submitForm() {}

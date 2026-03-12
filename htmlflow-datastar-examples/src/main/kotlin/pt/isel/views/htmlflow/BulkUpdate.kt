@@ -4,6 +4,7 @@ import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -21,6 +22,8 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.put
+import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataEffect
@@ -51,16 +54,16 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         dataSignals(
                             "_fetching" to false,
                             "selections" to { "Array(4).fill(false)" },
-                        ) { ifMissing() }
+                        ) { mods { ifMissing() } }
                     table {
                         thead {
                             tr {
                                 th {
                                     input {
                                         attrType(EnumTypeInputType.CHECKBOX)
-                                        dataOn("change", "@setAll(el.checked, {include: /^selections/})")
+                                        dataOn("change", setAll("el.checked", "{include: /^selections/}"))
                                         dataEffect($$"el.checked = $selections.every(Boolean)")
-                                        dataAttr("disabled", "$fetching")
+                                        dataAttr("disabled", fetching)
                                     }
                                 }
                                 th { text("Name") }
@@ -76,7 +79,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                             input {
                                                 attrType(EnumTypeInputType.CHECKBOX)
                                                 dataBind("selections")
-                                                dataAttr("disabled", "$fetching")
+                                                dataAttr("disabled", fetching)
                                             }
                                         }
                                         td { text(user.name) }
@@ -90,17 +93,17 @@ val hfBulkUpdate: HtmlView<List<User>> =
                     div {
                         button {
                             attrClass("success")
-                            dataOn("click", "@put('/bulk-update/activate')")
+                            dataOn("click", put(::activate))
                             dataIndicator(fetching.name)
-                            dataAttr("disabled", "$fetching")
+                            dataAttr("disabled", fetching)
                             i { attrClass("pixelarticons:user-plus") }
                             text("Activate")
                         }
                         button {
                             attrClass("error")
-                            dataOn("click", "@put('/bulk-update/deactivate')")
+                            dataOn("click", put(::deactivate))
                             dataIndicator(fetching.name)
-                            dataAttr("disabled", "$fetching")
+                            dataAttr("disabled", fetching)
                             i { attrClass("pixelarticons:user-x") }
                             text("Deactivate")
                         }
@@ -109,3 +112,9 @@ val hfBulkUpdate: HtmlView<List<User>> =
             }
         }
     }
+
+@Path("/bulk-update/activate")
+private fun activate() {}
+
+@Path("/bulk-update/deactivate")
+private fun deactivate() {}

@@ -1,23 +1,13 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package pt.isel.views.htmlflow
 
 import htmlflow.doc
 import htmlflow.html
-import org.xmlet.htmlapifaster.EnumRelType
-import org.xmlet.htmlapifaster.EnumTypeInputType
-import org.xmlet.htmlapifaster.EnumTypeScriptType
-import org.xmlet.htmlapifaster.body
-import org.xmlet.htmlapifaster.button
-import org.xmlet.htmlapifaster.div
-import org.xmlet.htmlapifaster.head
-import org.xmlet.htmlapifaster.input
-import org.xmlet.htmlapifaster.label
-import org.xmlet.htmlapifaster.link
-import org.xmlet.htmlapifaster.p
-import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import jakarta.ws.rs.Path
+import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.expressions.post
+import pt.isel.datastar.extensions.*
 
 val hfFileUpload: String =
     StringBuilder()
@@ -35,17 +25,18 @@ val hfFileUpload: String =
                         }
                     }
                     body {
+                        val files = dataSignal("files")
                         label {
                             p { text("Pick anything less than 1MB") }
                             input {
                                 attrType(EnumTypeInputType.FILE)
-                                dataBind("files multiple")
+                                dataBind(files)
+                                attrMultiple(true)
                             }
                         }
                         button {
                             attrClass("warning")
-                            val files = dataSignal("files")
-                            dataOn("click", "$files.length && @post('/file-upload')")
+                            dataOn("click", "$files.length && ${post("/file-upload")}")
                             dataAttr("aria-disabled", $$"`${!$$files.length}`")
                             text("Submit")
                         }
@@ -57,3 +48,6 @@ val hfFileUpload: String =
                 }
             }
         }.toString()
+
+@Path("/file-upload")
+private fun uploadFiles() {}

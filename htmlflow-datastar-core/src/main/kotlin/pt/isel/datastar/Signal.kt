@@ -24,6 +24,9 @@
 
 package pt.isel.datastar
 
+import pt.isel.datastar.expressions.DataStarExpression
+import pt.isel.datastar.modifiers.CaseStyle
+
 /**
  * Represents the metadata of a JavaScript Signal.
  *
@@ -34,39 +37,19 @@ package pt.isel.datastar
  *
  * @property name the name that identifies the signal
  */
-data class Signal(
+class Signal<T>(
     val name: String,
-) {
+    val value: T? = null,
+    case: CaseStyle = CaseStyle.CAMEL,
+) : DataStarExpression(makeExpression(name, case)) {
     init {
         require(
             !name.startsWith("__") && !name.contains("__"),
         ) { "Signal names cannot begin with nor contain a double underscore, due to its use as a modifier delimiter." }
     }
-
-    override fun toString(): String = "$" + convertToCamelCasePreservingPrefix(name)
 }
 
-private fun splitLeadingUnderscores(name: String): Pair<String, String> {
-    val match = "^_+".toRegex().find(name)
-    val prefix = match?.value ?: ""
-    val rest = name.removePrefix(prefix)
-    return prefix to rest
-}
-
-fun convertToCamelCasePreservingPrefix(name: String): String {
-    val (prefix, core) = splitLeadingUnderscores(name)
-
-    val converted =
-        core
-            .split('-', '_')
-            .filter { it.isNotEmpty() }
-            .mapIndexed { index, part ->
-                if (index == 0) {
-                    part
-                } else {
-                    part.replaceFirstChar { it.uppercase() }
-                }
-            }.joinToString("")
-
-    return prefix + converted
-}
+private fun makeExpression(
+    name: String,
+    case: CaseStyle = CaseStyle.CAMEL,
+): String = "$" + case.apply(name)
