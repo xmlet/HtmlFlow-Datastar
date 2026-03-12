@@ -61,7 +61,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "pt.isel.ktor.AppKt"
+    mainClass = "pt.isel.AppKt"
 }
 
 tasks.named<Test>("test") {

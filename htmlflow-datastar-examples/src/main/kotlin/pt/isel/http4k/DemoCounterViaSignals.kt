@@ -34,7 +34,8 @@ fun demoCounterSignals(): PolyHandler {
 
 private fun getCounterPageHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html")
 
-private fun getCounterPageHtmlFlow(req: Request): Response = Response(OK).body(hfCounterViaSignals).header("Content-Type", "text/html")
+private fun getCounterPageHtmlFlow(req: Request): Response =
+    Response(OK).body(hfCounterViaSignals).header("Content-Type", "text/html; charset=utf-8")
 
 private fun getCounterEvents(counter: MutableStateFlow<Int>): (Request) -> SseResponse =
     {
