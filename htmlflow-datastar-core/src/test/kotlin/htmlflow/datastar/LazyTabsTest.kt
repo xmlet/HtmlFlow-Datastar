@@ -4,7 +4,9 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,19 +40,19 @@ class LazyTabsTest {
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "true")
-                                        dataOn("click", "@get('/examples/lazy_tabs/0')")
+                                        dataOn("click", get(::lazyTabs0))
                                         text("Tab 0")
                                     }
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "false")
-                                        dataOn("click", "@get('/examples/lazy_tabs/1')")
+                                        dataOn("click", get(::lazyTabs1))
                                         text("Tab 1")
                                     }
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "false")
-                                        dataOn("click", "@get('/examples/lazy_tabs/2')")
+                                        dataOn("click", get(::lazyTabs2))
                                         text("Tab 2")
                                     }
                                 }
@@ -64,6 +66,15 @@ class LazyTabsTest {
                     }
                 }
             }
+
+    @Path("/examples/lazy_tabs/0")
+    private fun lazyTabs0() {}
+
+    @Path("/examples/lazy_tabs/1")
+    private fun lazyTabs1() {}
+
+    @Path("/examples/lazy_tabs/2")
+    private fun lazyTabs2() {}
 
     private val expectedDatastarRx = """
     <!DOCTYPE html>

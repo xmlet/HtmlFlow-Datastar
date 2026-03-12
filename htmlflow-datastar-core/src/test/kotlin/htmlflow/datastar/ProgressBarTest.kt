@@ -3,6 +3,7 @@ package htmlflow.datastar
 import htmlflow.doc
 import htmlflow.html
 import htmlflow.l
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
@@ -11,6 +12,9 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
+import pt.isel.datastar.expressions.and
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.not
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataInit
@@ -42,7 +46,7 @@ class ProgressBarTest {
                         body {
                             div {
                                 attrId("progress-bar")
-                                dataInit("@get('/examples/progress_bar/updates', {openWhenHidden: true})")
+                                dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
                                 comment("When progress is less than 100%")
                                 svg {
                                     attrWidth(200)
@@ -86,11 +90,8 @@ class ProgressBarTest {
                                 comment("When progress is 100%")
                                 button {
                                     val fetching = dataIndicator("fetching")
-                                    dataAttr("aria-disabled", $$"`${$$fetching}`")
-                                    dataOn(
-                                        "click",
-                                        "!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})",
-                                    )
+                                    dataAttr("aria-disabled", fetching)
+                                    dataOn("click", !fetching and get(::progressBarUpdates, "{openWhenHidden: true}"))
                                     i { attrClass("material-symbols:check-circle") }
                                     text("Completed! Try again?")
                                 }
@@ -99,6 +100,9 @@ class ProgressBarTest {
                     }
                 }
             }
+
+    @Path("/examples/progress_bar/updates")
+    private fun progressBarUpdates() {}
 
     private val expectedDatastarRx =
         $$"""
@@ -121,7 +125,7 @@ class ProgressBarTest {
                         </text>
                     </svg>
                     <!-- When progress is 100% -->
-                    <button data-indicator:fetching="" data-attr:aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})">
+                    <button data-indicator:fetching="" data-attr:aria-disabled="$fetching" data-on:click="!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})">
                         <i class="material-symbols:check-circle">
                         </i>
                         Completed! Try again?

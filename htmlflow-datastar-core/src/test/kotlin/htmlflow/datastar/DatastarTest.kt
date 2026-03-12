@@ -33,6 +33,9 @@ import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.expressions.equals
+import pt.isel.datastar.expressions.not
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataComputed
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataShow
@@ -78,14 +81,16 @@ class DatastarTest {
                                 div {
                                     dataShow("$response != ''")
                                     raw("You answered \"")
-                                    span { dataText("$response") }
+                                    span {
+                                        dataText(response)
+                                    }
                                     raw("\".")
                                     span {
                                         dataShow(correct)
                                         text("That is correct ✅")
                                     }
                                     span {
-                                        dataShow("!$correct")
+                                        dataShow(!correct)
                                         raw("The correct answer is \"")
                                         span { dataText(answer) }
                                         raw("\" 🤷")

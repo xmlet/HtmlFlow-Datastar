@@ -2,6 +2,7 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.div
@@ -13,6 +14,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOnIntersect
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -62,13 +64,16 @@ class InfiniteScrollTest {
                                 }
                             }
                             div {
-                                dataOnIntersect("@get('/examples/infinite_scroll/more')")
+                                dataOnIntersect(get(::getMore))
                                 text("Loading...")
                             }
                         }
                     }
                 }
             }
+
+    @Path("/examples/infinite_scroll/more")
+    private fun getMore() {}
 
     // Ids from the first 10 rows
     private fun generateId(index: Int): String {

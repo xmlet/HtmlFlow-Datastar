@@ -5,6 +5,7 @@ import htmlflow.div
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -14,6 +15,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.img
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.ktor.LazyLoadImage
 
@@ -40,7 +42,7 @@ val hfLazyLoad: HtmlView<Unit> =
 
 fun Div<*>.hfLazyLoadGraph() {
     attrId("graph")
-    dataInit("@get('/lazy-load/graph')")
+    dataInit(get(::loadGraph))
     text("Loading...")
 }
 
@@ -56,3 +58,6 @@ val hfLazyLoadDoc =
             }
         }
     }
+
+@Path("/lazy-load/graph")
+private fun loadGraph() {}

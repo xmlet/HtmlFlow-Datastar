@@ -4,6 +4,7 @@ import htmlflow.HtmlDoc
 import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -17,6 +18,9 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.section
 import pt.isel.datastar.Signal
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.semiColon
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataClass
 import pt.isel.datastar.extensions.dataIndicator
@@ -41,19 +45,22 @@ val hfProgressiveLoad =
                     body {
                         div {
                             attrClass("actions")
-                            var progressiveLoad: Signal? = null
+                            var progressiveLoad: Signal<Boolean>? = null
                             button {
                                 attrId("load-button")
                                 val loadDisabled = dataSignal("load-disabled", false)
-                                dataOn("click", "$loadDisabled=true; @get('/progressive-load/updates')")
-                                dataAttr("disabled", "$loadDisabled")
+                                dataOn(
+                                    "click",
+                                    loadDisabled setValue true semiColon get(::progressiveLoadUpdates),
+                                )
+                                dataAttr("disabled", loadDisabled)
                                 progressiveLoad = dataIndicator("progressive-load")
                                 text("Load")
                             }
                             div {
                                 attrClass("indicator")
                                 checkNotNull(progressiveLoad) { "progressiveLoad signal should have been initialized by the dataIndicator" }
-                                dataClass("loading", "$progressiveLoad")
+                                dataClass("loading", progressiveLoad)
                                 img {
                                     attrAlt("Indicator")
                                     attrSrc("/images/rocket-animated.gif")
@@ -78,3 +85,6 @@ fun HtmlDoc.loadDiv() {
         div { attrId("footer") }
     }
 }
+
+@Path("/progressive-load/updates")
+private fun progressiveLoadUpdates() {}

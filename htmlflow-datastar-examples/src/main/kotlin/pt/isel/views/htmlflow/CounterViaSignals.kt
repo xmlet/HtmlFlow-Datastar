@@ -2,6 +2,7 @@ package pt.isel.views.htmlflow
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -12,6 +13,8 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
@@ -39,7 +42,7 @@ val hfCounterViaSignals: String =
                                 text("Counting Stars HtmlFlow - via Signals")
                             }
                             div {
-                                dataInit("@get('/counter-signals/events')")
+                                dataInit(get(::events))
                                 span {
                                     attrId("counter")
                                     dataText(count)
@@ -47,11 +50,11 @@ val hfCounterViaSignals: String =
                             }
                             div {
                                 button {
-                                    dataOn("click", "@post('/counter-signals/decrement')")
+                                    dataOn("click", post(::decrement))
                                     text("−")
                                 }
                                 button {
-                                    dataOn("click", "@post('/counter-signals/increment')")
+                                    dataOn("click", post(::increment))
                                     text("+")
                                 }
                             }
@@ -60,3 +63,12 @@ val hfCounterViaSignals: String =
                 }
             }
         }.toString()
+
+@Path("/counter-signals/events")
+private fun events() {}
+
+@Path("/counter-signals/decrement")
+private fun decrement() {}
+
+@Path("/counter-signals/increment")
+private fun increment() {}

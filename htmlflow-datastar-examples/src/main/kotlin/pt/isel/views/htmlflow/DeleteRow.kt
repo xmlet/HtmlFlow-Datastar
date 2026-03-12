@@ -4,6 +4,7 @@ import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -20,6 +21,8 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.delete
+import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -65,9 +68,9 @@ fun Div<*>.hfDeleteRowTable() {
                         td {
                             button {
                                 attrClass("error")
-                                dataOn("click", "confirm('Are you sure?') && @delete('/delete-row/$index')")
+                                dataOn("click", "confirm('Are you sure?') && ${delete("/delete-row/$index")}")
                                 val fetching = dataIndicator("_fetching")
-                                dataAttr("disabled", "$fetching")
+                                dataAttr("disabled", fetching)
                                 text("Delete")
                             }
                         }
@@ -79,11 +82,14 @@ fun Div<*>.hfDeleteRowTable() {
     div {
         button {
             attrClass("warning")
-            dataOn("click", "@patch('/delete-row/reset')")
+            dataOn("click", patch(::restoreRows))
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", "$fetching")
+            dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
         }
     }
 }
+
+@Path("/delete-row/reset")
+private fun restoreRows() {}

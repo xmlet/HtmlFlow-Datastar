@@ -4,7 +4,9 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
@@ -40,8 +42,8 @@ class ActiveSearchTest {
                                     attrType(EnumTypeInputType.TEXT)
                                     attrPlaceholder("Search...")
                                     dataBind("search")
-                                    dataOn("input", "@get('/active-search/search')") {
-                                        debounce(200.milliseconds)
+                                    dataOn("input", get(::search)) {
+                                        mods { debounce(200.milliseconds) }
                                     }
                                 }
                                 table {
@@ -99,6 +101,9 @@ class ActiveSearchTest {
                     }
                 }
             }
+
+    @Path("/active-search/search")
+    private fun search() {}
 
     private val expectedDatastarRx = """
     <!DOCTYPE html>

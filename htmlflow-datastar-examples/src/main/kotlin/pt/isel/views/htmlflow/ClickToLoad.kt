@@ -5,6 +5,7 @@ import htmlflow.dyn
 import htmlflow.html
 import htmlflow.tr
 import htmlflow.view
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -20,6 +21,9 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.and
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.not
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -65,10 +69,8 @@ val hfClickToLoad: String =
                         button {
                             attrClass("info wide")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr(
-                                "disabled" to fetching,
-                            )
-                            dataOn("click", "!$fetching && @get('/click-to-load/more')")
+                            dataAttr("disabled", fetching)
+                            dataOn("click", !fetching and get(::clickToLoadMore))
                             dataText("$fetching ? 'Loading...' : 'Load More'")
                             text("Load More")
                         }
@@ -87,3 +89,6 @@ val hfAgentRowView =
             }
         }
     }
+
+@Path("/click-to-load/more")
+private fun clickToLoadMore() {}

@@ -72,11 +72,11 @@ class OnSignalPatchTest {
                                     h3 { text("Current Values") }
                                     p {
                                         text("Counter: ")
-                                        span { dataText("$counter") }
+                                        span { dataText(counter) }
                                     }
                                     p {
                                         text("Message: ")
-                                        span { dataText("$message") }
+                                        span { dataText(message) }
                                     }
                                 }
                                 div {
@@ -85,7 +85,7 @@ class OnSignalPatchTest {
                                     h3 { text("Counter Changes Only") }
                                     pre {
                                         dataJsonSignals("{include: /^counterChanges/}") {
-                                            terse()
+                                            mods { terse() }
                                         }
                                     }
                                 }
@@ -95,7 +95,7 @@ class OnSignalPatchTest {
                                     h3 { text("All Signal Changes") }
                                     pre {
                                         dataJsonSignals("{include: /^allChanges/}") {
-                                            terse()
+                                            mods { terse() }
                                         }
                                     }
                                 }
