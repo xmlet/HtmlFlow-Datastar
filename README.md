@@ -19,14 +19,14 @@ with a strongly typed signal and another one from Active Search using events and
 
 ```kotlin
 div {
-    val count = dataSignal("count", 0)
-    div {
-        dataInit("@get('/counter-signals/events')")
-        span {
-            attrId("counter")
-            dataText(count)
-        }
+  val count: Signal = dataSignal("count", 0)
+  div {
+    dataInit("@get('/counter/events')")
+    span {
+      attrId("counter")
+      dataText(count)
     }
+  }
 }
 ```
 
@@ -36,22 +36,73 @@ div {
 
 ```kotlin
 div {
-    attrId("demo")
-    input {
-        attrType(EnumTypeInputType.TEXT)
-        attrPlaceholder("Search...")
-        dataBind("search")
-        dataOn("input", "@get('/active-search/search')") {
-            debounce(200.milliseconds)
-        }
+  attrId("demo")
+  input {
+    attrType(EnumTypeInputType.TEXT)
+    attrPlaceholder("Search...")
+    dataBind("search")
+    dataOn("input", "@get('/active-search/search')") {
+      debounce(200.milliseconds)
     }
+  }
 }
 ```
 
 </td>
 </tr>
+<tr>
+    <td>
+        Note that the <code>count</code> variable is of type <code>Signal</code>
+        and simply binds to the data-text in a type-safe way,
+        regardless of the name passed to the <code>Signal</code> constructor.
+    </td>
+    <td>
+        Modifiers such as <code>debounce</code> are added inside a lambda using 
+        builders, following an idiomatic Kotlin style.
+    </td>
+</tr>
 </table>
 
+HtmlFlow DSL provides type-safe backend handlers for DataStar actions.
+In the next sample, taken from the “Click to Load” DataStar example, 
+note how the action `get` is attached to the handler given by the function reference `::clickToLoadMore`.
+
+Also, HtmlFlow DSL supports strongly typed DataStar expressions,
+allowing their composition with the infix operator `and`, 
+such as in the expression `!fetching and get(::clickToLoadMore)`.
+Note how the JavaScript expression for the `onclick` event handler (right side)
+is expressed in Kotlin through HtmlFlow in a type-safe way:
+
+
+<table>
+<tr>
+<td>
+    
+```kotlin
+button {
+  val fetching = dataIndicator("_fetching")
+  dataAttr("disabled", fetching)
+  dataOn("click", !fetching and get(::clickToLoadMore))
+  text("Load More")
+}
+```
+
+</td>
+<td>
+
+```html
+<button
+  data-indicator:_fetching
+  data-attr:aria-disabled="`${$_fetching}`"
+  data-on:click="!$_fetching && @get('/examples/click_to_load/more')"
+>
+    Load More
+</button>
+```
+
+</td>
+</tr>
+</table>
 
 Run with: `./gradlew run` and open `http://localhost:8080` in your browser.
 
