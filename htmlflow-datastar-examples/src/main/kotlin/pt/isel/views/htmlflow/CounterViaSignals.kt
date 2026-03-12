@@ -47,10 +47,12 @@ val hfCounterViaSignals: String =
                             }
                             div {
                                 button {
+                                    attrId("decrement")
                                     dataOn("click", "@post('/counter-signals/decrement')")
                                     text("−")
                                 }
                                 button {
+                                    attrId("increment")
                                     dataOn("click", "@post('/counter-signals/increment')")
                                     text("+")
                                 }
