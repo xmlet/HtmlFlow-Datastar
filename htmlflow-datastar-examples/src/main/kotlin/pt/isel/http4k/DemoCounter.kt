@@ -1,9 +1,6 @@
 package pt.isel.http4k
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -20,12 +17,11 @@ import org.http4k.sse.sendPatchElements
 import pt.isel.utils.loadResource
 import pt.isel.views.htmlflow.hfCounterEventView
 import pt.isel.views.htmlflow.hfCounterViaSignals
-import java.util.Observable
-import java.util.concurrent.Flow
+import java.util.concurrent.atomic.AtomicBoolean
 
 private val html = loadResource("public/html/counter.html")
 
-private val counter = MutableStateFlow(0)
+private val counter = BehaviorSubject.createDefault(0)
 
 val demoCounter =
     poly(
@@ -42,31 +38,50 @@ private fun getCounterPageHtmlFlow(req: Request): Response = Response(OK).body(h
 
 private fun getCounterEvents(req: Request): SseResponse =
     SseResponse { sse ->
-        val job =
-            CoroutineScope(Dispatchers.Default).launch {
-                counter.collect { event ->
-                    sse.sendPatchElements(Element.of(hfCounterEventView.render(event)))
-                    if (event == 3) {
-                        sse.sendPatchElements(
-                            selector = Selector.of("#body"),
-                            morphMode = MorphMode.append,
-                            elements =
-                                listOf(
-                                    Element.of("<script data-effect=\"el.remove()\">alert('Thanks for trying Datastar!')</script>"),
-                                ),
-                        )
+        val isActive = AtomicBoolean(true)
+        val thread =
+            Thread
+                .ofVirtual()
+                .start {
+                    try {
+                        counter.blockingSubscribe { event: Int ->
+                            if (isActive.get()) {
+                                sse.sendPatchElements(Element.of(hfCounterEventView.render(event)))
+
+                                if (event == 3) {
+                                    sse.sendPatchElements(
+                                        selector = Selector.of("#body"),
+                                        morphMode = MorphMode.append,
+                                        elements =
+                                            listOf(
+                                                Element.of(
+                                                    "<script data-effect=\"el.remove()\">alert('Thanks for trying Datastar!')</script>",
+                                                ),
+                                            ),
+                                    )
+                                }
+                            }
+                        }
+                    } catch (e: InterruptedException) {
+                        // Thread was interrupted, exit gracefully
                     }
                 }
-            }
-        sse.onClose { job.cancel() }
+
+        sse.onClose {
+            isActive.set(false)
+            thread.interrupt()
+            thread.join(1000) // Wait up to 1 second for thread to finish
+        }
     }
 
 private fun increment(req: Request): Response {
-    counter.value++
+    val currentValue = counter.value ?: 0
+    counter.onNext(currentValue + 1)
     return Response(Status.NO_CONTENT)
 }
 
 private fun decrement(req: Request): Response {
-    counter.value--
+    val currentValue = counter.value ?: 0
+    counter.onNext(currentValue - 1)
     return Response(Status.NO_CONTENT)
 }
