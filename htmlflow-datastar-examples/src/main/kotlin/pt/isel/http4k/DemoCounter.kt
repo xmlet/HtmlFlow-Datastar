@@ -20,6 +20,8 @@ import org.http4k.sse.sendPatchElements
 import pt.isel.utils.loadResource
 import pt.isel.views.htmlflow.hfCounterEventView
 import pt.isel.views.htmlflow.hfCounterViaSignals
+import java.util.Observable
+import java.util.concurrent.Flow
 
 private val html = loadResource("public/html/counter.html")
 

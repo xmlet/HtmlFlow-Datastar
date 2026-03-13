@@ -46,6 +46,7 @@ dependencies {
     // Use the JUnit 5 integration.
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
 
     // Ktor test tools for testing
     testImplementation("io.ktor:ktor-server-test-host:3.4.0")
