@@ -146,7 +146,6 @@ class DeleteRowTest {
 
                     // Verify the count decreased
                     val currentCount = page.querySelectorAll("tbody tr").size
-                    println("After deletion ${index + 1}: $currentCount users remaining")
                     assertEquals(4 - (index + 1), currentCount, "Should have ${4 - (index + 1)} users after ${index + 1} deletion(s)")
                 }
 

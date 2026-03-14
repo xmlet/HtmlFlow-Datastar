@@ -8,6 +8,7 @@ import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tbody
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
@@ -26,9 +27,10 @@ import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
-import pt.isel.ktor.TableState
+import pt.isel.ktor.DeleteRowsState
+import pt.isel.ktor.TableUser
 
-val hfDeleteRow: HtmlView<TableState> =
+val hfDeleteRow: HtmlView<DeleteRowsState> =
     view {
         html {
             head {
@@ -43,6 +45,7 @@ val hfDeleteRow: HtmlView<TableState> =
             }
             body {
                 div {
+                    attrId("users-table")
                     hfDeleteRowTable()
                 }
             }
@@ -50,7 +53,6 @@ val hfDeleteRow: HtmlView<TableState> =
     }
 
 fun Div<*>.hfDeleteRowTable() {
-    attrId("demo")
     table {
         thead {
             tr {
@@ -60,21 +62,9 @@ fun Div<*>.hfDeleteRowTable() {
             }
         }
         tbody {
-            dyn { state: TableState ->
+            dyn { state: DeleteRowsState ->
                 state.users.forEachIndexed { index, user ->
-                    tr {
-                        td { text(user.name) }
-                        td { text(user.email) }
-                        td {
-                            button {
-                                attrClass("error")
-                                dataOn("click", "confirm('Are you sure?') && ${delete("/delete-row/$index")}")
-                                val fetching = dataIndicator("_fetching")
-                                dataAttr("disabled", fetching)
-                                text("Delete")
-                            }
-                        }
-                    }
+                    hfTableRow(index, user)
                 }
             }
         }
@@ -87,6 +77,24 @@ fun Div<*>.hfDeleteRowTable() {
             dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
+        }
+    }
+}
+
+fun Tbody<*>.hfTableRow(
+    index: Int,
+    user: TableUser,
+) = tr {
+    attrId("row-$index")
+    td { text(user.name) }
+    td { text(user.email) }
+    td {
+        button {
+            attrClass("error")
+            dataOn("click", "confirm('Are you sure?') && ${delete("/delete-row/$index")}")
+            val fetching = dataIndicator("_fetching")
+            dataAttr("disabled", fetching)
+            text("Delete")
         }
     }
 }

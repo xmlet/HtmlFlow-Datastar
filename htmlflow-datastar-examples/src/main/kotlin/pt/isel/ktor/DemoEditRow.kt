@@ -124,6 +124,6 @@ data class TableUser(
 )
 
 data class TableState(
-    val users: MutableList<TableUser>,
+    val users: List<TableUser>,
     val editingIndex: Int? = null,
 )
