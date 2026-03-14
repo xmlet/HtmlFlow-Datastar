@@ -14,4 +14,3 @@ class SharedTestServersExtension : BeforeAllCallback {
         SharedTestServers.http4kPort
     }
 }
-

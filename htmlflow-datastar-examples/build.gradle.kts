@@ -36,10 +36,7 @@ dependencies {
     // Datastar Kotlin dependencies
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-    
-    // RxJava for reactive streams
-    implementation("io.reactivex.rxjava3:rxjava:3.1.8")
-    
+
     implementation("org.slf4j:slf4j-simple:2.0.16")
     // Jakarta web service annotations API for using annotation @Path
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")

@@ -9,5 +9,5 @@ val demosHttp4kRouting =
     poly(
         "/" bind static(Classpath("public")),
         *("/counter-signals" bind demoCounterSignals()).toTypedArray(),
-        *("/counter" bind demoCounter).toTypedArray(),
+        *("/counter" bind demoCounter()).toTypedArray(),
     )
