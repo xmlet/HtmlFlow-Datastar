@@ -36,7 +36,7 @@ private suspend fun RoutingContext.getBulkUpdateHtmlFlow() {
     call.respondText(hfBulkUpdate.render(users), ContentType.Text.Html)
 }
 
-val users =
+private val users =
     mutableListOf(
         User("Joe Smith", "joe@smith.org", UserStatus.ACTIVE),
         User("Angie MacDowell", "angie@macdowell.org", UserStatus.ACTIVE),

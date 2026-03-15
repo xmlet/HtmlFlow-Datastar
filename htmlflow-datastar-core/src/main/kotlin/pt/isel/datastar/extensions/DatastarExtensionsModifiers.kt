@@ -28,9 +28,9 @@ import pt.isel.datastar.modifiers.extractCaseStyle
  */
 fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
-    value: R?,
+    value: R,
     modifiers: String = "",
-): Signal<R?> {
+): Signal<R> {
     val res =
         when (value) {
             is String -> "'$value'"

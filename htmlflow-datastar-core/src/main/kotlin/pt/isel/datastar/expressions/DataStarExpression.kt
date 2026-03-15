@@ -12,6 +12,8 @@ infix fun Signal<*>.and(action: DataStarAction): DataStarExpression = DataStarEx
  */
 infix fun DataStarExpression.and(action: DataStarAction): DataStarExpression = DataStarExpression("$this && $action")
 
+infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this && $expression")
+
 /**
  * Equal to the JavaScript || operator, used to provide an alternative action if the previous one is not applicable.
  */
@@ -21,6 +23,8 @@ infix fun Signal<*>.or(action: DataStarAction): DataStarExpression = DataStarExp
  * Equal to the JavaScript || operator, used to provide an alternative action if the previous one is not applicable.
  */
 infix fun DataStarExpression.or(action: DataStarAction): DataStarExpression = DataStarExpression("$this || $action")
+
+infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
 
 /**
  * Equal to the JavaScript ! operator, used to negate a signal or expression.

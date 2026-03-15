@@ -3,6 +3,7 @@ package pt.isel.views.htmlflow
 import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
+import htmlflow.tr
 import htmlflow.view
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
@@ -25,12 +26,14 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.expressions.get
+import pt.isel.datastar.expressions.or
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.datastar.extensions.dataSignal
 import pt.isel.ktor.TableState
 import pt.isel.ktor.TableUser
 
@@ -66,13 +69,22 @@ fun Div<*>.hfEditRowTable() {
             }
         }
         tbody {
+            val editing = dataSignal("_editing", false)
+
             dyn { state: TableState ->
                 state.users.forEachIndexed { index, user ->
                     tr {
-                        if (state.editingIndex == index) {
-                            editRow(index)
-                        } else {
-                            viewRow(user, index)
+                        attrId("row-$index")
+                        td { text(user.name) }
+                        td { text(user.email) }
+                        td {
+                            button {
+                                attrClass("info")
+                                dataOn("click", get("/edit-row/$index"))
+                                val fetching = dataIndicator("_fetching")
+                                dataAttr("disabled", fetching or editing)
+                                text("Edit")
+                            }
                         }
                     }
                 }
@@ -91,24 +103,27 @@ fun Div<*>.hfEditRowTable() {
     }
 }
 
-private fun Tr<*>.viewRow(
-    tableUser: TableUser,
-    index: Int,
-) {
-    td { text(tableUser.name) }
-    td { text(tableUser.email) }
-    td {
-        button {
-            attrClass("info")
-            dataOn("click", get("/edit-row/$index"))
-            val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
-            text("Edit")
+fun defaultRowView(idx: Int): HtmlView<TableUser> =
+    view {
+        tr {
+            attrId("row-$idx")
+            dyn { user: TableUser ->
+                td { text(user.name) }
+                td { text(user.email) }
+                td {
+                    button {
+                        attrClass("info")
+                        dataOn("click", get("/edit-row/$idx"))
+                        val fetching = dataIndicator("_fetching")
+                        dataAttr("disabled", $$"$$fetching || $_editing")
+                        text("Edit")
+                    }
+                }
+            }
         }
     }
-}
 
-private fun Tr<*>.editRow(index: Int) {
+fun Tr<*>.editRow(index: Int) {
     td {
         input {
             attrType(EnumTypeInputType.TEXT)
