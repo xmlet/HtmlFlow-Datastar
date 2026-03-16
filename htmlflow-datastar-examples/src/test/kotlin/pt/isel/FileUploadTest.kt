@@ -3,43 +3,37 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demosKtorRouting
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import pt.isel.utils.getResourcePath
-import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class FileUploadTest {
-    @Test
-    fun `upload files, shows file info on HTML`() {
-        `upload files, shows file info`("/file-upload/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `upload files, shows file info on HTML`(serverType: String) {
+        `upload files, shows file info`("/file-upload/html", serverType)
     }
 
-    @Test
-    fun `upload files, shows file info on HtmlFlow`() {
-        `upload files, shows file info`("/file-upload/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `upload files, shows file info on HtmlFlow`(serverType: String) {
+        `upload files, shows file info`("/file-upload/htmlflow", serverType)
     }
 
     /**
      * Tests that uploading files shows their info on the page.
      * Files used on test should be small (less than 1 MB) to avoid triggering the file size limit.
      */
-    fun `upload files, shows file info`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `upload files, shows file info`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -90,7 +84,6 @@ class FileUploadTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

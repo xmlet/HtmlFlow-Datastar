@@ -3,44 +3,38 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
-import pt.isel.ktor.demosKtorRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class InlineValidationTest {
-    @Test
-    fun `input fields should be validated inline on HTML`() {
-        `input fields should be validated inline`("/inline-validation/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `input fields should be validated inline on HTML`(serverType: String) {
+        `input fields should be validated inline`("/inline-validation/html", serverType)
     }
 
-    @Test
-    fun `input fields should be validated inline on HtmlFlow`() {
-        `input fields should be validated inline`("/inline-validation/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `input fields should be validated inline on HtmlFlow`(serverType: String) {
+        `input fields should be validated inline`("/inline-validation/htmlflow", serverType)
     }
 
     /**
      * Tests that input fields are validated inline and display correct error messages when
      * the validation fails.
      */
-    fun `input fields should be validated inline`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `input fields should be validated inline`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -121,7 +115,6 @@ class InlineValidationTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

@@ -3,41 +3,36 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demosKtorRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 
+@ExtendWith(SharedTestServersExtension::class)
 class EditRowTest {
-    @Test
-    fun `edit row user details and save changes on HTML`() {
-        `edit row user details and save changes`("/edit-row/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `edit row user details and save changes on HTML`(serverType: String) {
+        `edit row user details and save changes`("/edit-row/html", serverType)
     }
 
-    @Test
-    fun `edit row user details and save changes on HtmlFlow`() {
-        `edit row user details and save changes`("/edit-row/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `edit row user details and save changes on HtmlFlow`(serverType: String) {
+        `edit row user details and save changes`("/edit-row/htmlflow", serverType)
     }
 
     /**
      * Tests that clicking to edit a row allows editing, saving changes updates the row correctly,
      * canceling reverts to original details, and resetting restores all default users.
      */
-    fun `edit row user details and save changes`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `edit row user details and save changes`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -151,7 +146,6 @@ class EditRowTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

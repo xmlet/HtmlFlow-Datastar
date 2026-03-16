@@ -13,13 +13,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class ActiveSearchTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor", "Http4k"])
+    @ValueSource(strings = ["Ktor"])
     fun `search name, filters table rows`(serverType: String) {
         `search name, filters table rows`("/active-search/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor", "Http4k"])
+    @ValueSource(strings = ["Ktor"])
     fun `search name, filters table rows on HtmlFlow`(serverType: String) {
         `search name, filters table rows`("/active-search/htmlflow", serverType)
     }

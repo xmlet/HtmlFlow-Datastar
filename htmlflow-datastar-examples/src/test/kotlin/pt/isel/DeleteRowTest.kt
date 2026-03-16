@@ -3,52 +3,48 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demosKtorRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
+@ExtendWith(SharedTestServersExtension::class)
 class DeleteRowTest {
-    @Test
-    fun `delete user row and verify removal on HTML`() {
-        `delete user row and verify removal`("/delete-row/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `delete user row and verify removal on HTML`(serverType: String) {
+        `delete user row and verify removal`("/delete-row/html", serverType)
     }
 
-    @Test
-    fun `delete user row and verify removal on HtmlFlow`() {
-        `delete user row and verify removal`("/delete-row/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `delete user row and verify removal on HtmlFlow`(serverType: String) {
+        `delete user row and verify removal`("/delete-row/htmlflow", serverType)
     }
 
-    @Test
-    fun `delete all users and reset on HTML`() {
-        `delete all users and reset`("/delete-row/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `delete all users and reset on HTML`(serverType: String) {
+        `delete all users and reset`("/delete-row/html", serverType)
     }
 
-    @Test
-    fun `delete all users and reset on HtmlFlow`() {
-        `delete all users and reset`("/delete-row/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `delete all users and reset on HtmlFlow`(serverType: String) {
+        `delete all users and reset`("/delete-row/htmlflow", serverType)
     }
 
     /**
      * Tests that clicking the "Delete" button removes a user row from the table.
      */
-
-    fun `delete user row and verify removal`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `delete user row and verify removal`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -91,7 +87,6 @@ class DeleteRowTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }
@@ -99,19 +94,11 @@ class DeleteRowTest {
     /**
      * Tests that deleting all users and clicking "Reset" restores the original users.
      */
-    fun `delete all users and reset`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `delete all users and reset`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -181,7 +168,6 @@ class DeleteRowTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

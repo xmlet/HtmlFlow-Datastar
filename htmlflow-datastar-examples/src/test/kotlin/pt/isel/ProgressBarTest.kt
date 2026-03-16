@@ -5,38 +5,33 @@ import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import com.microsoft.playwright.options.WaitForSelectorState
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import pt.isel.ktor.demosKtorRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 
+@ExtendWith(SharedTestServersExtension::class)
 class ProgressBarTest {
-    @Test
-    fun `progress bar updates progressively on Html`() {
-        `progress bar updates progressively`("/progress-bar/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `progress bar updates progressively on Html`(serverType: String) {
+        `progress bar updates progressively`("/progress-bar/html", serverType)
     }
 
-    @Test
-    fun `progress bar updates progressively on HtmlFlow`() {
-        `progress bar updates progressively`("/progress-bar/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `progress bar updates progressively on HtmlFlow`(serverType: String) {
+        `progress bar updates progressively`("/progress-bar/htmlflow", serverType)
     }
 
-    fun `progress bar updates progressively`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `progress bar updates progressively`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
 
@@ -89,7 +84,6 @@ class ProgressBarTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

@@ -5,23 +5,25 @@ import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import com.microsoft.playwright.options.WaitForSelectorState
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demosKtorRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class ProgressiveLoadTest {
-    @Test
-    fun `click to loads, progressively displays the article and the comments, on Html`() {
-        `click to loads, progressively displays the article and the comments`("/progressive-load/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `click to loads, progressively displays the article and the comments, on Html`(serverType: String) {
+        `click to loads, progressively displays the article and the comments`("/progressive-load/html", serverType)
     }
 
-    @Test
-    fun `click to loads, progressively displays the article and the comments, on HtmlFlow`() {
-        `click to loads, progressively displays the article and the comments`("/progressive-load/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `click to loads, progressively displays the article and the comments, on HtmlFlow`(serverType: String) {
+        `click to loads, progressively displays the article and the comments`("/progressive-load/htmlflow", serverType)
     }
 
     /**
@@ -29,19 +31,11 @@ class ProgressiveLoadTest {
      * Initially, only the header should be loaded. After the first update, the article section should be loaded.
      * Finally, after the second update, the comments section should be loaded.
      */
-    fun `click to loads, progressively displays the article and the comments`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `click to loads, progressively displays the article and the comments`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -110,7 +104,6 @@ class ProgressiveLoadTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

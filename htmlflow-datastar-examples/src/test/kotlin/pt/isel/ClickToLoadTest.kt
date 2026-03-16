@@ -3,42 +3,37 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demosKtorRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@ExtendWith(SharedTestServersExtension::class)
 class ClickToLoadTest {
-    @Test
-    fun `click load more button fetches and appends 5 rows to table on HTML`() {
-        `click load more button fetches and appends 5 rows to table`("/click-to-load/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `click load more button fetches and appends 5 rows to table on HTML`(serverType: String) {
+        `click load more button fetches and appends 5 rows to table`("/click-to-load/html", serverType)
     }
 
-    @Test
-    fun `click load more button fetches and appends 5 rows to table on HtmlFlow`() {
-        `click load more button fetches and appends 5 rows to table`("/click-to-load/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `click load more button fetches and appends 5 rows to table on HtmlFlow`(serverType: String) {
+        `click load more button fetches and appends 5 rows to table`("/click-to-load/htmlflow", serverType)
     }
 
     /**
      * Tests that clicking the "Load More" button fetches 5 table rows via SSE
      * and appends them to the table.
      */
-    fun `click load more button fetches and appends 5 rows to table`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `click load more button fetches and appends 5 rows to table`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -111,7 +106,6 @@ class ClickToLoadTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

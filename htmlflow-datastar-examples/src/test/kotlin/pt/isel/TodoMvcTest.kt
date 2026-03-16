@@ -3,23 +3,25 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
-import pt.isel.ktor.demosKtorRouting
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class TodoMvcTest {
-    @Test
-    fun `todo mvc app works as expected, on Html`() {
-        `todo mvc app works as expected`("/todo-mvc/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `todo mvc app works as expected, on Html`(serverType: String) {
+        `todo mvc app works as expected`("/todo-mvc/html", serverType)
     }
 
-    @Test
-    fun `todo mvc app works as expected, on HtmlFlow`() {
-        `todo mvc app works as expected`("/todo-mvc/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `todo mvc app works as expected, on HtmlFlow`(serverType: String) {
+        `todo mvc app works as expected`("/todo-mvc/htmlflow", serverType)
     }
 
     /**
@@ -32,19 +34,11 @@ class TodoMvcTest {
      * 6. Add multiple tasks, toggle some of them, and verify that the "Toggle All" functionality works as expected.
      * 7. Verify that the filtering options (All, Pending, Done) work correctly by applying each filter and checking the displayed tasks
      */
-    fun `todo mvc app works as expected`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `todo mvc app works as expected`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -160,7 +154,6 @@ class TodoMvcTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

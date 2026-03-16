@@ -3,38 +3,33 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demosKtorRouting
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import pt.isel.views.htmlflow.TAB_CONTENTS
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@ExtendWith(SharedTestServersExtension::class)
 class LazyTabsTest {
-    @Test
-    fun `click tab and verify content changes on HTML`() {
-        `click tab and verify content changes`("/lazy-tabs/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `click tab and verify content changes on HTML`(serverType: String) {
+        `click tab and verify content changes`("/lazy-tabs/html", serverType)
     }
 
-    @Test
-    fun `click tab and verify content changes on HtmlFlow`() {
-        `click tab and verify content changes`("/lazy-tabs/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor"])
+    fun `click tab and verify content changes on HtmlFlow`(serverType: String) {
+        `click tab and verify content changes`("/lazy-tabs/htmlflow", serverType)
     }
 
-    fun `click tab and verify content changes`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demosKtorRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `click tab and verify content changes`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -72,7 +67,6 @@ class LazyTabsTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }
