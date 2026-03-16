@@ -1,7 +1,7 @@
 package pt.isel.http4k
 
+import org.http4k.core.HttpHandler
 import org.http4k.core.Method
-import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.OK
@@ -22,22 +22,22 @@ import pt.isel.views.htmlflow.hfCounterViaSignals
 
 private val html = loadResource("public/html/counter.html")
 
-val bus = EventBus(0)
+private val bus = EventBus(0)
 
 fun demoCounter() =
     poly(
-        "/html" bind Method.GET to ::getCounterPageHtml,
-        "/htmlflow" bind Method.GET to ::getCounterPageHtmlFlow,
-        "/increment" bind Method.POST to ::increment,
-        "/decrement" bind Method.POST to ::decrement,
+        "/html" bind Method.GET to getCounterPageHtml,
+        "/htmlflow" bind Method.GET to getCounterPageHtmlFlow,
+        "/increment" bind Method.POST to increment,
+        "/decrement" bind Method.POST to decrement,
         "/events" bindSse Method.GET to getCounterEvents,
     )
 
-private fun getCounterPageHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html")
+private val getCounterPageHtml: HttpHandler = { _ -> Response(OK).body(html).header("Content-Type", "text/html") }
 
-private fun getCounterPageHtmlFlow(req: Request): Response = Response(OK).body(hfCounterViaSignals).header("Content-Type", "text/html")
+private val getCounterPageHtmlFlow: HttpHandler = { _ -> Response(OK).body(hfCounterViaSignals).header("Content-Type", "text/html") }
 
-private val getCounterEvents: SseHandler = { req ->
+private val getCounterEvents: SseHandler = { _ ->
     val queue = bus.subscribe()
     SseResponse { sse ->
         while (true) {
@@ -65,12 +65,13 @@ private val getCounterEvents: SseHandler = { req ->
     }
 }
 
-private fun increment(req: Request): Response {
-    bus.publish(bus.currentValue.get()!! + 1)
-    return Response(Status.NO_CONTENT)
+private val increment: HttpHandler = { _ ->
+    val currentCount = bus.currentValue ?: 0
+    bus.publish(currentCount + 1)
+    Response(Status.NO_CONTENT)
 }
-
-private fun decrement(req: Request): Response {
-    bus.publish(bus.currentValue.get()!! - 1)
-    return Response(Status.NO_CONTENT)
+private val decrement: HttpHandler = { _ ->
+    val currentCount = bus.currentValue ?: 0
+    bus.publish(currentCount - 1)
+    Response(Status.NO_CONTENT)
 }
