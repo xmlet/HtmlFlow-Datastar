@@ -1,9 +1,6 @@
 package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import htmlflow.HtmlView
-import htmlflow.div
-import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receiveText
@@ -19,18 +16,10 @@ import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfInlineValidationView
+import pt.isel.views.htmlflow.hfInputFieldsDiv
 import pt.isel.views.htmlflow.hfSignUpDoc
-import pt.isel.views.htmlflow.inputFields
 
 private val html = loadResource("public/html/inline-validation.html")
-
-private val hfInputFieldsDiv: HtmlView<InlineValidationSignals> =
-    view {
-        div {
-            attrId("demo")
-            inputFields()
-        }
-    }
 
 fun Route.demoInlineValidation() {
     route("/inline-validation") {
@@ -46,7 +35,7 @@ private suspend fun RoutingContext.getInlineValidationHtml() {
 }
 
 private suspend fun RoutingContext.getInlineValidationHtmlFlow() {
-    call.respondText(hfInlineValidationView.render(InlineValidationSignals("", "", "")), ContentType.Text.Html)
+    call.respondText(hfInlineValidationView.render(InlineValidationSignals()), ContentType.Text.Html)
 }
 
 private suspend fun RoutingContext.validateFields() {
@@ -58,9 +47,9 @@ private suspend fun RoutingContext.validateFields() {
         val datastarBodyArgs = call.request.call.receiveText()
 
         // Decode the signals from the request body
-        val (email, firstName, lastName) = Json.decodeFromString<InlineValidationSignals>(datastarBodyArgs)
+        val newSignals = Json.decodeFromString<InlineValidationSignals>(datastarBodyArgs)
 
-        generator.patchElements(hfInputFieldsDiv.render(InlineValidationSignals(email, firstName, lastName)))
+        generator.patchElements(hfInputFieldsDiv.render(newSignals))
     }
 }
 
@@ -77,7 +66,7 @@ private suspend fun RoutingContext.signUp() {
 
 @Serializable
 data class InlineValidationSignals(
-    val email: String,
-    val firstName: String,
-    val lastName: String,
+    val email: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
 )

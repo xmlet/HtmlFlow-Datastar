@@ -13,4 +13,5 @@ val demosHttp4kRouting =
         *("/click-to-edit" bind demoClickToEdit()).toTypedArray(),
         *("/click-to-edit-signals" bind demoClickToEditViaSignals()).toTypedArray(),
         *("/edit-row" bind demoEditRow()).toTypedArray(),
+        *("/inline-validation" bind demoInlineValidation()).toTypedArray(),
     )

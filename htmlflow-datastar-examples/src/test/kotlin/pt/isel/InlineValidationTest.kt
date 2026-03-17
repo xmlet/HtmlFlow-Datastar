@@ -15,13 +15,13 @@ import kotlin.test.assertFalse
 @ExtendWith(SharedTestServersExtension::class)
 class InlineValidationTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4K"])
     fun `input fields should be validated inline on HTML`(serverType: String) {
         `input fields should be validated inline`("/inline-validation/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4K"])
     fun `input fields should be validated inline on HtmlFlow`(serverType: String) {
         `input fields should be validated inline`("/inline-validation/htmlflow", serverType)
     }

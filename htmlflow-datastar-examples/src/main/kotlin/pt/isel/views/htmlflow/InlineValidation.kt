@@ -138,6 +138,14 @@ val hfSignUpDoc =
             }
         }.toString()
 
+val hfInputFieldsDiv: HtmlView<InlineValidationSignals> =
+    view {
+        div {
+            attrId("demo")
+            inputFields()
+        }
+    }
+
 @Path("/inline-validation/validate")
 private fun validateInline() {}
 
