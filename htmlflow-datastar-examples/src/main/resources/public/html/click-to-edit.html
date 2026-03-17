@@ -11,7 +11,7 @@
             <p>Email: joe@blow.com</p>
             <div role="group">
                 <button
-                        class="info"
+                        id="edit"
                         data-indicator:_fetching
                         data-attr:disabled="$_fetching"
                         data-on:click="@get('/click-to-edit/edit')"
@@ -19,7 +19,7 @@
                     Edit
                 </button>
                 <button
-                        class="warning"
+                        id="reset"
                         data-indicator:_fetching
                         data-attr:disabled="$_fetching"
                         data-on:click="@patch('/click-to-edit/reset')"

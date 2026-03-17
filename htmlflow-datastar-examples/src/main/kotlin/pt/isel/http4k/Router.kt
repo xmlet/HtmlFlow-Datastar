@@ -10,4 +10,6 @@ val demosHttp4kRouting =
         "/" bind static(Classpath("public")),
         *("/counter-signals" bind demoCounterSignals()).toTypedArray(),
         *("/counter" bind demoCounter()).toTypedArray(),
+        *("/click-to-edit" bind demoClickToEdit()).toTypedArray(),
+        *("/click-to-edit-signals" bind demoClickToEditViaSignals()).toTypedArray(),
     )

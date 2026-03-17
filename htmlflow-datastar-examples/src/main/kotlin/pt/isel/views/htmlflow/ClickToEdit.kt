@@ -32,26 +32,20 @@ val hfDisplayFragment: HtmlView<Profile> =
         div {
             attrId("demo")
             dyn { profile: Profile ->
-                dataSignals(
-                    "firstName" to profile.firstName,
-                    "lastName" to profile.lastName,
-                    "email" to profile.email,
-                )
-
                 p { text("First Name: ${profile.firstName}") }
                 p { text("Last Name: ${profile.lastName}") }
                 p { text("Email: ${profile.email}") }
             }
             div {
                 button {
-                    attrClass("info")
+                    attrId("edit")
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled", fetching)
                     dataOn("click", get(::clickToEditEdit))
                     text("Edit")
                 }
                 button {
-                    attrClass("warning")
+                    attrId("reset")
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled", fetching)
                     dataOn("click", patch(::clickToEditReset))
@@ -102,6 +96,7 @@ val hfEditModeFragment: HtmlView<Profile> =
             div {
                 addAttr("role", "group")
                 button {
+                    attrId("save")
                     attrClass("success")
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled", fetching)
@@ -109,7 +104,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     text("Save")
                 }
                 button {
-                    attrClass("error")
+                    attrId("cancel")
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled", fetching)
                     dataOn("click", get(::clickToEditCancel))

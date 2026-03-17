@@ -2,6 +2,7 @@ package pt.isel.views.htmlflow
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -15,7 +16,11 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
+import pt.isel.datastar.expressions.put
+import pt.isel.datastar.expressions.semiColon
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataClass
@@ -24,9 +29,6 @@ import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.datastar.extensions.dataText
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.component3
 
 val hfClickToEditSignals =
     StringBuilder()
@@ -44,91 +46,93 @@ val hfClickToEditSignals =
                         }
                     }
                     body {
-                        val (firstName, lastName, email, editMode) =
-                            dataSignals(
-                                "firstName" to "John",
-                                "lastName" to "Doe",
-                                "email" to "joe@blow.com",
-                                "editMode" to false,
-                            )
-                        dataInit("@get('/click-to-edit-signals/events')")
                         div {
-                            attrId("Info")
-                            dataClass("hidden", editMode)
-                            p {
-                                text("First Name: ")
-                                span { dataText("$firstName") }
-                            }
-                            p {
-                                text("Last Name: ")
-                                span { dataText("$lastName") }
-                            }
-                            p {
-                                text("Email: ")
-                                span { dataText("$email") }
-                            }
+                            val (firstName, lastName, email, editing) =
+                                dataSignals(
+                                    "firstName" to "John",
+                                    "lastName" to "Doe",
+                                    "email" to "joe@blow.com",
+                                    "_editing" to false,
+                                )
+                            dataInit("@get('/click-to-edit-signals/events')")
                             div {
-                                button {
-                                    attrClass("info")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
-                                    dataOn("click", "@get('/click-to-edit-signals/edit')")
-                                    text("Edit")
+                                attrId("Info")
+                                dataClass("hidden", editing)
+                                p {
+                                    text("First Name: ")
+                                    span { dataText(firstName) }
                                 }
-                                button {
-                                    attrClass("warning")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
-                                    dataOn("click", "@patch('/click-to-edit-signals/reset')")
-                                    text("Reset")
+                                p {
+                                    text("Last Name: ")
+                                    span { dataText(lastName) }
                                 }
-                            }
-                        }
-                        div {
-                            attrId("edit-form")
-                            dataClass("hidden", !editMode)
-                            label {
-                                text("First Name")
-                                input {
-                                    attrType(EnumTypeInputType.TEXT)
-                                    dataBind("first-name")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
+                                p {
+                                    text("Email: ")
+                                    span { dataText(email) }
                                 }
-                            }
-                            label {
-                                text("Last Name")
-                                input {
-                                    attrType(EnumTypeInputType.TEXT)
-                                    dataBind("last-name")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
-                                }
-                            }
-                            label {
-                                text("Email")
-                                input {
-                                    attrType(EnumTypeInputType.EMAIL)
-                                    dataBind(email)
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
+                                div {
+                                    button {
+                                        attrId("edit")
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", fetching)
+                                        dataOn("click", editing setValue true)
+                                        text("Edit")
+                                    }
+                                    button {
+                                        attrId("reset")
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", "$fetching")
+                                        dataOn("click", "@patch('/click-to-edit-signals/reset')")
+                                        text("Reset")
+                                    }
                                 }
                             }
                             div {
-                                addAttr("role", "group")
-                                button {
-                                    attrClass("success")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
-                                    dataOn("click", "@put('/click-to-edit-signals')")
-                                    text("Save")
+                                attrId("edit-form")
+                                dataClass("hidden", !editing)
+                                label {
+                                    text("First Name")
+                                    input {
+                                        attrType(EnumTypeInputType.TEXT)
+                                        dataBind("first-name")
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", "$fetching")
+                                    }
                                 }
-                                button {
-                                    attrClass("error")
-                                    val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled", "$fetching")
-                                    dataOn("click", "@get('/click-to-edit-signals/cancel')")
-                                    text("Cancel")
+                                label {
+                                    text("Last Name")
+                                    input {
+                                        attrType(EnumTypeInputType.TEXT)
+                                        dataBind("last-name")
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", "$fetching")
+                                    }
+                                }
+                                label {
+                                    text("Email")
+                                    input {
+                                        attrType(EnumTypeInputType.EMAIL)
+                                        dataBind(email)
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", "$fetching")
+                                    }
+                                }
+                                div {
+                                    addAttr("role", "group")
+                                    button {
+                                        attrId("save")
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", "$fetching")
+                                        dataOn("click", editing setValue false semiColon put(::save))
+                                        text("Save")
+                                    }
+                                    button {
+                                        attrId("cancel")
+                                        val fetching = dataIndicator("_fetching")
+                                        dataAttr("disabled", "$fetching")
+                                        dataOn("click", editing setValue false semiColon get(::cancelEdit))
+                                        text("Cancel")
+                                    }
                                 }
                             }
                         }
@@ -136,3 +140,12 @@ val hfClickToEditSignals =
                 }
             }
         }.toString()
+
+@Path("/click-to-edit-signals/edit")
+fun edit() {}
+
+@Path("/click-to-edit-signals/cancel")
+fun cancelEdit() {}
+
+@Path("/click-to-edit-signals")
+fun save() {}

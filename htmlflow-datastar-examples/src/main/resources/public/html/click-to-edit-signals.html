@@ -5,23 +5,23 @@
         </script><link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
-        <div data-signals="{firstName: 'John', lastName: 'Doe', email: 'joe@blow.com', editMode: false}"
+        <div data-signals="{firstName: 'John', lastName: 'Doe', email: 'joe@blow.com', _editing: false}"
              data-init="@get('/click-to-edit-signals/events')"
         >
-            <div id="Info" data-class:hidden="$editMode">
+            <div id="Info" data-class:hidden="$_editing">
                 <p>First Name: <span data-text="$firstName"></span></p>
                 <p>Last Name: <span data-text="$lastName"></span></p>
                 <p>Email: <span data-text="$email"></span></p>
                 <div>
-                    <button class="info" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@get('/click-to-edit-signals/edit')">
+                    <button id="edit" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="$_editing = true">
                         Edit
                     </button>
-                    <button class="warning" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@patch('/click-to-edit-signals/reset')">
+                    <button id="reset" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@patch('/click-to-edit-signals/reset')">
                         Reset
                     </button>
                 </div>
             </div>
-            <div id="edit-form" data-class:hidden="!$editMode">
+            <div id="edit-form" data-class:hidden="!$_editing">
                 <label>
                     First Name:
                     <input type="text" data-bind:first-name data-indicator:_fetching="" data-attr:disabled="$_fetching" />
@@ -35,14 +35,13 @@
                     <input type="email" data-bind:email data-indicator:_fetching="" data-attr:disabled="$_fetching" />
                 </label>
                 <div role="group">
-                    <button class="success" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@put('/click-to-edit-signals')">
+                    <button id="save" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="$_editing = false; @put('/click-to-edit-signals')">
                         Save
                     </button>
-                    <button class="error" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@get('/click-to-edit-signals/cancel')">
+                    <button id="cancel" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="$_editing = false; @get('/click-to-edit-signals/cancel')">
                         Cancel
                     </button>
                 </div>
-
             </div>
         </div>
     </body>

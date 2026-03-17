@@ -22,7 +22,7 @@ import pt.isel.views.htmlflow.hfDisplayFragment
 import pt.isel.views.htmlflow.hfEditModeFragment
 
 private val html = loadResource("public/html/click-to-edit.html")
-private val DEFAULT_USER =
+val DEFAULT_USER =
     Profile(
         firstName = "John",
         lastName = "Doe",
@@ -58,7 +58,6 @@ private suspend fun RoutingContext.editClickToEdit(currentUser: MutableStateFlow
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-
         generator.patchElements(hfEditModeFragment.render(currentUser.value))
     }
 }

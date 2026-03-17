@@ -29,8 +29,6 @@ fun Route.demoClickToEditViaSignals() {
         get("/htmlflow", RoutingContext::getClickToEditSignalsHtmlFlow)
 
         get("/events") { getClickToEditEvents(clickToEditSignals) }
-
-        get("/edit") { editClickToEdit(clickToEditSignals) }
         patch("/reset") { resetClickToEdit(clickToEditSignals) }
         get("/cancel") { cancelClickToEdit(clickToEditSignals) }
         put("") { saveClickToEdit(clickToEditSignals) }
@@ -51,34 +49,31 @@ private suspend fun RoutingContext.getClickToEditEvents(signals: MutableStateFlo
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
+        val currentSignals = signals.value
+        generator.patchSignals(
+            " { firstName: '${currentSignals.firstName}', lastName: '${currentSignals.lastName}' , email: '${currentSignals.email}' }",
+        )
         signals.collect { newSignals ->
             generator.patchSignals(
-                " { 'firstName': '${newSignals.firstName}', 'lastName': '${newSignals.lastName}' , 'email': '${newSignals.email}', 'editMode': ${newSignals.editMode} }",
+                " { firstName: '${newSignals.firstName}', lastName: '${newSignals.lastName}' , email: '${newSignals.email}' }",
             )
         }
     }
 }
 
-private suspend fun RoutingContext.editClickToEdit(signals: MutableStateFlow<ClickToEditSignals>) {
-    val datastarQueryArg = call.request.queryParameters["datastar"]
-    requireNotNull(datastarQueryArg)
-
-    // Decode the signals from the datastar query argument
-    val (firstName, lastName, email) = Json.decodeFromString<ClickToEditSignals>(datastarQueryArg)
-
-    signals.emit(signals.value.copy(firstName = firstName, lastName = lastName, email = email, editMode = true))
-    call.respond(HttpStatusCode.NoContent)
-}
-
 private suspend fun RoutingContext.resetClickToEdit(clickToEditSignals: MutableStateFlow<ClickToEditSignals>) {
-    clickToEditSignals.emit(
-        clickToEditSignals.value.copy(firstName = DEFAULT_USER_NAME, lastName = DEFAULT_USER_LAST_NAME, email = DEFAULT_USER_EMAIL),
-    )
+    clickToEditSignals.emit(ClickToEditSignals())
     call.respond(HttpStatusCode.NoContent)
 }
 
 private suspend fun RoutingContext.cancelClickToEdit(clickToEditSignals: MutableStateFlow<ClickToEditSignals>) {
-    clickToEditSignals.emit(clickToEditSignals.value.copy(editMode = false))
+    clickToEditSignals.emit(
+        ClickToEditSignals(
+            firstName = clickToEditSignals.value.firstName,
+            lastName = clickToEditSignals.value.lastName,
+            email = clickToEditSignals.value.email,
+        ),
+    )
     call.respond(HttpStatusCode.NoContent)
 }
 
@@ -86,9 +81,9 @@ private suspend fun RoutingContext.saveClickToEdit(clickToEditSignals: MutableSt
     val datastarBodyArgs = call.request.call.receiveText()
 
     // Decode the signals from the request body
-    val (firstName, lastName, email) = Json.decodeFromString<ClickToEditSignals>(datastarBodyArgs)
+    val updatedSignals = Json.decodeFromString<ClickToEditSignals>(datastarBodyArgs)
 
-    clickToEditSignals.emit(clickToEditSignals.value.copy(firstName = firstName, lastName = lastName, email = email, editMode = false))
+    clickToEditSignals.emit(updatedSignals)
 
     call.respond(HttpStatusCode.NoContent)
 }
@@ -97,10 +92,14 @@ private const val DEFAULT_USER_NAME = "John"
 private const val DEFAULT_USER_LAST_NAME = "Doe"
 private const val DEFAULT_USER_EMAIL = "joe@blow.com"
 
+// ClickToEditSignals must be a class (not a data class) because MutableStateFlow only emits
+// distinct values. When a data class with the same property values is emitted, the StateFlow
+// won't emit it as it's considered a duplicate. This demo needs to emit the same signal values
+// again when the user cancels an edit, which requires using a regular class so the object
+// reference changes even when the properties remain the same.
 @Serializable
-data class ClickToEditSignals(
+class ClickToEditSignals(
     val firstName: String = DEFAULT_USER_NAME,
     val lastName: String = DEFAULT_USER_LAST_NAME,
     val email: String = DEFAULT_USER_EMAIL,
-    val editMode: Boolean = false,
 )
