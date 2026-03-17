@@ -2,12 +2,19 @@
 
 package pt.isel.views.htmlflow
 
+import htmlflow.HtmlView
+import htmlflow.div
 import htmlflow.doc
+import htmlflow.dyn
 import htmlflow.html
+import htmlflow.view
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.*
+import pt.isel.ktor.FileSignal
+import pt.isel.ktor.md5
+import kotlin.io.encoding.Base64
 
 val hfFileUpload: String =
     StringBuilder()
@@ -48,6 +55,39 @@ val hfFileUpload: String =
                 }
             }
         }.toString()
+
+fun fileUploadTable(): HtmlView<List<FileSignal>> =
+    view {
+        div {
+            attrId("file-upload")
+            table {
+                attrId("files")
+                thead {
+                    tr {
+                        th { text("Name") }
+                        th { text("Size") }
+                        th { text("MIME Type") }
+                        th { text("MD5 Hash") }
+                    }
+                }
+                tbody {
+                    dyn { files: List<FileSignal> ->
+                        files.forEach { (name, contents, mime) ->
+                            tr {
+                                val plainText = Base64.decode(contents).decodeToString()
+                                val textSize = plainText.length
+                                val md5Hash = contents.md5()
+                                td { text(name) }
+                                td { text(textSize) }
+                                td { text(mime) }
+                                td { text(md5Hash) }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 @Path("/file-upload")
 private fun uploadFiles() {}

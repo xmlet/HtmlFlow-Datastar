@@ -2,6 +2,8 @@
 
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -11,6 +13,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.htmlflow.fileUploadTable
 import pt.isel.views.htmlflow.hfFileUpload
 import java.security.MessageDigest
 import kotlin.io.encoding.Base64
@@ -52,44 +55,14 @@ private suspend fun RoutingContext.uploadFile() {
 
         val validFiles = files.filterNot { it in invalidFiles }
 
-        val tableEntries =
-            validFiles.joinToString("") { (name, contents, mime) ->
-                val plainText = Base64.decode(contents).decodeToString()
-                val textSize = plainText.length
-                val md5Hash = contents.md5()
-
-                """
-                <tr>
-                    <td>$name</td>
-                    <td>$textSize B</td>
-                    <td>$mime</td>
-                    <td>$md5Hash</td>
-                </tr>    
-                """.trimIndent().replace("\n", "")
-            }
-
-        val table =
-            """
-            <table id="file-upload">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Mime</th>
-                        <th>MD5 Hash</th>
-                    </tr>
-                </thead> 
-                <tbody>
-                    $tableEntries
-                </tbody>
-            </table>
-            """.trimIndent().replace("\n", "")
-
-        generator.patchElements(table)
+        generator.patchElements(
+            fileUploadTable().render(validFiles),
+            PatchElementsOptions(selector = "#file-upload", mode = ElementPatchMode.Replace),
+        )
     }
 }
 
-private fun String.md5(): String {
+fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")
     val digest = md.digest(this.toByteArray())
     return digest.toHexString()

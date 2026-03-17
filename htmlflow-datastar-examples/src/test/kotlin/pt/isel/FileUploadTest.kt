@@ -14,13 +14,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class FileUploadTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `upload files, shows file info on HTML`(serverType: String) {
         `upload files, shows file info`("/file-upload/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `upload files, shows file info on HtmlFlow`(serverType: String) {
         `upload files, shows file info`("/file-upload/htmlflow", serverType)
     }
@@ -77,8 +77,8 @@ class FileUploadTest {
                 submit.click()
 
                 // Wait for the file info to be displayed in the table
-                page.waitForFunction("document.querySelectorAll('#file-upload tbody tr').length === 2")
-                val rows = page.querySelectorAll("#file-upload tbody tr")
+                page.waitForFunction("document.querySelectorAll('#files tbody tr').length === 2")
+                val rows = page.querySelectorAll("#files tbody tr")
                 assertEquals(2, rows.size, "Table should have 2 rows for the uploaded files")
             } finally {
                 page.close()
