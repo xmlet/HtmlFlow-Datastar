@@ -3,22 +3,17 @@ package pt.isel.datastar.expressions
 import pt.isel.datastar.Signal
 
 /**
- * Equal to the JavaScript && operator, used to chain multiple actions together.
- */
-infix fun Signal<*>.and(action: DataStarAction): DataStarExpression = DataStarExpression("$this && $action")
-
-/**
- * Equal to the JavaScript && operator, used to chain multiple actions together.
+ * Equal to the JavaScript && operator, used to chain multiple expressions together.
  */
 infix fun DataStarExpression.and(action: DataStarAction): DataStarExpression = DataStarExpression("$this && $action")
 
 /**
- * Equal to the JavaScript || operator, used to provide an alternative action if the previous one is not applicable.
+ * Equal to the JavaScript || operator, used to provide an alternative expression if the previous one is not applicable.
  */
 infix fun Signal<*>.or(action: DataStarAction): DataStarExpression = DataStarExpression("$this || $action")
 
 /**
- * Equal to the JavaScript || operator, used to provide an alternative action if the previous one is not applicable.
+ * Equal to the JavaScript ! operator, used to negate an expression.
  */
 infix fun DataStarExpression.or(action: DataStarAction): DataStarExpression = DataStarExpression("$this || $action")
 
@@ -38,9 +33,9 @@ infix fun DataStarExpression.equals(expression: DataStarExpression) = DataStarEx
 infix fun <T> Signal<T>.setValue(value: T): DataStarExpression = DataStarExpression("$this = $value")
 
 /**
- * Equal to the assignment operator in JavaScript, used to assign the signal value to the value of the signal passed.
+ * Equal to the assignment operator in JavaScript, used to assign the passed expression to the precious.
  */
-infix fun Signal<*>.setValue(signal: Signal<*>): DataStarExpression = DataStarExpression("$this = $signal")
+infix fun DataStarExpression.setValue(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this = $expression")
 
 /**
  * Used to add multiple statements in the same expression.

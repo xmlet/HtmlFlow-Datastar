@@ -14,6 +14,7 @@ import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.Keydown
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -53,7 +54,8 @@ class InlineValidationTest {
                                         addAttr("aria-live", "polite")
                                         addAttr("aria-describedby", "email-info")
                                         dataBind("email")
-                                        dataOn("keydown", post(::validateInline)) {
+                                        dataOn(Keydown) {
+                                            +post(::validateInline)
                                             mods { debounce(500.milliseconds) }
                                         }
                                     }
@@ -70,7 +72,8 @@ class InlineValidationTest {
                                         attrRequired(true)
                                         addAttr("aria-live", "polite")
                                         dataBind("first-name")
-                                        dataOn("keydown", post(::validateInline)) {
+                                        dataOn(Keydown) {
+                                            +post(::validateInline)
                                             mods { debounce(500.milliseconds) }
                                         }
                                     }
@@ -82,7 +85,8 @@ class InlineValidationTest {
                                         attrRequired(true)
                                         addAttr("aria-live", "polite")
                                         dataBind("last-name")
-                                        dataOn("keydown", post(::validateInline)) {
+                                        dataOn(Keydown) {
+                                            +post(::validateInline)
                                             mods { debounce(500.milliseconds) }
                                         }
                                     }

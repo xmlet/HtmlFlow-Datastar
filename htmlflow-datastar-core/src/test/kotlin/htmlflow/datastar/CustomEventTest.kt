@@ -7,6 +7,8 @@ import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.CustomEvent
+import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
@@ -35,10 +37,14 @@ class CustomEventTest {
                             }
                         }
                         body {
+                            val eventName = "myevent"
                             p {
                                 attrId("foo")
                                 val eventDetails = dataSignal("eventDetails")
-                                dataOn("myevent", "$eventDetails = evt.detail")
+                                val myEvent = CustomEvent(eventName)
+                                dataOn(myEvent) {
+                                    +(eventDetails setValue evt.detail)
+                                }
                                 dataText($$"`Last Event Details: ${$$eventDetails}`")
                             }
                             script {
@@ -47,7 +53,7 @@ class CustomEventTest {
                                     const foo = document.getElementById("foo");
                                     setInterval(() => {
                                         foo.dispatchEvent(
-                                            new CustomEvent("myevent", {
+                                            new CustomEvent("$eventName", {
                                                 detail: JSON.stringify({
                                                     eventTime: new Date().toLocaleTimeString(),
                                                 }),

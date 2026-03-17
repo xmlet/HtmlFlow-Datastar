@@ -2,7 +2,7 @@ package pt.isel.datastar.builders
 
 import pt.isel.datastar.modifiers.base.ModifierBuilder
 
-class ModBuilder<M : ModifierBuilder>(
+open class ModBuilder<M : ModifierBuilder>(
     private val builderFactory: () -> M,
 ) {
     private var modString: String = ""

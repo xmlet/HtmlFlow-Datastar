@@ -2,7 +2,9 @@ package pt.isel.datastar.extensions
 
 import org.xmlet.htmlapifaster.Element
 import pt.isel.datastar.Signal
+import pt.isel.datastar.builders.EventHandlerScope
 import pt.isel.datastar.builders.ModBuilder
+import pt.isel.datastar.events.Event
 import pt.isel.datastar.expressions.DataStarExpression
 import pt.isel.datastar.modifiers.attributes.DataClassModifiers
 import pt.isel.datastar.modifiers.attributes.DataComputedModifiers
@@ -111,24 +113,37 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     return dataSignal(name, null, mods)
 }
 
+/**
+ *
+ * Attaches an event handler to this element with modifiers.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on attribute will be added
+ * @param event the event to handle
+ * @param expr DataStarExpression that computes the value of the signal
+ * @param modifiersBuilder configuration lambda for event modifiers
+ */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
     event: String,
     expr: DataStarExpression,
     modifiersBuilder: ModBuilder<DataOnModifiers>.() -> Unit,
 ) {
-    /**
-     *
-     * Attaches an event handler to this element with modifiers.
-     *
-     * @param E type of the Element receiver
-     * @param P type of the parent Element of the receiver
-     * @receiver the Element to which the data-on attribute will be added
-     * @param event the event to handle
-     * @param expr DataStarExpression that computes the value of the signal
-     * @param modifiersBuilder configuration lambda for event modifiers
-     */
     val mods = ModBuilder(::DataOnModifiers).apply(modifiersBuilder).mods
     return dataOn(event, expr.expression, mods)
+}
+
+fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
+    event: EVT,
+    handler: EventHandlerScope<EVT>.() -> Unit,
+) {
+    val scope = EventHandlerScope(event)
+
+    scope.handler()
+    val expr = scope.expr
+    val mods = scope.mods
+
+    return dataOn(event.toString(), expr, mods)
 }
 
 /**
