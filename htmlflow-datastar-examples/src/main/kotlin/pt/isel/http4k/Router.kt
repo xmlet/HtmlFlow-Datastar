@@ -15,4 +15,5 @@ val demosHttp4kRouting =
         *("/edit-row" bind demoEditRow()).toTypedArray(),
         *("/inline-validation" bind demoInlineValidation()).toTypedArray(),
         *("file-upload" bind demoFileUpload()).toTypedArray(),
+        *("/infinite-scroll" bind demoInfiniteScroll()).toTypedArray(),
     )

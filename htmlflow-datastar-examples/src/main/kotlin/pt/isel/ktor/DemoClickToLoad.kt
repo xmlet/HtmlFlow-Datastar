@@ -69,7 +69,7 @@ suspend fun RoutingContext.getMore() {
     }
 }
 
-private fun newAgents(
+fun newAgents(
     from: Int,
     to: Int,
 ) = sequence {

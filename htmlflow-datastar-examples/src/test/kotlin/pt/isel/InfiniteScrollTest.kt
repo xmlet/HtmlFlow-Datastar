@@ -13,13 +13,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class InfiniteScrollTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4K"])
     fun `should load more agents on scroll on HTML`(serverType: String) {
         `should load more agents on scroll`("/infinite-scroll/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4K"])
     fun `should load more agents on scroll on HtmlFlow`(serverType: String) {
         `should load more agents on scroll`("/infinite-scroll/htmlflow", serverType)
     }
