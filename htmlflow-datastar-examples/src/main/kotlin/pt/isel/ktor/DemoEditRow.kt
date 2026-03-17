@@ -28,7 +28,7 @@ import pt.isel.views.htmlflow.hfEditRow
 
 private val html = loadResource("public/html/edit-row.html")
 
-private fun hfPartialEditRowDoc(idx: Int): String =
+fun hfPartialEditRowDoc(idx: Int): String =
     StringBuilder()
         .apply {
             doc {
@@ -71,7 +71,7 @@ private suspend fun RoutingContext.editRow(users: MutableList<TableUser>) {
         if (index > users.size - 1) return@respondTextWriter call.respond(HttpStatusCode.BadRequest)
         val user = users[index]
         generator.patchSignals(
-            """ { "_editing": true, "name": "${user.name}", "email": "${user.email}" } """,
+            """ { "name": "${user.name}", "email": "${user.email}" } """,
         )
         generator.patchElements(
             hfPartialEditRowDoc(index),
@@ -86,7 +86,6 @@ private suspend fun RoutingContext.cancelEditRow(users: List<TableUser>) {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchSignals(""" { "_editing": false } """)
         users.forEachIndexed { index, user ->
             generator.patchElements(
                 defaultRowView(index).render(user),
@@ -104,7 +103,6 @@ private suspend fun RoutingContext.resetUsers(users: MutableList<TableUser>) {
         val generator = ServerSentEventGenerator(response(this))
         users.clear()
         users.addAll(DEFAULT_USERS)
-        generator.patchSignals(""" { "_editing": false } """)
         users.forEachIndexed { index, user ->
             generator.patchElements(
                 defaultRowView(index).render(user),
@@ -126,7 +124,6 @@ private suspend fun RoutingContext.saveEditRow(users: MutableList<TableUser>) {
         val datastarBodyArgs = call.request.call.receiveText()
         val editedUser = Json.decodeFromString<TableUser>(datastarBodyArgs)
         users[index] = editedUser
-        generator.patchSignals(""" { "_editing": false } """)
         generator.patchElements(
             defaultRowView(index).render(editedUser),
             PatchElementsOptions("#row-$index", mode = ElementPatchMode.Replace),

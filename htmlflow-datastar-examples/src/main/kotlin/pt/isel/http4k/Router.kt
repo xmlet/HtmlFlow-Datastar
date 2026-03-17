@@ -12,4 +12,5 @@ val demosHttp4kRouting =
         *("/counter" bind demoCounter()).toTypedArray(),
         *("/click-to-edit" bind demoClickToEdit()).toTypedArray(),
         *("/click-to-edit-signals" bind demoClickToEditViaSignals()).toTypedArray(),
+        *("/edit-row" bind demoEditRow()).toTypedArray(),
     )

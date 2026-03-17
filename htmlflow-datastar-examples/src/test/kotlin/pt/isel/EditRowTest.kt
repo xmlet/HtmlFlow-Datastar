@@ -13,13 +13,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class EditRowTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `edit row user details and save changes on HTML`(serverType: String) {
         `edit row user details and save changes`("/edit-row/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `edit row user details and save changes on HtmlFlow`(serverType: String) {
         `edit row user details and save changes`("/edit-row/htmlflow", serverType)
     }
@@ -59,7 +59,7 @@ class EditRowTest {
                 assertEquals("joe@smith.org", initialEmail, "Initial first user email should be joe@smith.org")
 
                 // Click the Edit button for the first user
-                page.click("tbody tr:nth-child(1) button:has-text('Edit')")
+                page.click("button#edit-row-0")
 
                 // Wait for edit mode - inputs should be visible
                 page.waitForSelector("tbody tr:nth-child(1) input")
@@ -72,10 +72,10 @@ class EditRowTest {
                 emailInput.fill("joseph.smith@example.com")
 
                 // Click the Save button
-                page.click("tbody tr:nth-child(1) button:has-text('Save')")
+                page.click("button#save-row-0")
 
                 // Wait for view mode to return - Edit button should reappear
-                page.waitForSelector("tbody tr:nth-child(1) button:has-text('Edit')")
+                page.waitForSelector("button#edit-row-0")
 
                 // Verify updated details are displayed
                 val updatedName = page.locator("tbody tr:nth-child(1) td:nth-child(1)").innerText()
@@ -85,7 +85,7 @@ class EditRowTest {
                 assertEquals("joseph.smith@example.com", updatedEmail, "Email should be updated to joseph.smith@example.com")
 
                 // Click the Edit button again for the second user
-                page.click("tbody tr:nth-child(2) button:has-text('Edit')")
+                page.click("button#edit-row-1")
 
                 // Wait for edit mode
                 page.waitForSelector("tbody tr:nth-child(2) input")
@@ -95,10 +95,10 @@ class EditRowTest {
                 page.locator("tbody tr:nth-child(2) input").nth(1).fill("angela.macdowell@example.com")
 
                 // Click the Cancel button
-                page.click("tbody tr:nth-child(2) button:has-text('Cancel')")
+                page.click("button#cancel-row-1")
 
                 // Wait for view mode to return - Edit button should reappear
-                page.waitForSelector("tbody tr:nth-child(2) button:has-text('Edit')")
+                page.waitForSelector("button#edit-row-1")
 
                 // Verify original details are retained (cancel discarded changes)
                 val nameAfterCancel = page.locator("tbody tr:nth-child(2) td:nth-child(1)").innerText()
@@ -111,11 +111,9 @@ class EditRowTest {
                 assertEquals("Joseph Smith Jr.", firstUserName, "First user changes should still be saved")
 
                 // Click the Reset button
-                page.click("button:has-text('Reset')")
+                page.click("button#reset")
 
-                page.waitForFunction(
-                    "document.querySelector('tbody tr:nth-child(1) td:nth-child(1)').innerText === 'Joe Smith'",
-                )
+                page.waitForTimeout(500.0)
 
                 val resetNames = page.locator("tbody tr td:nth-child(1)").allInnerTexts()
                 val resetEmails = page.locator("tbody tr td:nth-child(2)").allInnerTexts()
@@ -132,7 +130,7 @@ class EditRowTest {
                 )
 
                 // Verify that the reset operation completed successfully by editing again
-                page.click("tbody tr:nth-child(1) button:has-text('Edit')")
+                page.click("button#edit-row-0")
 
                 // Wait for edit mode
                 page.waitForSelector("tbody tr:nth-child(1) input")
