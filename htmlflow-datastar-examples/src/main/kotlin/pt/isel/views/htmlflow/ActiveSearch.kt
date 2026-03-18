@@ -9,6 +9,7 @@ import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tbody
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
@@ -25,7 +26,10 @@ import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.Contact
+import pt.isel.utils.loadResource
 import kotlin.time.Duration.Companion.milliseconds
+
+private val description = loadResource("public/html/fragments/active-search-description.html")
 
 val hfActiveSearch: HtmlView<List<Contact>> =
     view {
@@ -41,6 +45,7 @@ val hfActiveSearch: HtmlView<List<Contact>> =
                 }
             }
             body {
+                raw(description)
                 div {
                     hfActiveSearchTable()
                 }
@@ -66,17 +71,43 @@ fun Div<*>.hfActiveSearchTable() {
             }
         }
         tbody {
-            dyn { contacts: List<Contact> ->
-                contacts.forEach { cnt ->
-                    tr {
-                        td { text(cnt.firstName) }
-                        td { text(cnt.lastName) }
-                    }
-                }
+            attrId("contacts")
+            hfContactRows()
+        }
+    }
+}
+
+fun Tbody<*>.hfContactRows() {
+    dyn { contacts: List<Contact> ->
+        contacts.forEach { cnt ->
+            tr {
+                td { text(cnt.firstName) }
+                td { text(cnt.lastName) }
             }
         }
     }
 }
+
+/*
+* val hfactivefrag = view {
+*    tbody {
+*           attrId("contacts")
+*           hfContactRows()
+*       }
+* }
+*
+* hfactivefrag.render(filteredContacts)
+*/
+
+fun contactRowsFragment(contacts: List<Contact>): String =
+    StringBuilder()
+        .apply {
+            append("""<tbody id="contacts">""")
+            contacts.forEach { cnt ->
+                append("<tr><td>${cnt.firstName}</td><td>${cnt.lastName}</td></tr>")
+            }
+            append("</tbody>")
+        }.toString()
 
 @Path("/active-search/search")
 private fun activeSearch() {}

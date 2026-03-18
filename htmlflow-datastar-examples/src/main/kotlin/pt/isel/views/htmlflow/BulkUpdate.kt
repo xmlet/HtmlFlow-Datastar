@@ -31,8 +31,11 @@ import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.ktor.User
+import pt.isel.utils.loadResource
 import kotlin.collections.component1
 import kotlin.collections.component2
+
+private val description = loadResource("public/html/fragments/bulk-update-description.html")
 
 val hfBulkUpdate: HtmlView<List<User>> =
     view {
@@ -48,6 +51,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                 }
             }
             body {
+                raw(description)
                 div {
                     attrId("demo")
                     val (fetching, selections) =
@@ -72,6 +76,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                             }
                         }
                         tbody {
+                            attrId("users")
                             dyn { users: List<User> ->
                                 users.forEach { user: User ->
                                     tr {
@@ -111,6 +116,23 @@ val hfBulkUpdate: HtmlView<List<User>> =
                 }
             }
         }
+    }
+
+private fun buildUserRow(user: User): String =
+    buildString {
+        appendLine("\t<tr>")
+        appendLine("\t\t<td><input type=\"checkbox\" data-bind:selections=\"\" data-attr:disabled=\"\$_fetching\"></td>")
+        appendLine("\t\t<td>${user.name}</td>")
+        appendLine("\t\t<td>${user.email}</td>")
+        appendLine("\t\t<td>${user.status.syntax}</td>")
+        appendLine("\t</tr>")
+    }
+
+fun userRowsFragment(users: List<User>): String =
+    buildString {
+        appendLine("""<tbody id="users">""")
+        users.forEach { append(buildUserRow(it)) }
+        append("</tbody>")
     }
 
 @Path("/bulk-update/activate")

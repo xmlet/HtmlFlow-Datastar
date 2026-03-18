@@ -5,6 +5,7 @@
     </script><link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+<!-- DESCRIPTION -->
 <div id="demo">
     <input type="text" placeholder="Search..." data-bind:search="" data-on:input__debounce.200ms="@get('/active-search/search')">
     <table>
@@ -14,7 +15,7 @@
             <th>Last Name</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="contacts">
         <tr>
             <td>Abraham</td>
             <td>Altenwerth</td>
