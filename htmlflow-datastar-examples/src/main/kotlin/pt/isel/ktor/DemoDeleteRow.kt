@@ -20,7 +20,10 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfDeleteRow
 import pt.isel.views.htmlflow.hfDeleteRowTable
 
-private val html = loadResource("public/html/delete-row.html")
+private val description = loadResource("public/html/fragments/delete-row-description.html")
+private val html =
+    loadResource("public/html/delete-row.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 val DEFAULT_USERS =
     listOf(
@@ -38,13 +41,14 @@ val hfUsersTable: String =
         }
     }.render(DeleteRowsState(DEFAULT_USERS))
 
+private val deletedIndices = mutableSetOf<Int>()
+
 fun Route.demoDeleteRow() {
-    val deletedIndices = mutableSetOf<Int>()
     route("/delete-row") {
         get("/html", RoutingContext::getDeleteRowHtml)
-        get("/htmlflow") { getDeleteRowHtmlFlow(DEFAULT_USERS, deletedIndices) }
-        delete("/{index}") { deleteRow(deletedIndices) }
-        patch("/reset") { resetUsers(deletedIndices) }
+        get("/htmlflow", RoutingContext::getDeleteRowHtmlFlow)
+        delete("/{index}", RoutingContext::deleteRow)
+        patch("/reset", RoutingContext::resetUsers)
     }
 }
 
@@ -52,15 +56,12 @@ private suspend fun RoutingContext.getDeleteRowHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getDeleteRowHtmlFlow(
-    users: List<TableUser>,
-    deletedIndices: Set<Int>,
-) {
-    val visibleUsers = users.filterIndexed { i, _ -> i !in deletedIndices }
+private suspend fun RoutingContext.getDeleteRowHtmlFlow() {
+    val visibleUsers = DEFAULT_USERS.filterIndexed { i, _ -> i !in deletedIndices }
     call.respondText(hfDeleteRow.render(DeleteRowsState(visibleUsers)), ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.deleteRow(deletedIndices: MutableSet<Int>) {
+private suspend fun RoutingContext.deleteRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -75,7 +76,7 @@ private suspend fun RoutingContext.deleteRow(deletedIndices: MutableSet<Int>) {
     }
 }
 
-private suspend fun RoutingContext.resetUsers(deletedIndices: MutableSet<Int>) {
+private suspend fun RoutingContext.resetUsers() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,

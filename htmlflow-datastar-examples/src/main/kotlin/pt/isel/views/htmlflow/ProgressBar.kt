@@ -14,7 +14,10 @@ import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.ktor.ProgressBarState
+import pt.isel.utils.loadResource
 import kotlin.math.roundToInt
+
+private val description = loadResource("public/html/fragments/progress-bar-description.html")
 
 val hfProgressBar: String =
     StringBuilder()
@@ -41,6 +44,7 @@ val hfProgressBar: String =
                                 div {}
                             }
                         }
+                        raw(description)
                     }
                 }
             }

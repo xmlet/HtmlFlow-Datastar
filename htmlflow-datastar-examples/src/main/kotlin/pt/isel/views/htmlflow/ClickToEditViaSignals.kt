@@ -29,6 +29,9 @@ import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.datastar.extensions.dataText
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/click-to-edit-signals-description.html")
 
 val hfClickToEditSignals =
     StringBuilder()
@@ -136,6 +139,7 @@ val hfClickToEditSignals =
                                 }
                             }
                         }
+                        raw(description)
                     }
                 }
             }

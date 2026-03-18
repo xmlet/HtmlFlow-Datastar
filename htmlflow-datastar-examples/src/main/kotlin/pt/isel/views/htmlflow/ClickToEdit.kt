@@ -26,6 +26,9 @@ import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.ktor.Profile
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/click-to-edit-description.html")
 
 val hfDisplayFragment: HtmlView<Profile> =
     view {
@@ -131,6 +134,7 @@ val hfClickToEdit: HtmlView<Profile> =
                 dyn { profile: Profile ->
                     raw(hfDisplayFragment.render(profile))
                 }
+                raw(description)
             }
         }
     }

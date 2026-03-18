@@ -39,9 +39,11 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.ktor.TableState
 import pt.isel.ktor.TableUser
+import pt.isel.utils.loadResource
 
 // Module-level signal accessible to all functions
 private lateinit var editing: Signal<Boolean>
+private val description = loadResource("public/html/fragments/edit-row-description.html")
 
 val hfEditRow: HtmlView<TableState> =
     view {
@@ -60,6 +62,7 @@ val hfEditRow: HtmlView<TableState> =
                 div {
                     hfEditRowTable()
                 }
+                raw(description)
             }
         }
     }

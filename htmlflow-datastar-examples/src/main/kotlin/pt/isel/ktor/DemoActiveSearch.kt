@@ -1,9 +1,6 @@
 package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import htmlflow.HtmlView
-import htmlflow.div
-import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
@@ -16,12 +13,13 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.htmlflow.contactRowsFragment
 import pt.isel.views.htmlflow.hfActiveSearch
-import pt.isel.views.htmlflow.hfActiveSearchTable
 
-private val html = loadResource("public/html/active-search.html")
-
-private val hfTableFragment: HtmlView<List<Contact>> = view { div { hfActiveSearchTable() } }
+private val description = loadResource("public/html/fragments/active-search-description.html")
+private val html =
+    loadResource("public/html/active-search.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoActiveSearch() {
     route("/active-search") {
@@ -59,8 +57,7 @@ private suspend fun RoutingContext.searchContacts() {
                         it.lastName.contains(search, ignoreCase = true)
                 }
             }
-        val html = hfTableFragment.render(filteredContacts)
-        generator.patchElements(html)
+        generator.patchElements(contactRowsFragment(filteredContacts))
     }
 }
 

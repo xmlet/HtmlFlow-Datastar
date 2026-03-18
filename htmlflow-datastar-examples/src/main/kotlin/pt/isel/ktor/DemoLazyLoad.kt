@@ -15,7 +15,10 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfLazyLoad
 import pt.isel.views.htmlflow.hfLazyLoadDoc
 
-private val html = loadResource("public/html/lazy-load.html")
+private val description = loadResource("public/html/fragments/lazy-load-description.html")
+private val html =
+    loadResource("public/html/lazy-load.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoLazyLoad() {
     route("/lazy-load") {

@@ -26,7 +26,10 @@ import pt.isel.views.htmlflow.defaultRowView
 import pt.isel.views.htmlflow.editRow
 import pt.isel.views.htmlflow.hfEditRow
 
-private val html = loadResource("public/html/edit-row.html")
+private val description = loadResource("public/html/fragments/edit-row-description.html")
+private val html =
+    loadResource("public/html/edit-row.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun hfPartialEditRowDoc(idx: Int): String =
     StringBuilder()
@@ -39,15 +42,16 @@ fun hfPartialEditRowDoc(idx: Int): String =
             }
         }.toString()
 
+private val users = DEFAULT_USERS.toMutableList()
+
 fun Route.demoEditRow() {
-    val users = DEFAULT_USERS.toMutableList()
     route("/edit-row") {
         get("/html", RoutingContext::getEditRowHtml)
-        get("/htmlflow") { getEditRowHtmlFlow(TableState(users)) }
-        get("/{index}") { editRow(users) }
-        put("/reset") { resetUsers(users) }
-        get("/cancel") { cancelEditRow(users) }
-        patch("/{index}") { saveEditRow(users) }
+        get("/htmlflow", RoutingContext::getEditRowHtmlFlow)
+        get("/{index}", RoutingContext::editRow)
+        put("/reset", RoutingContext::resetUsers)
+        get("/cancel", RoutingContext::cancelEditRow)
+        patch("/{index}", RoutingContext::saveEditRow)
     }
 }
 
@@ -55,11 +59,11 @@ private suspend fun RoutingContext.getEditRowHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getEditRowHtmlFlow(tableState: TableState) {
-    call.respondText(hfEditRow.render(tableState), ContentType.Text.Html)
+private suspend fun RoutingContext.getEditRowHtmlFlow() {
+    call.respondText(hfEditRow.render(TableState(users)), ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.editRow(users: MutableList<TableUser>) {
+private suspend fun RoutingContext.editRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -80,7 +84,7 @@ private suspend fun RoutingContext.editRow(users: MutableList<TableUser>) {
     }
 }
 
-private suspend fun RoutingContext.cancelEditRow(users: List<TableUser>) {
+private suspend fun RoutingContext.cancelEditRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -95,7 +99,7 @@ private suspend fun RoutingContext.cancelEditRow(users: List<TableUser>) {
     }
 }
 
-private suspend fun RoutingContext.resetUsers(users: MutableList<TableUser>) {
+private suspend fun RoutingContext.resetUsers() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -112,7 +116,7 @@ private suspend fun RoutingContext.resetUsers(users: MutableList<TableUser>) {
     }
 }
 
-private suspend fun RoutingContext.saveEditRow(users: MutableList<TableUser>) {
+private suspend fun RoutingContext.saveEditRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,

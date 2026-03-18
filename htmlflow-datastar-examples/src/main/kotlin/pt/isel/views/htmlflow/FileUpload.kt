@@ -14,7 +14,10 @@ import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.*
 import pt.isel.ktor.FileSignal
 import pt.isel.ktor.md5
+import pt.isel.utils.loadResource
 import kotlin.io.encoding.Base64
+
+private val description = loadResource("public/html/fragments/file-upload-description.html")
 
 val hfFileUpload: String =
     StringBuilder()
@@ -51,6 +54,7 @@ val hfFileUpload: String =
                             attrId("file-upload")
                             attrHidden(true)
                         }
+                        raw(description)
                     }
                 }
             }

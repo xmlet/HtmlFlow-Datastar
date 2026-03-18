@@ -29,6 +29,9 @@ import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.DeleteRowsState
 import pt.isel.ktor.TableUser
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/delete-row-description.html")
 
 val hfDeleteRow: HtmlView<DeleteRowsState> =
     view {
@@ -48,6 +51,7 @@ val hfDeleteRow: HtmlView<DeleteRowsState> =
                     attrId("users-table")
                     hfDeleteRowTable()
                 }
+                raw(description)
             }
         }
     }

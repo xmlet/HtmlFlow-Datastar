@@ -1,0 +1,8 @@
+<div class="demo-description">
+    <h2>Click to Load — Description</h2>
+    <ol>
+        <li>On page load, signals <code>offset = 0</code> and <code>limit = 5</code> are initialised via <code>data-signals</code>. The table starts empty.</li>
+        <li>Clicking <strong>Load More</strong> sends a GET to <code>/click-to-load/more</code> with <code>offset</code> and <code>limit</code> as query parameters — the server simulates a delay, generates the next batch of agents, updates <code>offset</code> via <code>patchSignals</code>, and appends the new rows to <code>&lt;tbody&gt;</code> via <code>patchElements</code> with <code>mode = Append</code>.</li>
+        <li>The button is disabled while the request is in-flight via the <code>_fetching</code> indicator, and its label switches to <code>Loading...</code> via <code>data-text</code>.</li>
+    </ol>
+</div>

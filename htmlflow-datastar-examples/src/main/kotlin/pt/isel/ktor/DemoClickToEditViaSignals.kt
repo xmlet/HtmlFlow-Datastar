@@ -20,18 +20,22 @@ import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfClickToEditSignals
 
-private val html = loadResource("public/html/click-to-edit-signals.html")
+private val description = loadResource("public/html/fragments/click-to-edit-signals-description.html")
+private val html =
+    loadResource("public/html/click-to-edit-signals.html")
+        .replace("<!-- DESCRIPTION -->", description)
+
+private val clickToEditSignals = MutableStateFlow(ClickToEditSignals())
 
 fun Route.demoClickToEditViaSignals() {
-    val clickToEditSignals = MutableStateFlow(ClickToEditSignals())
     route("/click-to-edit-signals") {
         get("/html", RoutingContext::getClickToEditSignalsHtml)
         get("/htmlflow", RoutingContext::getClickToEditSignalsHtmlFlow)
 
-        get("/events") { getClickToEditEvents(clickToEditSignals) }
-        patch("/reset") { resetClickToEdit(clickToEditSignals) }
-        get("/cancel") { cancelClickToEdit(clickToEditSignals) }
-        put("") { saveClickToEdit(clickToEditSignals) }
+        get("/events", RoutingContext::getClickToEditEvents)
+        patch("/reset", RoutingContext::resetClickToEdit)
+        get("/cancel", RoutingContext::cancelClickToEdit)
+        put("", RoutingContext::saveClickToEdit)
     }
 }
 
@@ -43,17 +47,17 @@ private suspend fun RoutingContext.getClickToEditSignalsHtmlFlow() {
     call.respondText(hfClickToEditSignals, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getClickToEditEvents(signals: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.getClickToEditEvents() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val currentSignals = signals.value
+        val currentSignals = clickToEditSignals.value
         generator.patchSignals(
             " { firstName: '${currentSignals.firstName}', lastName: '${currentSignals.lastName}' , email: '${currentSignals.email}' }",
         )
-        signals.collect { newSignals ->
+        clickToEditSignals.collect { newSignals ->
             generator.patchSignals(
                 " { firstName: '${newSignals.firstName}', lastName: '${newSignals.lastName}' , email: '${newSignals.email}' }",
             )
@@ -61,12 +65,12 @@ private suspend fun RoutingContext.getClickToEditEvents(signals: MutableStateFlo
     }
 }
 
-private suspend fun RoutingContext.resetClickToEdit(clickToEditSignals: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.resetClickToEdit() {
     clickToEditSignals.emit(ClickToEditSignals())
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.cancelClickToEdit(clickToEditSignals: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.cancelClickToEdit() {
     clickToEditSignals.emit(
         ClickToEditSignals(
             firstName = clickToEditSignals.value.firstName,
@@ -77,7 +81,7 @@ private suspend fun RoutingContext.cancelClickToEdit(clickToEditSignals: Mutable
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.saveClickToEdit(clickToEditSignals: MutableStateFlow<ClickToEditSignals>) {
+private suspend fun RoutingContext.saveClickToEdit() {
     val datastarBodyArgs = call.request.call.receiveText()
 
     // Decode the signals from the request body

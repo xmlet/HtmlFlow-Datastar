@@ -18,7 +18,12 @@ import pt.isel.views.htmlflow.hfFileUpload
 import java.security.MessageDigest
 import kotlin.io.encoding.Base64
 
-private val html = loadResource("public/html/file-upload.html")
+private val description = loadResource("public/html/fragments/file-upload-description.html")
+private val html =
+    loadResource("public/html/file-upload.html")
+        .replace("<!-- DESCRIPTION -->", description)
+
+private const val MAX_FILE_SIZE = 1_000_000 // 1 MB
 
 fun Route.demoFileUpload() {
     route("/file-upload") {
@@ -35,8 +40,6 @@ private suspend fun RoutingContext.getFileUploadHtml() {
 private suspend fun RoutingContext.getFileUploadHHtmlFlow() {
     call.respondText(hfFileUpload, ContentType.Text.Html)
 }
-
-private const val MAX_FILE_SIZE = 1_000_000 // 1 MB
 
 private suspend fun RoutingContext.uploadFile() {
     call.respondTextWriter(

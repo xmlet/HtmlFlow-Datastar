@@ -9,7 +9,10 @@ import io.ktor.server.routing.route
 import pt.isel.utils.loadResource
 import pt.isel.views.htmlflow.hfInfiniteScroll
 
-private val html = loadResource("public/html/infinite-scroll.html")
+private val description = loadResource("public/html/fragments/infinite-scroll-description.html")
+private val html =
+    loadResource("public/html/infinite-scroll.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoInfiniteScroll() {
     route("/infinite-scroll") {

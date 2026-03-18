@@ -33,27 +33,30 @@ import kotlin.collections.map
 private val accounts =
     ConcurrentHashMap<UUID, MutableStateFlow<Account>>()
 
-private val html = loadResource("public/html/todo-mvc.html")
+private val description = loadResource("public/html/fragments/todo-mvc-description.html")
+private val html =
+    loadResource("public/html/todo-mvc.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoTodoMvc() {
     route("/todo-mvc") {
         get("/html", RoutingContext::getTodoMvcHtml)
         get("/htmlflow", RoutingContext::getTodoMcvHtmlFlow)
 
-        get("/updates") { getUpdates(accountFlow()) }
-        post("/-1/toggle") { toggleAll(accountFlow()) }
-        patch("/-1") { addTask(accountFlow()) }
-        get("/{id}") { setEditMode(accountFlow()) }
-        post("/{id}/toggle") { toggleTask(accountFlow()) }
-        delete("/{id}") { deleteTaskById(accountFlow()) }
-        patch("/{id}") { updateTask(accountFlow()) }
-        put("/cancel") { cancelEditMode(accountFlow()) }
+        get("/updates", RoutingContext::getUpdates)
+        post("/-1/toggle", RoutingContext::toggleAll)
+        patch("/-1", RoutingContext::addTask)
+        get("/{id}", RoutingContext::setEditMode)
+        post("/{id}/toggle", RoutingContext::toggleTask)
+        delete("/{id}", RoutingContext::deleteTaskById)
+        patch("/{id}", RoutingContext::updateTask)
+        put("/cancel", RoutingContext::cancelEditMode)
 
-        put("/mode/0") { setMode(accountFlow(), Mode.ALL) }
-        put("/mode/1") { setMode(accountFlow(), Mode.PENDING) }
-        put("/mode/2") { setMode(accountFlow(), Mode.DONE) }
-        delete("/-1") { deleteToggledTasks(accountFlow()) }
-        put("/reset") { resetTasks(accountFlow()) }
+        put("/mode/0") { setMode(Mode.ALL) }
+        put("/mode/1") { setMode(Mode.PENDING) }
+        put("/mode/2") { setMode(Mode.DONE) }
+        delete("/-1", RoutingContext::deleteToggledTasks)
+        put("/reset", RoutingContext::resetTasks)
     }
 }
 
@@ -90,13 +93,13 @@ data class TodoUiState(
     val pendingCount: Int,
 )
 
-private suspend fun RoutingContext.getUpdates(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.getUpdates() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-
+        val account = accountFlow()
         account.collect { event ->
             val showingTasks =
                 when (event.mode) {
@@ -125,7 +128,8 @@ private suspend fun RoutingContext.getUpdates(account: MutableStateFlow<Account>
     }
 }
 
-private suspend fun RoutingContext.cancelEditMode(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.cancelEditMode() {
+    val account = accountFlow()
     account.emit(
         account.value.copy(
             tasks = account.value.tasks.map { if (it.editing) it.copy(editing = false) else it },
@@ -135,13 +139,13 @@ private suspend fun RoutingContext.cancelEditMode(account: MutableStateFlow<Acco
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.updateTask(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.updateTask() {
     val taskId =
         call.parameters["id"]?.toIntOrNull()
             ?: return call.respond(HttpStatusCode.BadRequest)
 
     val (input) = Json.decodeFromString<TodoMvcSignals>(call.receiveText())
-
+    val account = accountFlow()
     account.emit(
         account.value.copy(
             tasks =
@@ -159,7 +163,8 @@ private data class TodoMvcSignals(
     val input: String,
 )
 
-private suspend fun RoutingContext.toggleAll(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.toggleAll() {
+    val account = accountFlow()
     val allDone = account.value.tasks.all { it.status == Status.DONE }
 
     account.emit(
@@ -173,8 +178,9 @@ private suspend fun RoutingContext.toggleAll(account: MutableStateFlow<Account>)
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.addTask(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.addTask() {
     val (input) = Json.decodeFromString<TodoMvcSignals>(call.receiveText())
+    val account = accountFlow()
     val newTask =
         Task(
             id =
@@ -188,11 +194,11 @@ private suspend fun RoutingContext.addTask(account: MutableStateFlow<Account>) {
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.setEditMode(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.setEditMode() {
     val taskId =
         call.parameters["id"]?.toIntOrNull()
             ?: return call.respond(HttpStatusCode.BadRequest)
-
+    val account = accountFlow()
     account.emit(
         account.value.copy(
             tasks =
@@ -205,11 +211,11 @@ private suspend fun RoutingContext.setEditMode(account: MutableStateFlow<Account
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.toggleTask(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.toggleTask() {
     val id =
         call.parameters["id"]?.toIntOrNull()
             ?: return call.respond(HttpStatusCode.BadRequest)
-
+    val account = accountFlow()
     account.emit(
         account.value.copy(
             tasks =
@@ -222,11 +228,11 @@ private suspend fun RoutingContext.toggleTask(account: MutableStateFlow<Account>
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.deleteTaskById(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.deleteTaskById() {
     val taskId =
         call.parameters["id"]?.toIntOrNull()
             ?: return call.respond(HttpStatusCode.BadRequest)
-
+    val account = accountFlow()
     account.emit(
         account.value.copy(tasks = account.value.tasks.filterNot { it.id == taskId }),
     )
@@ -234,22 +240,22 @@ private suspend fun RoutingContext.deleteTaskById(account: MutableStateFlow<Acco
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.deleteToggledTasks(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.deleteToggledTasks() {
+    val account = accountFlow()
     account.emit(
         account.value.copy(tasks = account.value.tasks.filterNot { it.status == Status.DONE }),
     )
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.setMode(
-    account: MutableStateFlow<Account>,
-    mode: Mode,
-) {
+private suspend fun RoutingContext.setMode(mode: Mode) {
+    val account = accountFlow()
     account.emit(account.value.copy(mode = mode))
     call.respond(HttpStatusCode.NoContent)
 }
 
-private suspend fun RoutingContext.resetTasks(account: MutableStateFlow<Account>) {
+private suspend fun RoutingContext.resetTasks() {
+    val account = accountFlow()
     account.emit(account.value.copy(tasks = initialTasks))
     call.respond(HttpStatusCode.NoContent)
 }

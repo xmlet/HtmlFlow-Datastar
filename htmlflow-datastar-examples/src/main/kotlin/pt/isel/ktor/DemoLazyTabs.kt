@@ -15,7 +15,10 @@ import pt.isel.views.htmlflow.TAB_CONTENTS
 import pt.isel.views.htmlflow.hfLazyTabs
 import pt.isel.views.htmlflow.hfTabPanelView
 
-private val html = loadResource("public/html/lazy-tabs.html")
+private val description = loadResource("public/html/fragments/lazy-tabs-description.html")
+private val html =
+    loadResource("public/html/lazy-tabs.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoLazyTabs() {
     route("/lazy-tabs") {

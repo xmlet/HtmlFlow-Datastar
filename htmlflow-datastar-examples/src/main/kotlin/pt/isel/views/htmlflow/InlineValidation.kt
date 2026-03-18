@@ -24,7 +24,10 @@ import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.InlineValidationSignals
+import pt.isel.utils.loadResource
 import kotlin.time.Duration.Companion.milliseconds
+
+private val description = loadResource("public/html/fragments/inline-validation-description.html")
 
 val hfInlineValidationView: HtmlView<InlineValidationSignals> =
     view {
@@ -44,6 +47,7 @@ val hfInlineValidationView: HtmlView<InlineValidationSignals> =
                     attrId("demo")
                     inputFields()
                 }
+                raw(description)
             }
         }
     }

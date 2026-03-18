@@ -16,27 +16,24 @@ import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfCounterViaSignals
 
-private val html = loadResource("public/html/counter-signals.html")
+private val description = loadResource("public/html/fragments/counter-signals-description.html")
+private val html =
+    loadResource("public/html/counter-signals.html")
+        .replace("<!-- DESCRIPTION -->", description)
+
+private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
 fun Route.demoCounterSignals() {
-    val counter: MutableStateFlow<Int> = MutableStateFlow(0)
-
     route("/counter-signals") {
         get("/html", RoutingContext::getCounterPageHtml)
 
         get("/htmlflow", RoutingContext::getCounterPageHtmlFlow)
 
-        get("/events") {
-            getCounterEvents(counter)
-        }
+        get("/events", RoutingContext::getCounterEvents)
 
-        post("/increment") {
-            postCounterIncrement(counter)
-        }
+        post("/increment", RoutingContext::postCounterIncrement)
 
-        post("/decrement") {
-            postCounterDecrement(counter)
-        }
+        post("/decrement", RoutingContext::postCounterDecrement)
     }
 }
 
@@ -48,7 +45,7 @@ private suspend fun RoutingContext.getCounterPageHtmlFlow() {
     call.respondText(hfCounterViaSignals, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<Int>) {
+private suspend fun RoutingContext.getCounterEvents() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -62,12 +59,12 @@ private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<In
     }
 }
 
-private fun RoutingContext.postCounterIncrement(counter: MutableStateFlow<Int>) {
+private fun RoutingContext.postCounterIncrement() {
     counter.value++
     call.response.status(HttpStatusCode.NoContent)
 }
 
-private fun RoutingContext.postCounterDecrement(counter: MutableStateFlow<Int>) {
+private fun RoutingContext.postCounterDecrement() {
     counter.value--
     call.response.status(HttpStatusCode.NoContent)
 }

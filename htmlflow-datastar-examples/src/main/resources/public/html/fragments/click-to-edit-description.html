@@ -1,0 +1,10 @@
+<div class="demo-description">
+    <h2>Click to Edit — Description</h2>
+    <ol>
+        <li>On page load, the profile is rendered in <strong>display mode</strong> (read-only).</li>
+        <li>Clicking <strong>Edit</strong> sends a GET to <code>/click-to-edit/edit</code> — the server responds with a <code>patchElements</code> SSE that swaps <code>#demo</code> with the edit form, initialising signals (<code>firstName</code>, <code>lastName</code>, <code>email</code>) with the current profile values.</li>
+        <li>Clicking <strong>Save</strong> sends a PUT to <code>/click-to-edit</code> with the current signals (<code>firstName</code>, <code>lastName</code>, <code>email</code>) in the request body — the server persists the data and patches <code>#demo</code> back to display mode.</li>
+        <li>Clicking <strong>Cancel</strong> sends a GET to <code>/click-to-edit/cancel</code> — discards changes and patches back to display mode.</li>
+        <li>Clicking <strong>Reset</strong> sends a PATCH to <code>/click-to-edit/reset</code> — restores the original profile.</li>
+    </ol>
+</div>

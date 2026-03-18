@@ -18,6 +18,9 @@ import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.ktor.LazyLoadImage
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/lazy-load-description.html")
 
 val hfLazyLoad: HtmlView<Unit> =
     view {
@@ -36,6 +39,7 @@ val hfLazyLoad: HtmlView<Unit> =
                 div {
                     hfLazyLoadGraph()
                 }
+                raw(description)
             }
         }
     }

@@ -16,6 +16,9 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/lazy-tabs-description.html")
 
 val TAB_CONTENTS =
     listOf(
@@ -64,6 +67,7 @@ val hfLazyTabs: String =
                                 p { text(TAB_CONTENTS[0]) }
                             }
                         }
+                        raw(description)
                     }
                 }
             }

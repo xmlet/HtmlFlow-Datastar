@@ -26,6 +26,9 @@ import pt.isel.datastar.extensions.dataClass
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/progressive-load-description.html")
 
 val hfProgressiveLoad =
     StringBuilder()
@@ -43,6 +46,7 @@ val hfProgressiveLoad =
                         }
                     }
                     body {
+                        raw(description)
                         div {
                             attrClass("actions")
                             var progressiveLoad: Signal<Boolean>? = null

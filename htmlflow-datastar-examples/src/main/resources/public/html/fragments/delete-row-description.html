@@ -1,0 +1,9 @@
+<div class="demo-description">
+    <h2>Delete Row — Description</h2>
+    <ol>
+        <li>On page load, the user table is rendered server-side with a Delete button per row and a Reset button.</li>
+        <li>Clicking <strong>Delete</strong> on a row sends a DELETE to <code>/delete-row/{index}</code> — the server removes the row from <code>#row-{index}</code> via <code>patchElements</code> with <code>mode = Remove</code>.</li>
+        <li>Clicking <strong>Reset</strong> sends a PATCH to <code>/delete-row/reset</code> — the server clears the deleted indices and patches <code>#users-table</code> with the full table via <code>patchElements</code> with <code>mode = Replace</code>.</li>
+        <li>All buttons are disabled during any in-flight request via the <code>_fetching</code> indicator. The Delete button also requires a browser confirmation before firing.</li>
+    </ol>
+</div>

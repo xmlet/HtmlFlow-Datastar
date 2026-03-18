@@ -21,7 +21,10 @@ import pt.isel.views.htmlflow.hfClickToEdit
 import pt.isel.views.htmlflow.hfDisplayFragment
 import pt.isel.views.htmlflow.hfEditModeFragment
 
-private val html = loadResource("public/html/click-to-edit.html")
+private val description = loadResource("public/html/fragments/click-to-edit-description.html")
+private val html =
+    loadResource("public/html/click-to-edit.html")
+        .replace("<!-- DESCRIPTION -->", description)
 val DEFAULT_USER =
     Profile(
         firstName = "John",
@@ -33,11 +36,11 @@ private val globalUser = MutableStateFlow(DEFAULT_USER)
 fun Route.demoClickToEdit() {
     route("/click-to-edit") {
         get("/html", RoutingContext::getClickToEditHtml)
-        get("/htmlflow") { getClickToEditHtmlFlow(globalUser) }
-        get("/edit") { editClickToEdit(globalUser) }
-        patch("/reset") { resetClickToEdit(globalUser) }
-        get("/cancel") { cancelClickToEdit(globalUser) }
-        put("") { saveClickToEdit(globalUser) }
+        get("/htmlflow", RoutingContext::getClickToEditHtmlFlow)
+        get("/edit", RoutingContext::editClickToEdit)
+        patch("/reset", RoutingContext::resetClickToEdit)
+        get("/cancel", RoutingContext::cancelClickToEdit)
+        put("", RoutingContext::saveClickToEdit)
     }
 }
 
@@ -45,48 +48,48 @@ private suspend fun RoutingContext.getClickToEditHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getClickToEditHtmlFlow(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.getClickToEditHtmlFlow() {
     call.respondText(
-        hfClickToEdit.render(currentUser.value),
+        hfClickToEdit.render(globalUser.value),
         ContentType.Text.Html,
     )
 }
 
-private suspend fun RoutingContext.editClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.editClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(hfEditModeFragment.render(currentUser.value))
+        generator.patchElements(hfEditModeFragment.render(globalUser.value))
     }
 }
 
-private suspend fun RoutingContext.resetClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.resetClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
 
-        currentUser.emit(DEFAULT_USER)
+        globalUser.emit(DEFAULT_USER)
 
         generator.patchElements(hfDisplayFragment.render(DEFAULT_USER))
     }
 }
 
-private suspend fun RoutingContext.cancelClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.cancelClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
 
-        generator.patchElements(hfDisplayFragment.render(currentUser.value))
+        generator.patchElements(hfDisplayFragment.render(globalUser.value))
     }
 }
 
-private suspend fun RoutingContext.saveClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.saveClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
@@ -97,12 +100,12 @@ private suspend fun RoutingContext.saveClickToEdit(currentUser: MutableStateFlow
 
         val newProfile =
             Profile(
-                firstName = signals.firstName ?: currentUser.value.firstName,
-                lastName = signals.lastName ?: currentUser.value.lastName,
-                email = signals.email ?: currentUser.value.email,
+                firstName = signals.firstName ?: globalUser.value.firstName,
+                lastName = signals.lastName ?: globalUser.value.lastName,
+                email = signals.email ?: globalUser.value.email,
             )
 
-        currentUser.emit(newProfile)
+        globalUser.emit(newProfile)
 
         generator.patchElements(hfDisplayFragment.render(newProfile))
     }

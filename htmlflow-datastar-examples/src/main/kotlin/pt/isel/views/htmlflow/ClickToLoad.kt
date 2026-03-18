@@ -30,6 +30,9 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.datastar.extensions.dataText
 import pt.isel.ktor.Agent
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/click-to-load-description.html")
 
 val hfClickToLoad: String =
     StringBuilder()
@@ -47,9 +50,7 @@ val hfClickToLoad: String =
                         }
                     }
                     body {
-                        h1 {
-                            text("Click to Load")
-                        }
+                        raw(description)
                         div {
                             attrId("demo")
                             dataSignals("offset" to 0, "limit" to 5)

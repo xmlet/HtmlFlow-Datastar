@@ -16,25 +16,22 @@ import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfCounterEventView
 
-private val html = loadResource("public/html/counter.html")
+private val description = loadResource("public/html/fragments/counter-description.html")
+private val html =
+    loadResource("public/html/counter.html")
+        .replace("<!-- DESCRIPTION -->", description)
+
+private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
 fun Route.demoCounter() {
-    val counter: MutableStateFlow<Int> = MutableStateFlow(0)
-
     route("/counter") {
         get("/html", RoutingContext::getCounterPageHtml)
 
-        get("/events") {
-            getCounterEvents(counter)
-        }
+        get("/events", RoutingContext::getCounterEvents)
 
-        post("/increment") {
-            postCounterIncrement(counter)
-        }
+        post("/increment", RoutingContext::postCounterIncrement)
 
-        post("/decrement") {
-            postCounterDecrement(counter)
-        }
+        post("/decrement", RoutingContext::postCounterDecrement)
     }
 }
 
@@ -42,7 +39,7 @@ private suspend fun RoutingContext.getCounterPageHtml() {
     call.respondText(html, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<Int>) {
+private suspend fun RoutingContext.getCounterEvents() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -60,12 +57,12 @@ private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<In
     }
 }
 
-private fun RoutingContext.postCounterIncrement(counter: MutableStateFlow<Int>) {
+private fun RoutingContext.postCounterIncrement() {
     counter.value++
     call.response.status(HttpStatusCode.NoContent)
 }
 
-private fun RoutingContext.postCounterDecrement(counter: MutableStateFlow<Int>) {
+private fun RoutingContext.postCounterDecrement() {
     counter.value--
     call.response.status(HttpStatusCode.NoContent)
 }

@@ -19,7 +19,10 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfProgressiveLoad
 import pt.isel.views.htmlflow.loadDiv
 
-private val html = loadResource("public/html/progressive-load.html")
+private val description = loadResource("public/html/fragments/progressive-load-description.html")
+private val html =
+    loadResource("public/html/progressive-load.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoProgressiveLoad() {
     route("/progressive-load") {

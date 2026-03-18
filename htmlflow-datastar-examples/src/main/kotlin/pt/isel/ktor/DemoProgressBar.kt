@@ -16,7 +16,10 @@ import pt.isel.views.htmlflow.hfProgressBar
 import pt.isel.views.htmlflow.renderProgressBarFragment
 import kotlin.random.Random
 
-private val html = loadResource("public/html/progress-bar.html")
+private val description = loadResource("public/html/fragments/progress-bar-description.html")
+private val html =
+    loadResource("public/html/progress-bar.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoProgressBar() {
     route("/progress-bar") {

@@ -16,8 +16,19 @@ import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfBulkUpdate
+import pt.isel.views.htmlflow.userRowsFragment
 
-private val html = loadResource("public/html/bulk-update.html")
+private val description = loadResource("public/html/fragments/bulk-update-description.html")
+private val html =
+    loadResource("public/html/bulk-update.html")
+        .replace("<!-- DESCRIPTION -->", description)
+private val users =
+    mutableListOf(
+        User("Joe Smith", "joe@smith.org", UserStatus.ACTIVE),
+        User("Angie MacDowell", "angie@macdowell.org", UserStatus.ACTIVE),
+        User("Fuqua Tarkenton", "fuqua@tarkenton.org", UserStatus.INACTIVE),
+        User("Kim Yee", "kim@yee.org", UserStatus.INACTIVE),
+    )
 
 fun Route.demoBulkUpdate() {
     route("/bulk-update") {
@@ -35,14 +46,6 @@ private suspend fun RoutingContext.getBulkUpdateHtml() {
 private suspend fun RoutingContext.getBulkUpdateHtmlFlow() {
     call.respondText(hfBulkUpdate.render(users), ContentType.Text.Html)
 }
-
-private val users =
-    mutableListOf(
-        User("Joe Smith", "joe@smith.org", UserStatus.ACTIVE),
-        User("Angie MacDowell", "angie@macdowell.org", UserStatus.ACTIVE),
-        User("Fuqua Tarkenton", "fuqua@tarkenton.org", UserStatus.INACTIVE),
-        User("Kim Yee", "kim@yee.org", UserStatus.INACTIVE),
-    )
 
 private suspend fun RoutingContext.activateUsers() {
     call.respondTextWriter(
@@ -63,8 +66,7 @@ private suspend fun RoutingContext.activateUsers() {
                 users[index] = users[index].copy(status = UserStatus.ACTIVE)
             }
         }
-        val html = hfBulkUpdate.render(users).trimIndent().replace("\n", "")
-        generator.patchElements(html)
+        generator.patchElements(userRowsFragment(users))
     }
 }
 
@@ -87,9 +89,7 @@ private suspend fun RoutingContext.deactivateUsers() {
                 users[index] = users[index].copy(status = UserStatus.INACTIVE)
             }
         }
-        val html = hfBulkUpdate.render(users)
-
-        generator.patchElements(html)
+        generator.patchElements(userRowsFragment(users))
     }
 }
 

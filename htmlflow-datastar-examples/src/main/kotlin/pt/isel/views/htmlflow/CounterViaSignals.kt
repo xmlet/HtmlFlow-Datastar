@@ -19,6 +19,9 @@ import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/counter-signals-description.html")
 
 val hfCounterViaSignals: String =
     StringBuilder()
@@ -36,6 +39,7 @@ val hfCounterViaSignals: String =
                         }
                     }
                     body {
+                        raw(description)
                         div {
                             val count = dataSignal("count", 0)
                             h1 {

@@ -19,7 +19,10 @@ import pt.isel.views.htmlflow.hfInlineValidationView
 import pt.isel.views.htmlflow.hfInputFieldsDiv
 import pt.isel.views.htmlflow.hfSignUpDoc
 
-private val html = loadResource("public/html/inline-validation.html")
+private val description = loadResource("public/html/fragments/inline-validation-description.html")
+private val html =
+    loadResource("public/html/inline-validation.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoInlineValidation() {
     route("/inline-validation") {

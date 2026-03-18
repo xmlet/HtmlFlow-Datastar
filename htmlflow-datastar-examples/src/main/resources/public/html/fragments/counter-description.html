@@ -1,0 +1,9 @@
+<div class="demo-description">
+    <h2>Counter — Description</h2>
+    <ol>
+        <li>On page load, a GET to <code>/counter/events</code> opens an SSE stream that patches the counter display via <code>patchElements</code> whenever the counter value changes.</li>
+        <li>Clicking <strong>Increment</strong> sends a POST to <code>/counter/increment</code> — the server increments the counter and the SSE stream emits the updated value.</li>
+        <li>Clicking <strong>Decrement</strong> sends a POST to <code>/counter/decrement</code> — the server decrements the counter and the SSE stream emits the updated value.</li>
+        <li>When the counter reaches <code>3</code>, the server sends an <code>executeScript</code> SSE event that triggers a browser alert.</li>
+    </ol>
+</div>

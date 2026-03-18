@@ -19,7 +19,10 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfClickToLoad
 
-private val html = loadResource("public/html/click-to-load.html")
+private val description = loadResource("public/html/fragments/click-to-load-description.html")
+private val html =
+    loadResource("public/html/click-to-load.html")
+        .replace("<!-- DESCRIPTION -->", description)
 
 fun Route.demoClickToLoad() {
     route("/click-to-load") {

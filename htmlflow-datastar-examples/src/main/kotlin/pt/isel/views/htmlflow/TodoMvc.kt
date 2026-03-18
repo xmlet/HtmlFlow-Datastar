@@ -34,6 +34,9 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.ktor.Status
 import pt.isel.ktor.TodoUiState
+import pt.isel.utils.loadResource
+
+private val description = loadResource("public/html/fragments/todo-mvc-description.html")
 
 val hfTodoMvcView: HtmlView<TodoUiState> =
     view<TodoUiState> {
@@ -54,6 +57,7 @@ val hfTodoMvcView: HtmlView<TodoUiState> =
                     tasksView()
                     buttonsView()
                 }
+                raw(description)
             }
         }
     }
