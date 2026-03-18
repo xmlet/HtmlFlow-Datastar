@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.events.Input
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -42,7 +43,8 @@ class ActiveSearchTest {
                                     attrType(EnumTypeInputType.TEXT)
                                     attrPlaceholder("Search...")
                                     dataBind("search")
-                                    dataOn("input", get(::search)) {
+                                    dataOn(Input) {
+                                        +get(::search)
                                         mods { debounce(200.milliseconds) }
                                     }
                                 }

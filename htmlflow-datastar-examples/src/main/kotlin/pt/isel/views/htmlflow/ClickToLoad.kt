@@ -21,6 +21,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.and
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
@@ -70,7 +71,9 @@ val hfClickToLoad: String =
                             attrClass("info wide")
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled", fetching)
-                            dataOn("click", !fetching and get(::clickToLoadMore))
+                            dataOn(Click) {
+                                +(!fetching and get(::clickToLoadMore))
+                            }
                             dataText("$fetching ? 'Loading...' : 'Load More'")
                             text("Load More")
                         }

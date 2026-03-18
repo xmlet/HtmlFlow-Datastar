@@ -14,6 +14,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOn
 
@@ -53,7 +54,9 @@ val hfLazyTabs: String =
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", if (i == 0) "true" else "false")
-                                        dataOn("click", get("/lazy-tabs/$i"))
+                                        dataOn(Click) {
+                                            +get("/lazy-tabs/$i")
+                                        }
                                         text("Tab $i")
                                     }
                                 }

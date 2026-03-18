@@ -7,23 +7,25 @@ import pt.isel.datastar.modifiers.attributes.DataOnModifiers
 class EventHandlerScope<EVT : Event>(
     val evt: EVT,
 ) : ModBuilder<DataOnModifiers>(::DataOnModifiers) {
-    private var handlerExpression = ""
+    private val handlerExpression = mutableListOf<DataStarExpression>()
 
     fun expr(expr: DataStarExpression) {
-        handlerExpression + expr
+        handlerExpression.addLast(expr)
     }
 
     fun expr(js: String) {
-        handlerExpression + js
+        handlerExpression.addLast(DataStarExpression(js))
     }
 
     operator fun DataStarExpression.unaryPlus() {
-        handlerExpression += this
+        handlerExpression.addLast(this)
     }
 
     operator fun String.unaryPlus() {
-        handlerExpression += this
+        handlerExpression.addLast(DataStarExpression(this))
     }
 
-    val expr: String get() = handlerExpression
+    fun getExpressions() = handlerExpression.joinToString("; ")
+
+    fun getModifiers() = mods
 }

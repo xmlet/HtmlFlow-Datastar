@@ -21,6 +21,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.events.Input
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -54,7 +55,8 @@ fun Div<*>.hfActiveSearchTable() {
         attrType(EnumTypeInputType.TEXT)
         attrPlaceholder("Search...")
         dataBind("search")
-        dataOn("input", get(::activeSearch)) {
+        dataOn(Input) {
+            +get(::activeSearch)
             mods { debounce(200.milliseconds) }
         }
     }

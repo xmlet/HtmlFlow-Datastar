@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
@@ -40,19 +41,25 @@ class LazyTabsTest {
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "true")
-                                        dataOn("click", get(::lazyTabs0))
+                                        dataOn(Click) {
+                                            +get(::lazyTabs0)
+                                        }
                                         text("Tab 0")
                                     }
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "false")
-                                        dataOn("click", get(::lazyTabs1))
+                                        dataOn(Click) {
+                                            +get(::lazyTabs1)
+                                        }
                                         text("Tab 1")
                                     }
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", "false")
-                                        dataOn("click", get(::lazyTabs2))
+                                        dataOn(Click) {
+                                            +get(::lazyTabs2)
+                                        }
                                         text("Tab 2")
                                     }
                                 }

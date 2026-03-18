@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
@@ -46,7 +47,7 @@ class FileUploadTest {
                             button {
                                 attrClass("warning")
                                 val files = dataSignal("files")
-                                dataOn("click", "$files.length && ${post(::uploadFiles)}")
+                                dataOn(Click, "$files.length && ${post(::uploadFiles)}")
                                 dataAttr("aria-disabled", $$"`${!$$files.length}`")
                                 text("Submit")
                             }

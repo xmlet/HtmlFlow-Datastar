@@ -16,6 +16,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataBind
@@ -59,7 +60,9 @@ class EditRowTest {
                                         td { text("joe@smith.org") }
                                         td {
                                             button {
-                                                dataOn("click", get(::editRow0))
+                                                dataOn(Click) {
+                                                    +get(::editRow0)
+                                                }
                                                 text("Edit")
                                             }
                                         }
@@ -91,11 +94,15 @@ class EditRowTest {
                                         }
                                         td {
                                             button {
-                                                dataOn("click", get(::editRowCancel))
+                                                dataOn(Click) {
+                                                    +get(::editRowCancel)
+                                                }
                                                 text("Cancel")
                                             }
                                             button {
-                                                dataOn("click", patch(::editRow0))
+                                                dataOn(Click) {
+                                                    +patch(::editRow0)
+                                                }
                                                 text("Save")
                                             }
                                         }

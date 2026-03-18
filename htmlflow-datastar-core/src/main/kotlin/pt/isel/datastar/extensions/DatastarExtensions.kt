@@ -29,6 +29,7 @@ import org.xmlet.htmlapifaster.Input
 import org.xmlet.htmlapifaster.Select
 import org.xmlet.htmlapifaster.Textarea
 import pt.isel.datastar.Signal
+import pt.isel.datastar.events.Event
 import pt.isel.datastar.expressions.DataStarExpression
 import kotlin.collections.joinToString
 
@@ -224,7 +225,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(expr: DataStar
  * @param expr DataStarExpression that computes the value of the signal
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
-    event: String,
+    event: Event,
     expr: DataStarExpression,
 ) = dataOn(event, expr.expression)
 

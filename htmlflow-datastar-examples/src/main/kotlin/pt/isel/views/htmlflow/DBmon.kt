@@ -16,10 +16,11 @@ import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
 import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.events.Blur
+import pt.isel.datastar.events.Focus
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
 import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.semiColon
 import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
@@ -58,8 +59,13 @@ val hfDBmon =
                                         attrMin("0")
                                         attrMax("100")
                                         attrValue("20")
-                                        dataOn("focus", editing setValue true)
-                                        dataOn("blur", put(::inputs) semiColon (editing setValue false))
+                                        dataOn(Focus) {
+                                            +(editing setValue true)
+                                        }
+                                        dataOn(Blur) {
+                                            +put(::inputs)
+                                            +(editing setValue false)
+                                        }
                                         val mutationRate = dataBind("mutation-rate")
                                         dataAttr("data-bind:${mutationRate.name}", editing)
                                         val mutRate = dataBind("_mutation-rate")
@@ -73,8 +79,13 @@ val hfDBmon =
                                         attrMin("1")
                                         attrMax("144")
                                         attrValue("60")
-                                        dataOn("focus", editing setValue true)
-                                        dataOn("blur", put(::inputs) semiColon (editing setValue false))
+                                        dataOn(Focus) {
+                                            +(editing setValue true)
+                                        }
+                                        dataOn(Blur) {
+                                            +put(::inputs)
+                                            +(editing setValue false)
+                                        }
                                         val framesPerSecond = dataBind("fps")
                                         dataAttr("data-bind:${framesPerSecond.name}", editing)
                                         val fps = dataBind("_fps")

@@ -9,6 +9,7 @@ import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataInit
@@ -44,14 +45,18 @@ class TemplCounterTest {
                                 button {
                                     attrId("global")
                                     attrClass("info")
-                                    dataOn("click", patch(::globalCounter))
+                                    dataOn(Click) {
+                                        +patch(::globalCounter)
+                                    }
                                     text("Global Clicks: 0")
                                 }
                                 comment("User Counter")
                                 button {
                                     attrId("user")
                                     attrClass("success")
-                                    dataOn("click", patch(::userCounter))
+                                    dataOn(Click) {
+                                        +patch(::userCounter)
+                                    }
                                     text("User Clicks: 0")
                                 }
                             }

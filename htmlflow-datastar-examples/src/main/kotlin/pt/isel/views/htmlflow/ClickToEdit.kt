@@ -19,6 +19,7 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.expressions.put
@@ -54,14 +55,18 @@ val hfClickToEdit: HtmlView<Profile> =
                             attrClass("info")
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled", fetching)
-                            dataOn("click", get(::clickToEditEdit))
+                            dataOn(Click) {
+                                +get(::clickToEditEdit)
+                            }
                             text("Edit")
                         }
                         button {
                             attrClass("warning")
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled", fetching)
-                            dataOn("click", patch(::clickToEditReset))
+                            dataOn(Click) {
+                                +patch(::clickToEditReset)
+                            }
                             text("Reset")
                         }
                     }
@@ -109,14 +114,18 @@ val hfEditModeDoc =
                             attrClass("success")
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled", fetching)
-                            dataOn("click", put(::clickToEdit))
+                            dataOn(Click) {
+                                +put(::clickToEdit)
+                            }
                             text("Save")
                         }
                         button {
                             attrClass("error")
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled", fetching)
-                            dataOn("click", get(::clickToEditCancel))
+                            dataOn(Click) {
+                                +get(::clickToEditCancel)
+                            }
                             text("Cancel")
                         }
                     }

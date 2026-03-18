@@ -6,6 +6,8 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.events.Change
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.put
 import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
@@ -52,7 +54,9 @@ class BulkUpdateTest {
                                             th {
                                                 input {
                                                     attrType(EnumTypeInputType.CHECKBOX)
-                                                    dataOn("change", setAll("el.checked", "{include: /^selections/}"))
+                                                    dataOn(Change) {
+                                                        +setAll("el.checked", "{include: /^selections/}")
+                                                    }
                                                     dataEffect($$"el.checked = $selections.every(Boolean)")
                                                     dataAttr("disabled", fetching)
                                                 }
@@ -80,7 +84,9 @@ class BulkUpdateTest {
                                 div {
                                     button {
                                         attrClass("success")
-                                        dataOn("click", put(::activate))
+                                        dataOn(Click) {
+                                            +put(::activate)
+                                        }
                                         dataIndicator(fetching.name)
                                         dataAttr("disabled", fetching)
                                         i { attrClass("pixelarticons:user-plus") }
@@ -88,7 +94,9 @@ class BulkUpdateTest {
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click", put(::deactivate))
+                                        dataOn(Click) {
+                                            +put(::deactivate)
+                                        }
                                         dataIndicator(fetching.name)
                                         dataAttr("disabled", fetching)
                                         i { attrClass("pixelarticons:user-x") }

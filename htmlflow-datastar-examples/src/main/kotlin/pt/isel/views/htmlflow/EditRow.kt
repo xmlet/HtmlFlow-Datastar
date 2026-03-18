@@ -24,6 +24,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.expressions.put
@@ -81,7 +82,9 @@ fun Div<*>.hfEditRowTable() {
     div {
         button {
             attrClass("warning")
-            dataOn("click", put(::editRowReset))
+            dataOn(Click) {
+                +put(::editRowReset)
+            }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:user-plus") }
@@ -99,7 +102,9 @@ private fun Tr<*>.viewRow(
     td {
         button {
             attrClass("info")
-            dataOn("click", get("/edit-row/$index"))
+            dataOn(Click) {
+                +get("/edit-row/$index")
+            }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", fetching)
             text("Edit")
@@ -127,7 +132,9 @@ private fun Tr<*>.editRow(index: Int) {
     td {
         button {
             attrClass("success")
-            dataOn("click", patch("/edit-row/$index"))
+            dataOn(Click) {
+                +patch("/edit-row/$index")
+            }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:check") }
@@ -135,7 +142,9 @@ private fun Tr<*>.editRow(index: Int) {
         }
         button {
             attrClass("error")
-            dataOn("click", get(::editRowCancel))
+            dataOn(Click) {
+                +get(::editRowCancel)
+            }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:close") }

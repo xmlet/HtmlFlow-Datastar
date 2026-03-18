@@ -14,6 +14,7 @@ import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.events.Keydown
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataBind
@@ -93,7 +94,9 @@ class InlineValidationTest {
                                 }
                                 button {
                                     attrClass("success")
-                                    dataOn("click", post(::submitForm))
+                                    dataOn(Click) {
+                                        +post(::submitForm)
+                                    }
                                     i {
                                         attrClass("material-symbols:person-add")
                                     }

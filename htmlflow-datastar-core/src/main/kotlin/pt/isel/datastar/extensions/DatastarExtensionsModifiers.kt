@@ -10,7 +10,6 @@ import pt.isel.datastar.modifiers.attributes.DataClassModifiers
 import pt.isel.datastar.modifiers.attributes.DataComputedModifiers
 import pt.isel.datastar.modifiers.attributes.DataInitModifiers
 import pt.isel.datastar.modifiers.attributes.DataJsonSignalsModifiers
-import pt.isel.datastar.modifiers.attributes.DataOnModifiers
 import pt.isel.datastar.modifiers.attributes.DataSignalModifiers
 import pt.isel.datastar.modifiers.attributes.DataSignalsModifiers
 import pt.isel.datastar.modifiers.extractCaseStyle
@@ -113,26 +112,6 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     return dataSignal(name, null, mods)
 }
 
-/**
- *
- * Attaches an event handler to this element with modifiers.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on attribute will be added
- * @param event the event to handle
- * @param expr DataStarExpression that computes the value of the signal
- * @param modifiersBuilder configuration lambda for event modifiers
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
-    event: String,
-    expr: DataStarExpression,
-    modifiersBuilder: ModBuilder<DataOnModifiers>.() -> Unit,
-) {
-    val mods = ModBuilder(::DataOnModifiers).apply(modifiersBuilder).mods
-    return dataOn(event, expr.expression, mods)
-}
-
 fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     event: EVT,
     handler: EventHandlerScope<EVT>.() -> Unit,
@@ -140,10 +119,10 @@ fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     val scope = EventHandlerScope(event)
 
     scope.handler()
-    val expr = scope.expr
-    val mods = scope.mods
+    val expr = scope.getExpressions()
+    val mods = scope.getModifiers()
 
-    return dataOn(event.toString(), expr, mods)
+    return dataOn(event, expr, mods)
 }
 
 /**
@@ -219,7 +198,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
  * @param modifiers optional modifiers for the event handler
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
-    event: String,
+    event: Event,
     js: String,
     modifiers: String = "",
 ) {

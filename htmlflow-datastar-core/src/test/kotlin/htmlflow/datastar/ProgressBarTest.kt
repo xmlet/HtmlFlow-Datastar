@@ -12,6 +12,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.and
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
@@ -91,7 +92,9 @@ class ProgressBarTest {
                                 button {
                                     val fetching = dataIndicator("fetching")
                                     dataAttr("aria-disabled", fetching)
-                                    dataOn("click", !fetching and get(::progressBarUpdates, "{openWhenHidden: true}"))
+                                    dataOn(Click) {
+                                        +(!fetching and get(::progressBarUpdates, "{openWhenHidden: true}"))
+                                    }
                                     i { attrClass("material-symbols:check-circle") }
                                     text("Completed! Try again?")
                                 }

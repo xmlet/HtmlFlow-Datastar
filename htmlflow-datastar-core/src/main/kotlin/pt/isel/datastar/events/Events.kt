@@ -37,7 +37,7 @@ sealed class UIEvent(
         get() = prop("detail")
 }
 
-class InputEvent(
+open class InputEvent(
     name: String,
 ) : UIEvent(name) {
     val data: DataStarExpression
@@ -157,3 +157,9 @@ object FocusIn : FocusEvent("focusin")
 object Click : FocusEvent("click")
 
 object Keydown : KeyboardEvent("keydown")
+
+object Input : InputEvent("input")
+
+object Change : InputEvent("change")
+
+object DblClick : MouseEvent("dblclick")

@@ -23,11 +23,14 @@ import org.xmlet.htmlapifaster.section
 import org.xmlet.htmlapifaster.span
 import org.xmlet.htmlapifaster.strong
 import org.xmlet.htmlapifaster.ul
+import pt.isel.datastar.events.Blur
+import pt.isel.datastar.events.Click
+import pt.isel.datastar.events.DblClick
+import pt.isel.datastar.events.Keydown
 import pt.isel.datastar.expressions.delete
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
@@ -68,7 +71,8 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                     attrId("todo-header")
                     input {
                         attrType(EnumTypeInputType.CHECKBOX)
-                        dataOn("click", post(::minus1Toggle)) {
+                        dataOn(Click) {
+                            +post(::minus1Toggle)
                             mods { prevent() }
                         }
                         dataInit(if (todoUiState.pendingCount == 0) "el.checked = true" else "el.checked = false")
@@ -80,7 +84,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                         if (todoUiState.tasks.none { it.editing }) {
                             val input = dataBind("input")
                             dataOn(
-                                "keydown",
+                                Keydown,
                                 "evt.key === 'Enter' && $input.trim() && @patch('/todo-mvc/-1') && ($input = '');",
                             )
                         }
@@ -92,13 +96,14 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                         li {
                             addAttr("role", "button")
                             attrTabIndex(0)
-                            dataOn("dblclick", "evt.target === el && @get('/todo-mvc/${task.id}')")
+                            dataOn(DblClick, "evt.target === el && @get('/todo-mvc/${task.id}')")
                             if (!task.editing) {
                                 input {
                                     attrId("todo-checkbox-${task.id}")
                                     attrType(EnumTypeInputType.CHECKBOX)
                                     dataInit(if (task.status == Status.DONE) "el.checked = true" else "el.checked = false")
-                                    dataOn("click", post("/todo-mvc/${task.id}/toggle")) {
+                                    dataOn(Click) {
+                                        +post("/todo-mvc/${task.id}/toggle")
                                         mods { prevent() }
                                     }
                                 }
@@ -108,7 +113,9 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                 }
                                 button {
                                     attrClass("error small")
-                                    dataOn("click", delete("/todo-mvc/${task.id}"))
+                                    dataOn(Click) {
+                                        +delete("/todo-mvc/${task.id}")
+                                    }
                                 }
                             } else {
                                 input {
@@ -117,9 +124,11 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     val input = dataSignal("input", task.title)
                                     dataBind(input)
                                     dataInit("el.focus()")
-                                    dataOn("blur", put(::cancel))
+                                    dataOn(Blur) {
+                                        +put(::cancel)
+                                    }
                                     dataOn(
-                                        "keydown",
+                                        Keydown,
                                         """
                                         if (evt.key === 'Escape') {
                                         	el.blur();
@@ -146,27 +155,37 @@ fun Div<*>.buttonsView() =
         }
         button {
             attrClass("small info")
-            dataOn("click", put(::mode0))
+            dataOn(Click) {
+                +put(::mode0)
+            }
             text("All")
         }
         button {
             attrClass("small")
-            dataOn("click", put(::mode1))
+            dataOn(Click) {
+                +put(::mode1)
+            }
             text("Pending")
         }
         button {
             attrClass("small")
-            dataOn("click", put(::mode2))
+            dataOn(Click) {
+                +put(::mode2)
+            }
             text("Completed")
         }
         button {
             attrClass("error small")
-            dataOn("click", delete(::minus1))
+            dataOn(Click) {
+                +delete(::minus1)
+            }
             text("Delete")
         }
         button {
             attrClass("warning small")
-            dataOn("click", put(::reset))
+            dataOn(Click) {
+                +put(::reset)
+            }
             text("Reset")
         }
     }

@@ -20,6 +20,8 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import pt.isel.datastar.events.Click
+import pt.isel.datastar.events.Keydown
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -63,7 +65,8 @@ fun Div<*>.inputFields() {
                 addAttr("aria-live", "polite")
                 addAttr("aria-describedby", "email-info")
                 dataBind("email")
-                dataOn("keydown", post(::validateInline)) {
+                dataOn(Keydown) {
+                    +post(::validateInline)
                     mods { debounce(500.milliseconds) }
                 }
             }
@@ -87,7 +90,8 @@ fun Div<*>.inputFields() {
                 attrRequired(true)
                 addAttr("aria-live", "polite")
                 dataBind("first-name")
-                dataOn("keydown", post(::validateInline)) {
+                dataOn(Keydown) {
+                    +post(::validateInline)
                     mods { debounce(500.milliseconds) }
                 }
             }
@@ -106,7 +110,8 @@ fun Div<*>.inputFields() {
                 attrRequired(true)
                 addAttr("aria-live", "polite")
                 dataBind("last-name")
-                dataOn("keydown", post(::validateInline)) {
+                dataOn(Keydown) {
+                    +post(::validateInline)
                     mods { debounce(500.milliseconds) }
                 }
             }
@@ -120,7 +125,9 @@ fun Div<*>.inputFields() {
         }
         button {
             attrClass("success")
-            dataOn("click", post(::submitForm))
+            dataOn(Click) {
+                +post(::submitForm)
+            }
             if (!canSubmit) addAttr("aria-disabled", "true")
             text(" Sign Up")
         }

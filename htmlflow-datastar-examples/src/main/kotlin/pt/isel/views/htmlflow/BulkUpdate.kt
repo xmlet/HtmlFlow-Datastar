@@ -22,6 +22,8 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.events.Change
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.put
 import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
@@ -61,7 +63,9 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                 th {
                                     input {
                                         attrType(EnumTypeInputType.CHECKBOX)
-                                        dataOn("change", setAll("el.checked", "{include: /^selections/}"))
+                                        dataOn(Change) {
+                                            +setAll("el.checked", "{include: /^selections/}")
+                                        }
                                         dataEffect($$"el.checked = $selections.every(Boolean)")
                                         dataAttr("disabled", fetching)
                                     }
@@ -93,7 +97,9 @@ val hfBulkUpdate: HtmlView<List<User>> =
                     div {
                         button {
                             attrClass("success")
-                            dataOn("click", put(::activate))
+                            dataOn(Click) {
+                                +put(::activate)
+                            }
                             dataIndicator(fetching.name)
                             dataAttr("disabled", fetching)
                             i { attrClass("pixelarticons:user-plus") }
@@ -101,7 +107,9 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         }
                         button {
                             attrClass("error")
-                            dataOn("click", put(::deactivate))
+                            dataOn(Click) {
+                                +put(::deactivate)
+                            }
                             dataIndicator(fetching.name)
                             dataAttr("disabled", fetching)
                             i { attrClass("pixelarticons:user-x") }

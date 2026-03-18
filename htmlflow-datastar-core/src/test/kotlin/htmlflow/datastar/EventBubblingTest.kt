@@ -11,6 +11,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
 import org.xmlet.htmlapifaster.style
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
@@ -48,7 +49,7 @@ class EventBubblingTest {
                                 }
                                 div {
                                     attrId("button-container")
-                                    dataOn("click", "$key = evt.target.dataset.id")
+                                    dataOn(Click, "$key = evt.target.dataset.id")
                                     button {
                                         addAttr("data-id", "KEY ELSE")
                                         attrClass("gray")

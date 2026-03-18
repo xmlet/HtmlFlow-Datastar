@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataOn
@@ -55,16 +56,22 @@ class FormDataTest {
                                     attrValue("baz")
                                 }
                                 button {
-                                    dataOn("click", get(::endpoint, "{contentType: 'form'}"))
+                                    dataOn(Click) {
+                                        +get(::endpoint, "{contentType: 'form'}")
+                                    }
                                     text("Submit GET request")
                                 }
                                 button {
-                                    dataOn("click", post(::endpoint, "{contentType: 'form'}"))
+                                    dataOn(Click) {
+                                        +post(::endpoint, "{contentType: 'form'}")
+                                    }
                                     text("Submit POST request")
                                 }
                             }
                             button {
-                                dataOn("click", get(::endpoint, "{contentType: 'form', selector: '#myform'}"))
+                                dataOn(Click) {
+                                    +get(::endpoint, "{contentType: 'form', selector: '#myform'}")
+                                }
                                 text("Submit GET request from outside the form")
                             }
                         }

@@ -12,6 +12,7 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.pre
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataJsonSignals
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataOnSignalPatch
@@ -55,16 +56,16 @@ class OnSignalPatchTest {
                                 div {
                                     attrClass("actions")
                                     button {
-                                        dataOn("click", $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
+                                        dataOn(Click, $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
                                         text("Update Message")
                                     }
                                     button {
-                                        dataOn("click", "$counter++")
+                                        dataOn(Click, "$counter++")
                                         text("Increment Counter")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click", "$allChanges.length = 0; $counterChanges.length = 0")
+                                        dataOn(Click, "$allChanges.length = 0; $counterChanges.length = 0")
                                         text("Clear All Changes")
                                     }
                                 }
