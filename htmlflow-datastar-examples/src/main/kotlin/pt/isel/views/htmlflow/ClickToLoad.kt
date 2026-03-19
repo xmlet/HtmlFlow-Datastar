@@ -11,7 +11,6 @@ import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
-import org.xmlet.htmlapifaster.h1
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script

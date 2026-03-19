@@ -3,8 +3,6 @@ package pt.isel.ktor
 import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import htmlflow.doc
-import htmlflow.tr
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -23,24 +21,13 @@ import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.defaultRowView
-import pt.isel.views.htmlflow.editRow
 import pt.isel.views.htmlflow.hfEditRow
+import pt.isel.views.htmlflow.hfPartialEditRowView
 
 private val description = loadResource("public/html/fragments/edit-row-description.html")
 private val html =
     loadResource("public/html/edit-row.html")
         .replace("<!-- DESCRIPTION -->", description)
-
-fun hfPartialEditRowDoc(idx: Int): String =
-    StringBuilder()
-        .apply {
-            doc {
-                tr {
-                    attrId("row-$idx")
-                    editRow(idx)
-                }
-            }
-        }.toString()
 
 private val users = DEFAULT_USERS.toMutableList()
 
@@ -73,13 +60,13 @@ private suspend fun RoutingContext.editRow() {
         requireNotNull(index)
 
         if (index > users.size - 1) return@respondTextWriter call.respond(HttpStatusCode.BadRequest)
-        val user = users[index]
+        val user = users.first { it.idx == index }
         generator.patchSignals(
-            """ { "name": "${user.name}", "email": "${user.email}" } """,
+            """ { "idx":${user.idx}, "name": "${user.name}", "email": "${user.email}" } """,
         )
         generator.patchElements(
-            hfPartialEditRowDoc(index),
-            PatchElementsOptions("#row-$index", mode = ElementPatchMode.Replace),
+            hfPartialEditRowView.render(user),
+            PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
         )
     }
 }
@@ -90,10 +77,10 @@ private suspend fun RoutingContext.cancelEditRow() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        users.forEachIndexed { index, user ->
+        users.forEach { user ->
             generator.patchElements(
-                defaultRowView(index).render(user),
-                PatchElementsOptions("#row-$index", mode = ElementPatchMode.Replace),
+                defaultRowView.render(user),
+                PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
             )
         }
     }
@@ -107,10 +94,10 @@ private suspend fun RoutingContext.resetUsers() {
         val generator = ServerSentEventGenerator(response(this))
         users.clear()
         users.addAll(DEFAULT_USERS)
-        users.forEachIndexed { index, user ->
+        users.forEach { user ->
             generator.patchElements(
-                defaultRowView(index).render(user),
-                PatchElementsOptions("#row-$index", mode = ElementPatchMode.Replace),
+                defaultRowView.render(user),
+                PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
             )
         }
     }
@@ -127,16 +114,19 @@ private suspend fun RoutingContext.saveEditRow() {
 
         val datastarBodyArgs = call.request.call.receiveText()
         val editedUser = Json.decodeFromString<TableUser>(datastarBodyArgs)
-        users[index] = editedUser
+        val userIdx = users.indexOf(users.first { it.idx == index })
+        users[userIdx] = editedUser
+
         generator.patchElements(
-            defaultRowView(index).render(editedUser),
-            PatchElementsOptions("#row-$index", mode = ElementPatchMode.Replace),
+            defaultRowView.render(editedUser),
+            PatchElementsOptions("#row-${editedUser.idx}", mode = ElementPatchMode.Replace),
         )
     }
 }
 
 @Serializable
 data class TableUser(
+    val idx: Int,
     val name: String,
     val email: String,
 )

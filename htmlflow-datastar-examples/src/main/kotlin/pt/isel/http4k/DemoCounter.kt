@@ -1,7 +1,8 @@
 package pt.isel.http4k
 
-import org.http4k.core.HttpHandler
+import jakarta.ws.rs.Path
 import org.http4k.core.Method
+import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.OK
@@ -12,13 +13,12 @@ import org.http4k.routing.bind
 import org.http4k.routing.bindSse
 import org.http4k.routing.poly
 import org.http4k.routing.to
-import org.http4k.sse.SseHandler
 import org.http4k.sse.SseResponse
 import org.http4k.sse.sendPatchElements
 import pt.isel.utils.EventBus
 import pt.isel.utils.loadResource
+import pt.isel.views.htmlflow.hfCounter
 import pt.isel.views.htmlflow.hfCounterEventView
-import pt.isel.views.htmlflow.hfCounterViaSignals
 
 private val html = loadResource("public/html/counter.html")
 
@@ -26,20 +26,22 @@ private val bus = EventBus(0)
 
 fun demoCounter() =
     poly(
-        "/html" bind Method.GET to getCounterPageHtml,
-        "/htmlflow" bind Method.GET to getCounterPageHtmlFlow,
-        "/increment" bind Method.POST to increment,
-        "/decrement" bind Method.POST to decrement,
-        "/events" bindSse Method.GET to getCounterEvents,
+        "/html" bind Method.GET to ::getCounterPageHtml,
+        "/htmlflow" bind Method.GET to ::getCounterPageHtmlFlow,
+        "/increment" bind Method.POST to ::incrementCounter,
+        "/decrement" bind Method.POST to ::decrementCounter,
+        "/events" bindSse Method.GET to ::counterEvents,
     )
 
-private val getCounterPageHtml: HttpHandler = { _ -> Response(OK).body(html).header("Content-Type", "text/html") }
+fun getCounterPageHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html")
 
-private val getCounterPageHtmlFlow: HttpHandler = { _ -> Response(OK).body(hfCounterViaSignals).header("Content-Type", "text/html") }
+fun getCounterPageHtmlFlow(req: Request): Response = Response(OK).body(hfCounter).header("Content-Type", "text/html")
 
-private val getCounterEvents: SseHandler = { _ ->
+@Path("/counter/events")
+fun counterEvents(req: Request): SseResponse {
     val queue = bus.subscribe()
-    SseResponse { sse ->
+    return SseResponse { sse ->
+        sse.onClose { bus.unsubscribe(queue) }
         while (true) {
             try {
                 val event = queue.take()
@@ -61,17 +63,19 @@ private val getCounterEvents: SseHandler = { _ ->
                 bus.unsubscribe(queue)
             }
         }
-        sse.onClose { bus.unsubscribe(queue) }
     }
 }
 
-private val increment: HttpHandler = { _ ->
+@Path("/counter/increment")
+fun incrementCounter(req: Request): Response {
     val currentCount = bus.currentValue ?: 0
     bus.publish(currentCount + 1)
-    Response(Status.NO_CONTENT)
+    return Response(Status.NO_CONTENT)
 }
-private val decrement: HttpHandler = { _ ->
+
+@Path("/counter/decrement")
+fun decrementCounter(req: Request): Response {
     val currentCount = bus.currentValue ?: 0
     bus.publish(currentCount - 1)
-    Response(Status.NO_CONTENT)
+    return Response(Status.NO_CONTENT)
 }

@@ -2,7 +2,6 @@ package pt.isel.views.htmlflow
 
 import htmlflow.doc
 import htmlflow.html
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -19,6 +18,9 @@ import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
+import pt.isel.http4k.decrementCounterViaSignals
+import pt.isel.http4k.getCounterEventsSignals
+import pt.isel.http4k.incrementCounterViaSignals
 import pt.isel.utils.loadResource
 
 private val description = loadResource("public/html/fragments/counter-signals-description.html")
@@ -46,7 +48,7 @@ val hfCounterViaSignals: String =
                                 text("Counting Stars HtmlFlow - via Signals")
                             }
                             div {
-                                dataInit(get(::events))
+                                dataInit(get(::getCounterEventsSignals))
                                 span {
                                     attrId("counter")
                                     dataText(count)
@@ -55,12 +57,12 @@ val hfCounterViaSignals: String =
                             div {
                                 button {
                                     attrId("decrement")
-                                    dataOn("click", post(::decrement))
+                                    dataOn("click", post(::decrementCounterViaSignals))
                                     text("−")
                                 }
                                 button {
                                     attrId("increment")
-                                    dataOn("click", post(::increment))
+                                    dataOn("click", post(::incrementCounterViaSignals))
                                     text("+")
                                 }
                             }
@@ -69,12 +71,3 @@ val hfCounterViaSignals: String =
                 }
             }
         }.toString()
-
-@Path("/counter-signals/events")
-private fun events() {}
-
-@Path("/counter-signals/decrement")
-private fun decrement() {}
-
-@Path("/counter-signals/increment")
-private fun increment() {}

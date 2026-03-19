@@ -1,9 +1,10 @@
 package pt.isel.http4k
 
+import jakarta.ws.rs.Path
 import kotlinx.serialization.json.Json
-import org.http4k.core.HttpHandler
 import org.http4k.core.Method
 import org.http4k.core.PolyHandler
+import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.datastar.Element
@@ -14,7 +15,6 @@ import org.http4k.routing.bind
 import org.http4k.routing.bindSse
 import org.http4k.routing.poly
 import org.http4k.routing.to
-import org.http4k.sse.SseHandler
 import org.http4k.sse.SseResponse
 import org.http4k.sse.sendPatchElements
 import org.http4k.sse.sendPatchSignals
@@ -29,20 +29,18 @@ private val html = loadResource("public/html/infinite-scroll.html")
 
 fun demoInfiniteScroll(): PolyHandler =
     poly(
-        "/html" bind Method.GET to getInfiniteScrollHtml,
-        "/htmlflow" bind Method.GET to getInfiniteScrollHtmlFlow,
-        "/more" bindSse Method.GET to getMoreAgents,
+        "/html" bind Method.GET to ::getInfiniteScrollHtml,
+        "/htmlflow" bind Method.GET to ::getInfiniteScrollHtmlFlow,
+        "/more" bindSse Method.GET to ::getMoreAgents,
     )
 
-private val getInfiniteScrollHtml: HttpHandler = { _ ->
-    Response(OK).body(html).header("Content-Type", "text/html; charset=utf-8")
-}
+fun getInfiniteScrollHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html; charset=utf-8")
 
-private val getInfiniteScrollHtmlFlow: HttpHandler = { _ ->
+fun getInfiniteScrollHtmlFlow(req: Request): Response =
     Response(OK).body(hfInfiniteScroll).header("Content-Type", "text/html; charset=utf-8")
-}
 
-private val getMoreAgents: SseHandler = { req ->
+@Path("/infinite-scroll/more")
+fun getMoreAgents(req: Request): SseResponse =
     SseResponse { sse ->
         Thread.sleep(1000) // Simulate some delay in loading more agents
         val datastarQueryArg = req.query("datastar")
@@ -61,4 +59,3 @@ private val getMoreAgents: SseHandler = { req ->
             morphMode = MorphMode.append,
         )
     }
-}

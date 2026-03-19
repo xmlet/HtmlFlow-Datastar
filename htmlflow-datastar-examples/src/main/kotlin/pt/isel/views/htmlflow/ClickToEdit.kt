@@ -5,7 +5,6 @@ import htmlflow.div
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -25,6 +24,10 @@ import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
+import pt.isel.http4k.clickToEditCancel
+import pt.isel.http4k.clickToEditReset
+import pt.isel.http4k.clickToEditSave
+import pt.isel.http4k.editProfile
 import pt.isel.ktor.Profile
 import pt.isel.utils.loadResource
 
@@ -44,7 +47,7 @@ val hfDisplayFragment: HtmlView<Profile> =
                     attrId("edit")
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled", fetching)
-                    dataOn("click", get(::clickToEditEdit))
+                    dataOn("click", get(::editProfile))
                     text("Edit")
                 }
                 button {
@@ -103,7 +106,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     attrClass("success")
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled", fetching)
-                    dataOn("click", put(::clickToEdit))
+                    dataOn("click", put(::clickToEditSave))
                     text("Save")
                 }
                 button {
@@ -138,15 +141,3 @@ val hfClickToEdit: HtmlView<Profile> =
             }
         }
     }
-
-@Path("/click-to-edit")
-private fun clickToEdit() {}
-
-@Path("/click-to-edit/edit")
-private fun clickToEditEdit() {}
-
-@Path("/click-to-edit/reset")
-private fun clickToEditReset() {}
-
-@Path("/click-to-edit/cancel")
-private fun clickToEditCancel() {}

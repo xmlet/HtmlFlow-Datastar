@@ -27,10 +27,10 @@ private val html =
 
 val DEFAULT_USERS =
     listOf(
-        TableUser("Joe Smith", "joe@smith.org"),
-        TableUser("Angie MacDowell", "angie@macdowell.org"),
-        TableUser("Fuqua Tarkenton", "fuqua@tarkenton.org"),
-        TableUser("Kim Yee", "kim@yee.org"),
+        TableUser(0, "Joe Smith", "joe@smith.org"),
+        TableUser(1, "Angie MacDowell", "angie@macdowell.org"),
+        TableUser(2, "Fuqua Tarkenton", "fuqua@tarkenton.org"),
+        TableUser(3, "Kim Yee", "kim@yee.org"),
     )
 
 val hfUsersTable: String =

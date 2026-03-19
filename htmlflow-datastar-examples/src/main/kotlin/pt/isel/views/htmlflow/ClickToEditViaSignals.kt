@@ -2,7 +2,6 @@ package pt.isel.views.htmlflow
 
 import htmlflow.doc
 import htmlflow.html
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -18,6 +17,7 @@ import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
+import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.expressions.put
 import pt.isel.datastar.expressions.semiColon
 import pt.isel.datastar.expressions.setValue
@@ -29,6 +29,10 @@ import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.datastar.extensions.dataText
+import pt.isel.http4k.clickToEditSignalsCancel
+import pt.isel.http4k.clickToEditSignalsReset
+import pt.isel.http4k.clickToEditSignalsSave
+import pt.isel.http4k.getClickToEditEvents
 import pt.isel.utils.loadResource
 
 private val description = loadResource("public/html/fragments/click-to-edit-signals-description.html")
@@ -57,7 +61,7 @@ val hfClickToEditSignals =
                                     "email" to "joe@blow.com",
                                     "_editing" to false,
                                 )
-                            dataInit("@get('/click-to-edit-signals/events')")
+                            dataInit(get(::getClickToEditEvents))
                             div {
                                 attrId("Info")
                                 dataClass("hidden", editing)
@@ -85,7 +89,7 @@ val hfClickToEditSignals =
                                         attrId("reset")
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled", "$fetching")
-                                        dataOn("click", "@patch('/click-to-edit-signals/reset')")
+                                        dataOn("click", patch(::clickToEditSignalsReset))
                                         text("Reset")
                                     }
                                 }
@@ -126,14 +130,14 @@ val hfClickToEditSignals =
                                         attrId("save")
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled", "$fetching")
-                                        dataOn("click", editing setValue false semiColon put(::save))
+                                        dataOn("click", editing setValue false semiColon put(::clickToEditSignalsSave))
                                         text("Save")
                                     }
                                     button {
                                         attrId("cancel")
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled", "$fetching")
-                                        dataOn("click", editing setValue false semiColon get(::cancelEdit))
+                                        dataOn("click", editing setValue false semiColon get(::clickToEditSignalsCancel))
                                         text("Cancel")
                                     }
                                 }
@@ -144,12 +148,3 @@ val hfClickToEditSignals =
                 }
             }
         }.toString()
-
-@Path("/click-to-edit-signals/edit")
-fun edit() {}
-
-@Path("/click-to-edit-signals/cancel")
-fun cancelEdit() {}
-
-@Path("/click-to-edit-signals")
-fun save() {}

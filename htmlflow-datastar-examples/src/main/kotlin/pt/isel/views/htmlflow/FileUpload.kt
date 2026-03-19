@@ -1,5 +1,3 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package pt.isel.views.htmlflow
 
 import htmlflow.HtmlView
@@ -8,14 +6,32 @@ import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
-import jakarta.ws.rs.Path
-import org.xmlet.htmlapifaster.*
+import org.xmlet.htmlapifaster.EnumRelType
+import org.xmlet.htmlapifaster.EnumTypeInputType
+import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tbody
+import org.xmlet.htmlapifaster.body
+import org.xmlet.htmlapifaster.button
+import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.input
+import org.xmlet.htmlapifaster.label
+import org.xmlet.htmlapifaster.link
+import org.xmlet.htmlapifaster.p
+import org.xmlet.htmlapifaster.script
+import org.xmlet.htmlapifaster.table
+import org.xmlet.htmlapifaster.tbody
+import org.xmlet.htmlapifaster.td
+import org.xmlet.htmlapifaster.th
+import org.xmlet.htmlapifaster.thead
+import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.expressions.post
-import pt.isel.datastar.extensions.*
-import pt.isel.ktor.FileSignal
-import pt.isel.ktor.md5
+import pt.isel.datastar.extensions.dataAttr
+import pt.isel.datastar.extensions.dataBind
+import pt.isel.datastar.extensions.dataOn
+import pt.isel.datastar.extensions.dataSignal
+import pt.isel.http4k.uploadFile
+import pt.isel.ktor.FileInfo
 import pt.isel.utils.loadResource
-import kotlin.io.encoding.Base64
 
 private val description = loadResource("public/html/fragments/file-upload-description.html")
 
@@ -46,7 +62,7 @@ val hfFileUpload: String =
                         }
                         button {
                             attrClass("warning")
-                            dataOn("click", "$files.length && ${post("/file-upload")}")
+                            dataOn("click", "$files.length && ${post(::uploadFile)}")
                             dataAttr("aria-disabled", $$"`${!$$files.length}`")
                             text("Submit")
                         }
@@ -60,8 +76,8 @@ val hfFileUpload: String =
             }
         }.toString()
 
-fun fileUploadTable(): HtmlView<List<FileSignal>> =
-    view {
+val fileUploadTable: HtmlView<List<FileInfo>> =
+    view<List<FileInfo>> {
         div {
             attrId("file-upload")
             table {
@@ -75,17 +91,9 @@ fun fileUploadTable(): HtmlView<List<FileSignal>> =
                     }
                 }
                 tbody {
-                    dyn { files: List<FileSignal> ->
-                        files.forEach { (name, contents, mime) ->
-                            tr {
-                                val plainText = Base64.decode(contents).decodeToString()
-                                val textSize = plainText.length
-                                val md5Hash = contents.md5()
-                                td { text(name) }
-                                td { text(textSize) }
-                                td { text(mime) }
-                                td { text(md5Hash) }
-                            }
+                    dyn { files: List<FileInfo> ->
+                        files.forEach { file ->
+                            fileRow(file)
                         }
                     }
                 }
@@ -93,5 +101,10 @@ fun fileUploadTable(): HtmlView<List<FileSignal>> =
         }
     }
 
-@Path("/file-upload")
-private fun uploadFiles() {}
+fun Tbody<*>.fileRow(file: FileInfo) =
+    tr {
+        td { text(file.name) }
+        td { text(file.textSize) }
+        td { text(file.mime) }
+        td { text(file.md5Hash) }
+    }

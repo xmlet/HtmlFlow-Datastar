@@ -1,14 +1,18 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import io.ktor.http.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.request.receiveText
+import io.ktor.server.response.respondText
+import io.ktor.server.response.respondTextWriter
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.RoutingContext
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
@@ -52,14 +56,13 @@ private suspend fun RoutingContext.uploadFile() {
         val (files) = Json.decodeFromString<UploadFilesSignals>(callText)
 
         val invalidFiles = files.filter { (_, contents, _) -> Base64.decode(contents).decodeToString().length > MAX_FILE_SIZE }
-        invalidFiles.forEach { file ->
-            generator.executeScript("console.error('File $file is not valid!');")
+        invalidFiles.forEach { (name, _, _) ->
+            generator.executeScript("console.error('File $name is not valid!');")
         }
 
-        val validFiles = files.filterNot { it in invalidFiles }
-
+        val validFiles = files.filterNot { it in invalidFiles }.map { FileInfo(it) }
         generator.patchElements(
-            fileUploadTable().render(validFiles),
+            fileUploadTable.render(validFiles),
             PatchElementsOptions(selector = "#file-upload", mode = ElementPatchMode.Replace),
         )
     }
@@ -82,3 +85,19 @@ data class FileSignal(
     val contents: String,
     val mime: String,
 )
+
+data class FileInfo(
+    val name: String,
+    val mime: String,
+    val plainTex: String,
+    val textSize: Int,
+    val md5Hash: String,
+) {
+    constructor(fileSignal: FileSignal) : this(
+        name = fileSignal.name,
+        mime = fileSignal.mime,
+        plainTex = Base64.decode(fileSignal.contents).decodeToString(),
+        textSize = Base64.decode(fileSignal.contents).decodeToString().length,
+        md5Hash = fileSignal.contents.md5(),
+    )
+}
