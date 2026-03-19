@@ -42,7 +42,9 @@ class SortableTest {
                             div {
                                 attrId("sortContainer")
                                 val reorderedEvent = CustomEvent("reordered")
-                                dataOn(reorderedEvent, $$"$orderInfo = event.detail.orderInfo")
+                                dataOn(reorderedEvent) {
+                                    +$$"$orderInfo = event.detail.orderInfo"
+                                }
                                 button { text("Item 1") }
                                 button { text("Item 2") }
                                 button { text("Item 3") }

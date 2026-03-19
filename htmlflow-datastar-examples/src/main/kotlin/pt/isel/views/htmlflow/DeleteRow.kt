@@ -69,7 +69,9 @@ fun Div<*>.hfDeleteRowTable() {
                         td {
                             button {
                                 attrClass("error")
-                                dataOn(Click, "confirm('Are you sure?') && ${delete("/delete-row/$index")}")
+                                dataOn(Click) {
+                                    +"confirm('Are you sure?') && ${delete("/delete-row/$index")}"
+                                }
                                 val fetching = dataIndicator("_fetching")
                                 dataAttr("disabled", fetching)
                                 text("Delete")

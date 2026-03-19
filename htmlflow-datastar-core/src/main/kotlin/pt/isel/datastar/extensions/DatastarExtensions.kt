@@ -29,7 +29,6 @@ import org.xmlet.htmlapifaster.Input
 import org.xmlet.htmlapifaster.Select
 import org.xmlet.htmlapifaster.Textarea
 import pt.isel.datastar.Signal
-import pt.isel.datastar.events.Event
 import pt.isel.datastar.expressions.DataStarExpression
 import kotlin.collections.joinToString
 
@@ -213,21 +212,6 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(js: String) {
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(expr: DataStarExpression) {
     this.visitor.visitAttribute("data-init", expr.expression)
 }
-
-/**
- *
- * Attaches an event handler to this element without modifiers.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on attribute will be added
- * @param event the event to handle
- * @param expr DataStarExpression that computes the value of the signal
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
-    event: Event,
-    expr: DataStarExpression,
-) = dataOn(event, expr.expression)
 
 /**
  *

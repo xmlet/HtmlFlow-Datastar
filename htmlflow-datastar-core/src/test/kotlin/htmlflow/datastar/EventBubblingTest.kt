@@ -49,7 +49,9 @@ class EventBubblingTest {
                                 }
                                 div {
                                     attrId("button-container")
-                                    dataOn(Click, "$key = evt.target.dataset.id")
+                                    dataOn(Click) {
+                                        +"$key = evt.target.dataset.id"
+                                    }
                                     button {
                                         addAttr("data-id", "KEY ELSE")
                                         attrClass("gray")

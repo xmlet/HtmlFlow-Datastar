@@ -83,10 +83,9 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                         attrPlaceholder("What needs to be done?")
                         if (todoUiState.tasks.none { it.editing }) {
                             val input = dataBind("input")
-                            dataOn(
-                                Keydown,
-                                "evt.key === 'Enter' && $input.trim() && @patch('/todo-mvc/-1') && ($input = '');",
-                            )
+                            dataOn(Keydown) {
+                                +"evt.key === 'Enter' && $input.trim() && @patch('/todo-mvc/-1') && ($input = '');"
+                            }
                         }
                     }
                 }
@@ -96,7 +95,9 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                         li {
                             addAttr("role", "button")
                             attrTabIndex(0)
-                            dataOn(DblClick, "evt.target === el && @get('/todo-mvc/${task.id}')")
+                            dataOn(DblClick) {
+                                +"evt.target === el && @get('/todo-mvc/${task.id}')"
+                            }
                             if (!task.editing) {
                                 input {
                                     attrId("todo-checkbox-${task.id}")
@@ -127,16 +128,17 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     dataOn(Blur) {
                                         +put(::cancel)
                                     }
-                                    dataOn(
-                                        Keydown,
-                                        """
-                                        if (evt.key === 'Escape') {
-                                        	el.blur();
-                                        } else if (evt.key === 'Enter' && $input.trim()) {
-                                        	@patch('/todo-mvc/${task.id}');
-                                        }
-                                        """.trimIndent(),
-                                    )
+                                    dataOn(Keydown) {
+                                        +(
+                                            """
+                                                    if (evt.key === 'Escape') {
+                                                                	el.blur();
+                                                    } else if (evt.key === 'Enter' && $input.trim()) {
+                                                    	@patch('/todo-mvc/${task.id}');
+                                            }
+                                            """.trimIndent()
+                                        )
+                                    }
                                 }
                             }
                         }

@@ -63,7 +63,9 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn(Click, "confirm('Are you sure?') && ${delete(::deleteRow0)}")
+                                                    dataOn(Click) {
+                                                        +"confirm('Are you sure?') && ${delete(::deleteRow0)}"
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
                                                     dataAttr("disabled", fetching)
                                                     text("Delete")
@@ -76,7 +78,9 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn(Click, "confirm('Are you sure?') && ${delete(::deleteRow1)}")
+                                                    dataOn(Click) {
+                                                        +"confirm('Are you sure?') && ${delete(::deleteRow1)}"
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
                                                     dataAttr("disabled", fetching)
                                                     text("Delete")
@@ -89,7 +93,9 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn(Click, "confirm('Are you sure?') && ${delete(::deleteRow2)}")
+                                                    dataOn(Click) {
+                                                        +"confirm('Are you sure?') && ${delete(::deleteRow2)}"
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
                                                     dataAttr("disabled", fetching)
                                                     text("Delete")
@@ -102,7 +108,9 @@ class DeleteRowTest {
                                             td {
                                                 button {
                                                     attrClass("error")
-                                                    dataOn(Click, "confirm('Are you sure?') && ${delete(::deleteRow3)}")
+                                                    dataOn(Click) {
+                                                        +"confirm('Are you sure?') && ${delete(::deleteRow3)}"
+                                                    }
                                                     val fetching = dataIndicator("_fetching")
                                                     dataAttr("disabled", fetching)
                                                     text("Delete")

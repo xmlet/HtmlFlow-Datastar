@@ -47,7 +47,9 @@ class FileUploadTest {
                             button {
                                 attrClass("warning")
                                 val files = dataSignal("files")
-                                dataOn(Click, "$files.length && ${post(::uploadFiles)}")
+                                dataOn(Click) {
+                                    +"$files.length && ${post(::uploadFiles)}"
+                                }
                                 dataAttr("aria-disabled", $$"`${!$$files.length}`")
                                 text("Submit")
                             }

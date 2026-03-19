@@ -8,19 +8,14 @@ import pt.isel.datastar.Signal
 infix fun DataStarExpression.and(action: DataStarAction): DataStarExpression = DataStarExpression("$this && $action")
 
 /**
- * Equal to the JavaScript || operator, used to provide an alternative expression if the previous one is not applicable.
- */
-infix fun Signal<*>.or(action: DataStarAction): DataStarExpression = DataStarExpression("$this || $action")
-
-/**
  * Equal to the JavaScript ! operator, used to negate an expression.
  */
-infix fun DataStarExpression.or(action: DataStarAction): DataStarExpression = DataStarExpression("$this || $action")
+infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
 
 /**
  * Equal to the JavaScript ! operator, used to negate a signal or expression.
  */
-operator fun Signal<*>.not(): DataStarExpression = DataStarExpression("!$this")
+operator fun DataStarExpression.not(): DataStarExpression = DataStarExpression("!$this")
 
 /**
  * Equal to the JavaScript == operator, used to compare two expressions.

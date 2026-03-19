@@ -37,7 +37,9 @@ val hfFileUpload: String =
                         }
                         button {
                             attrClass("warning")
-                            dataOn(Click, "$files.length && ${post("/file-upload")}")
+                            dataOn(Click) {
+                                +"$files.length && ${post("/file-upload")}"
+                            }
                             dataAttr("aria-disabled", $$"`${!$$files.length}`")
                             text("Submit")
                         }

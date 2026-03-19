@@ -122,7 +122,7 @@ fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     val expr = scope.getExpressions()
     val mods = scope.getModifiers()
 
-    return dataOn(event, expr, mods)
+    this.visitor.visitAttribute("data-on:$event$mods", expr)
 }
 
 /**
@@ -184,25 +184,6 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
 ): Signal<Any> {
     val mods = ModBuilder(::DataComputedModifiers).apply(modifiersBuilder).mods
     return dataComputed(name, expr.expression, mods)
-}
-
-/**
- *
- * Attaches an event handler to an element.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on attribute will be added
- * @param event the event to handle
- * @param js a JavaScript expression that computes the value of the signal
- * @param modifiers optional modifiers for the event handler
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOn(
-    event: Event,
-    js: String,
-    modifiers: String = "",
-) {
-    this.visitor.visitAttribute("data-on:$event$modifiers", js)
 }
 
 /**

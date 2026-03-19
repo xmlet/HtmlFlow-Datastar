@@ -34,9 +34,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.equals
 import pt.isel.datastar.expressions.not
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataComputed
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataShow
@@ -76,7 +74,9 @@ class DatastarTest {
                                     text("What do you put in a toaster?")
                                 }
                                 button {
-                                    dataOn(Click, "$response = prompt('Answer:') ?? ''")
+                                    dataOn(Click) {
+                                        +"$response = prompt('Answer:') ?? ''"
+                                    }
                                     text("BUZZ")
                                 }
                                 div {

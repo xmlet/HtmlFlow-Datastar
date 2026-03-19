@@ -56,16 +56,22 @@ class OnSignalPatchTest {
                                 div {
                                     attrClass("actions")
                                     button {
-                                        dataOn(Click, $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
+                                        dataOn(Click) {
+                                            +$$"$$message = `Updated: ${performance.now().toFixed(2)}`"
+                                        }
                                         text("Update Message")
                                     }
                                     button {
-                                        dataOn(Click, "$counter++")
+                                        dataOn(Click) {
+                                            +"$counter++"
+                                        }
                                         text("Increment Counter")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn(Click, "$allChanges.length = 0; $counterChanges.length = 0")
+                                        dataOn(Click) {
+                                            +"$allChanges.length = 0; $counterChanges.length = 0"
+                                        }
                                         text("Clear All Changes")
                                     }
                                 }
