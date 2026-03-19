@@ -1,5 +1,7 @@
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -45,7 +47,10 @@ private suspend fun RoutingContext.getLazyTabsText() {
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
 
-        val content = TAB_CONTENTS.getOrNull(index) ?: return@respondTextWriter
-        generator.patchElements(hfTabPanelView.render(content))
+        val content = TAB_CONTENTS[index]
+        generator.patchElements(
+            hfTabPanelView.render(content),
+            PatchElementsOptions(selector = "#tabpanel", mode = ElementPatchMode.Replace),
+        )
     }
 }

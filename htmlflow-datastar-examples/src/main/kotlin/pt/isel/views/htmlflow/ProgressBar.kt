@@ -1,18 +1,24 @@
 package pt.isel.views.htmlflow
 
+import htmlflow.HtmlView
+import htmlflow.div
 import htmlflow.doc
+import htmlflow.dyn
 import htmlflow.html
 import htmlflow.l
+import htmlflow.view
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
+import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
 import pt.isel.datastar.extensions.dataInit
+import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.ProgressBarState
 import pt.isel.utils.loadResource
 import kotlin.math.roundToInt
@@ -36,13 +42,9 @@ val hfProgressBar: String =
                     }
                     body {
                         div {
-
-                            div {
-                                attrId("progress-bar")
-                                dataInit("@get('/progress-bar/updates', {openWhenHidden: true})")
-                                renderProgressSvg(0)
-                                div {}
-                            }
+                            attrId("progress-bar")
+                            dataInit("@get('/progress-bar/updates', {openWhenHidden: true})")
+                            renderProgressSvg(0)
                         }
                         raw(description)
                     }
@@ -50,53 +52,39 @@ val hfProgressBar: String =
             }
         }.toString()
 
-fun renderProgressBarFragment(state: ProgressBarState): String {
-    val dashOffset = (565.48 * (1 - state.progress / 100.0)).roundToInt()
-    return if (!state.completed) {
-        """
-        <div id="progress-bar" data-init="@get('/progress-bar/updates', {openWhenHidden: true})">
-            ${renderSvgHtml(state.progress, dashOffset)}
-            <div></div>
-        </div>
-        """.trimIndent()
-    } else {
-        """
-        <div id="progress-bar">
-            ${renderSvgHtml(state.progress, dashOffset)}
-            <div data-on:click="@get('/progress-bar/updates', {openWhenHidden: true})">
-                <button>
-                    Completed! Try again?
-                </button>
-            </div>
-        </div>
-        """.trimIndent()
-    }
-}
+val renderProgressBarFragment: HtmlView<ProgressBarState> =
+    view<ProgressBarState> {
+        div {
+            dyn { state: ProgressBarState ->
+                attrId("progress-bar")
 
-private fun renderSvgHtml(
-    progress: Int,
-    dashOffset: Int,
-): String =
-    """
-    <svg width="200" height="200" viewbox="-25 -25 250 250" style="transform: rotate(-90deg)">
-        <circle r="90" cx="100" cy="100" fill="transparent" stroke="#e0e0e0"
-            stroke-width="16px" stroke-dasharray="565.48px" stroke-dashoffset="565px"></circle>
-        <circle r="90" cx="100" cy="100" fill="transparent" stroke="#6bdba7"
-            stroke-width="16px" stroke-linecap="round"
-            stroke-dashoffset="${dashOffset}px" stroke-dasharray="565.48px"></circle>
-        <text x="44" y="115" fill="#6bdba7" font-size="52" font-weight="bold"
-            style="transform:rotate(90deg) translate(0px, -196px)">$progress%</text>
-    </svg>
-    """.trimIndent()
+                if (!state.completed) {
+                    dataInit("@get('/progress-bar/updates', {openWhenHidden: true})")
+                }
+
+                renderProgressSvg(state.progress)
+
+                if (state.completed) {
+                    div {
+                        dataOn("click", "@get('/progress-bar/updates', {openWhenHidden: true})")
+                        button {
+                            text("Completed! Try again?")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 private fun Div<*>.renderProgressSvg(progress: Int) {
-    val dashOffset = (565.48 * (1 - progress / 100.0)).roundToInt()
+    val dashOffset = calculateDashOffset(progress)
     svg {
         attrWidth(200)
         attrHeight(200)
         addAttr("viewbox", "-25 -25 250 250")
         attrStyle("transform: rotate(-90deg)")
 
+        // Background circle
         custom("circle")
             .addAttr("r", "90")
             .addAttr("cx", "100")
@@ -108,6 +96,7 @@ private fun Div<*>.renderProgressSvg(progress: Int) {
             .addAttr("stroke-dashoffset", "565px")
             .l
 
+        // Progress circle
         custom("circle")
             .addAttr("r", "90")
             .addAttr("cx", "100")
@@ -120,6 +109,7 @@ private fun Div<*>.renderProgressSvg(progress: Int) {
             .addAttr("stroke-dasharray", "565.48px")
             .l
 
+        // Progress text
         custom("text")
             .addAttr("x", "44")
             .addAttr("y", "115")
@@ -131,3 +121,5 @@ private fun Div<*>.renderProgressSvg(progress: Int) {
             .l
     }
 }
+
+private fun calculateDashOffset(progress: Int): Int = (565.48 * (1 - progress / 100.0)).roundToInt()

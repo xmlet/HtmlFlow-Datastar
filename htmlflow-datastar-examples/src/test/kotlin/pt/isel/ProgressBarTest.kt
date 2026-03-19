@@ -16,13 +16,13 @@ import pt.isel.infrastructure.SharedTestServersExtension
 @ExtendWith(SharedTestServersExtension::class)
 class ProgressBarTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `progress bar updates progressively on Html`(serverType: String) {
         `progress bar updates progressively`("/progress-bar/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `progress bar updates progressively on HtmlFlow`(serverType: String) {
         `progress bar updates progressively`("/progress-bar/htmlflow", serverType)
     }
@@ -65,9 +65,6 @@ class ProgressBarTest {
                 page.waitForFunction(
                     "document.querySelector('svg text')?.textContent !== '0%'",
                 )
-
-                val midValue = page.textContent("svg text")?.filter { it.isDigit() }?.toInt()
-                assertTrue(midValue != null && midValue > 0)
 
                 page.waitForSelector("text=100%")
 

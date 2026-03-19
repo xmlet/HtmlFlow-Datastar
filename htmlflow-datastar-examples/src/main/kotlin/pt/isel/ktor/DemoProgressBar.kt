@@ -25,7 +25,7 @@ fun Route.demoProgressBar() {
     route("/progress-bar") {
         get("/html", RoutingContext::getProgressBarHtml)
         get("/htmlflow", RoutingContext::getProgressBarHtmlFlow)
-        get("/updates") { progressBarUpdates() }
+        get("/updates", RoutingContext::progressBarUpdates)
     }
 }
 
@@ -47,15 +47,14 @@ private suspend fun RoutingContext.progressBarUpdates() {
 
         while (progress < 100) {
             val state = ProgressBarState(progress = progress, completed = false)
-            val html = renderProgressBarFragment(state)
-            generator.patchElements(html)
+            generator.patchElements(renderProgressBarFragment.render(state))
 
             delay(200)
             progress += Random.nextInt(1, 16)
         }
 
         val finalState = ProgressBarState(progress = 100, completed = true)
-        generator.patchElements(renderProgressBarFragment(finalState))
+        generator.patchElements(renderProgressBarFragment.render(finalState))
     }
 }
 

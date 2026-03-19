@@ -15,13 +15,13 @@ import kotlin.test.assertTrue
 @ExtendWith(SharedTestServersExtension::class)
 class LazyLoadTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `lazy load shows loading then graph on HTML`(serverType: String) {
         `lazy load shows loading then graph`("/lazy-load/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `lazy load shows loading then graph on HtmlFlow`(serverType: String) {
         `lazy load shows loading then graph`("/lazy-load/htmlflow", serverType)
     }

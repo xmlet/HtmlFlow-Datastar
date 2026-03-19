@@ -14,13 +14,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class LazyTabsTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `click tab and verify content changes on HTML`(serverType: String) {
         `click tab and verify content changes`("/lazy-tabs/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `click tab and verify content changes on HtmlFlow`(serverType: String) {
         `click tab and verify content changes`("/lazy-tabs/htmlflow", serverType)
     }
@@ -50,7 +50,7 @@ class LazyTabsTest {
                 val initialContent = page.textContent("div[role='tabpanel'] p")?.trim()
                 assertEquals(TAB_CONTENTS[0], initialContent, "Initial content should be Tab 0 content")
 
-                (1..7).forEach { index ->
+                (1..<TAB_CONTENTS.size).forEach { index ->
                     val expectedContent = TAB_CONTENTS[index]
                     page.click("button[role='tab']:has-text('Tab $index')")
                     page.waitForSelector("#tabpanel p:has-text('${expectedContent.take(30)}')")
