@@ -22,20 +22,22 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.put
 import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataEffect
 import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
+import pt.isel.http4k.activateUsers
+import pt.isel.http4k.deactivateUsers
+import pt.isel.http4k.getBulkUpdateDescription
 import pt.isel.ktor.User
-import pt.isel.utils.loadResource
 import kotlin.collections.component1
 import kotlin.collections.component2
-
-private val description = loadResource("public/html/fragments/bulk-update-description.html")
 
 val hfBulkUpdate: HtmlView<List<User>> =
     view {
@@ -51,7 +53,6 @@ val hfBulkUpdate: HtmlView<List<User>> =
                 }
             }
             body {
-                raw(description)
                 div {
                     attrId("demo")
                     val (fetching, selections) =
@@ -98,7 +99,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                     div {
                         button {
                             attrClass("success")
-                            dataOn("click", put(::activate))
+                            dataOn("click", put(::activateUsers))
                             dataIndicator(fetching.name)
                             dataAttr("disabled", fetching)
                             i { attrClass("pixelarticons:user-plus") }
@@ -106,13 +107,17 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         }
                         button {
                             attrClass("error")
-                            dataOn("click", put(::deactivate))
+                            dataOn("click", put(::deactivateUsers))
                             dataIndicator(fetching.name)
                             dataAttr("disabled", fetching)
                             i { attrClass("pixelarticons:user-x") }
                             text("Deactivate")
                         }
                     }
+                }
+                div {
+                    attrId("description")
+                    dataInit(get(::getBulkUpdateDescription))
                 }
             }
         }
@@ -134,9 +139,3 @@ fun userRowsFragment(users: List<User>): String =
         users.forEach { append(buildUserRow(it)) }
         append("</tbody>")
     }
-
-@Path("/bulk-update/activate")
-private fun activate() {}
-
-@Path("/bulk-update/deactivate")
-private fun deactivate() {}

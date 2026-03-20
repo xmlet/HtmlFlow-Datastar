@@ -23,7 +23,7 @@ import pt.isel.ktor.ProgressBarState
 import pt.isel.utils.loadResource
 import kotlin.math.roundToInt
 
-private val description = loadResource("public/html/fragments/progress-bar-description.html")
+private val description = loadResource("pt/isel/views/fragments/progress-bar-description.html")
 
 val hfProgressBar: String =
     StringBuilder()

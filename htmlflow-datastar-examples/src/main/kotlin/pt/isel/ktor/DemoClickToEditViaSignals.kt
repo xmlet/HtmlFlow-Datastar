@@ -16,14 +16,13 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.ktor.getClickToEditSignalsDescription
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfClickToEditSignals
 
-private val description = loadResource("public/html/fragments/click-to-edit-signals-description.html")
-private val html =
-    loadResource("public/html/click-to-edit-signals.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/click-to-edit-signals-description.html")
+private val html = loadResource("public/html/click-to-edit-signals.html")
 
 private val clickToEditSignals = MutableStateFlow(ClickToEditSignals())
 
@@ -36,6 +35,7 @@ fun Route.demoClickToEditViaSignals() {
         patch("/reset", RoutingContext::resetClickToEdit)
         get("/cancel", RoutingContext::cancelClickToEdit)
         put("", RoutingContext::saveClickToEdit)
+        get("/description", RoutingContext::getClickToEditSignalsDescription)
     }
 }
 
@@ -90,6 +90,16 @@ private suspend fun RoutingContext.saveClickToEdit() {
     clickToEditSignals.emit(updatedSignals)
 
     call.respond(HttpStatusCode.NoContent)
+}
+
+private suspend fun RoutingContext.getClickToEditSignalsDescription() {
+    call.respondTextWriter(
+        status = HttpStatusCode.OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
+    }
 }
 
 private const val DEFAULT_USER_NAME = "John"

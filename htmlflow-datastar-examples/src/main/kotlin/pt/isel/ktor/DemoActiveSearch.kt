@@ -16,16 +16,15 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.contactRowsFragment
 import pt.isel.views.htmlflow.hfActiveSearch
 
-private val description = loadResource("public/html/fragments/active-search-description.html")
-private val html =
-    loadResource("public/html/active-search.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/active-search-description.html")
+private val html = loadResource("public/html/active-search.html")
 
 fun Route.demoActiveSearch() {
     route("/active-search") {
         get("/html", RoutingContext::getActiveSearchHtml)
         get("/htmlflow", RoutingContext::getActiveSearchHtmlFlow)
         get("/search", RoutingContext::searchContacts)
+        get("/description", RoutingContext::getActiveSearchDescription)
     }
 }
 
@@ -58,6 +57,16 @@ private suspend fun RoutingContext.searchContacts() {
                 }
             }
         generator.patchElements(contactRowsFragment(filteredContacts))
+    }
+}
+
+private suspend fun RoutingContext.getActiveSearchDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

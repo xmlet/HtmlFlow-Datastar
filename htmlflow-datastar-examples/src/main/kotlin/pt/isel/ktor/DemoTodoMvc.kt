@@ -6,6 +6,7 @@ import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.Cookie
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
@@ -33,10 +34,8 @@ import kotlin.collections.map
 private val accounts =
     ConcurrentHashMap<UUID, MutableStateFlow<Account>>()
 
-private val description = loadResource("public/html/fragments/todo-mvc-description.html")
-private val html =
-    loadResource("public/html/todo-mvc.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/todo-mvc-description.html")
+private val html = loadResource("public/html/todo-mvc.html")
 
 fun Route.demoTodoMvc() {
     route("/todo-mvc") {
@@ -57,6 +56,7 @@ fun Route.demoTodoMvc() {
         put("/mode/2") { setMode(Mode.DONE) }
         delete("/-1", RoutingContext::deleteToggledTasks)
         put("/reset", RoutingContext::resetTasks)
+        get("/description", RoutingContext::getTodoMvcDescription)
     }
 }
 
@@ -258,6 +258,16 @@ private suspend fun RoutingContext.resetTasks() {
     val account = accountFlow()
     account.emit(account.value.copy(tasks = initialTasks))
     call.respond(HttpStatusCode.NoContent)
+}
+
+private suspend fun RoutingContext.getTodoMvcDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
+    }
 }
 
 data class Task(

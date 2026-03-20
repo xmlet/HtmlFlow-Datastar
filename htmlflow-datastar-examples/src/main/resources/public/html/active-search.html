@@ -5,7 +5,7 @@
     </script><link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<!-- DESCRIPTION -->
+<div id="description" data-init="@get('/active-search/description')"></div>
 <div id="demo">
     <input type="text" placeholder="Search..." data-bind:search="" data-on:input__debounce.200ms="@get('/active-search/search')">
     <table>

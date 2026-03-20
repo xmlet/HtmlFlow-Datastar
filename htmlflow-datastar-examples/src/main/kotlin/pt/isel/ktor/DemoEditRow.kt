@@ -24,10 +24,8 @@ import pt.isel.views.htmlflow.defaultRowView
 import pt.isel.views.htmlflow.hfEditRow
 import pt.isel.views.htmlflow.hfPartialEditRowView
 
-private val description = loadResource("public/html/fragments/edit-row-description.html")
-private val html =
-    loadResource("public/html/edit-row.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/edit-row-description.html")
+private val html = loadResource("public/html/edit-row.html")
 
 private val users = DEFAULT_USERS.toMutableList()
 
@@ -39,6 +37,7 @@ fun Route.demoEditRow() {
         put("/reset", RoutingContext::resetUsers)
         get("/cancel", RoutingContext::cancelEditRow)
         patch("/{index}", RoutingContext::saveEditRow)
+        get("/description", RoutingContext::getEditRowDescription)
     }
 }
 
@@ -121,6 +120,16 @@ private suspend fun RoutingContext.saveEditRow() {
             defaultRowView.render(editedUser),
             PatchElementsOptions("#row-${editedUser.idx}", mode = ElementPatchMode.Replace),
         )
+    }
+}
+
+private suspend fun RoutingContext.getEditRowDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

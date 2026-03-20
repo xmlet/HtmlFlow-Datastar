@@ -1,5 +1,6 @@
 package pt.isel.views.htmlflow
 
+import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.EnumRelType
@@ -32,10 +33,10 @@ import pt.isel.datastar.extensions.dataText
 import pt.isel.http4k.clickToEditSignalsCancel
 import pt.isel.http4k.clickToEditSignalsReset
 import pt.isel.http4k.clickToEditSignalsSave
+import pt.isel.http4k.getClickToEditDescription
 import pt.isel.http4k.getClickToEditEvents
+import pt.isel.http4k.getClickToEditSignalsDescription
 import pt.isel.utils.loadResource
-
-private val description = loadResource("public/html/fragments/click-to-edit-signals-description.html")
 
 val hfClickToEditSignals =
     StringBuilder()
@@ -143,7 +144,10 @@ val hfClickToEditSignals =
                                 }
                             }
                         }
-                        raw(description)
+                        div {
+                            attrId("description")
+                            dataInit(get(::getClickToEditSignalsDescription))
+                        }
                     }
                 }
             }

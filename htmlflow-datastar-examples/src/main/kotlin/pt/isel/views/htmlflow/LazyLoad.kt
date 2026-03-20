@@ -20,7 +20,7 @@ import pt.isel.http4k.loadGraph
 import pt.isel.ktor.LazyLoadImage
 import pt.isel.utils.loadResource
 
-private val description = loadResource("public/html/fragments/lazy-load-description.html")
+private val description = loadResource("pt/isel/views/fragments/lazy-load-description.html")
 
 val hfLazyLoadDoc: String =
     StringBuilder()

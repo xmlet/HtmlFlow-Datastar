@@ -28,7 +28,7 @@ import pt.isel.ktor.InlineValidationSignals
 import pt.isel.utils.loadResource
 import kotlin.time.Duration.Companion.milliseconds
 
-private val description = loadResource("public/html/fragments/inline-validation-description.html")
+private val description = loadResource("pt/isel/views/fragments/inline-validation-description.html")
 
 val hfInlineValidationView: HtmlView<InlineValidationSignals> =
     view {

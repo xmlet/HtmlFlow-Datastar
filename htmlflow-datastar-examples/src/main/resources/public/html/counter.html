@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="body">
+<div id="description" data-init="@get('/counter/description')"></div>
 <div>
     <h1>Counting Stars</h1>
     <div data-init="@get('/counter/events')">
@@ -18,6 +19,5 @@
         <button id="increment" data-on:click="@post('/counter/increment')">+</button>
     </div>
 </div>
-<!-- DESCRIPTION -->
 </body>
 </html>

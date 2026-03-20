@@ -28,7 +28,7 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.utils.loadResource
 
-private val description = loadResource("public/html/fragments/progressive-load-description.html")
+private val description = loadResource("pt/isel/views/fragments/progressive-load-description.html")
 
 val hfProgressiveLoad =
     StringBuilder()

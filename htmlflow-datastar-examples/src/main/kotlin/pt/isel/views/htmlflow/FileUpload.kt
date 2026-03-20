@@ -24,16 +24,16 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
+import pt.isel.http4k.getFileUploadDescription
 import pt.isel.http4k.uploadFile
 import pt.isel.ktor.FileInfo
-import pt.isel.utils.loadResource
-
-private val description = loadResource("public/html/fragments/file-upload-description.html")
 
 val hfFileUpload: String =
     StringBuilder()
@@ -70,7 +70,10 @@ val hfFileUpload: String =
                             attrId("file-upload")
                             attrHidden(true)
                         }
-                        raw(description)
+                        div {
+                            attrId("description")
+                            dataInit(get(::getFileUploadDescription))
+                        }
                     }
                 }
             }

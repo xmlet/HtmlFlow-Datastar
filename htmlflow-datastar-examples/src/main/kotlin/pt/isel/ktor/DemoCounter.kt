@@ -16,10 +16,8 @@ import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfCounterEventView
 
-private val description = loadResource("public/html/fragments/counter-description.html")
-private val html =
-    loadResource("public/html/counter.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/counter-description.html")
+private val html = loadResource("public/html/counter.html")
 
 private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
@@ -32,6 +30,8 @@ fun Route.demoCounter() {
         post("/increment", RoutingContext::postCounterIncrement)
 
         post("/decrement", RoutingContext::postCounterDecrement)
+
+        get("/description", RoutingContext::getCounterDescription)
     }
 }
 
@@ -54,6 +54,16 @@ private suspend fun RoutingContext.getCounterEvents() {
                 generator.executeScript("""alert('Thanks for trying Datastar!')""")
             }
         }
+    }
+}
+
+private suspend fun RoutingContext.getCounterDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

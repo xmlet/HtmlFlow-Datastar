@@ -5,7 +5,6 @@ import htmlflow.dyn
 import htmlflow.html
 import htmlflow.tr
 import htmlflow.view
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -25,13 +24,13 @@ import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignals
 import pt.isel.datastar.extensions.dataText
+import pt.isel.http4k.getClickToLoadDescription
+import pt.isel.http4k.getMore
 import pt.isel.ktor.Agent
-import pt.isel.utils.loadResource
-
-private val description = loadResource("public/html/fragments/click-to-load-description.html")
 
 val hfClickToLoad: String =
     StringBuilder()
@@ -49,7 +48,10 @@ val hfClickToLoad: String =
                         }
                     }
                     body {
-                        raw(description)
+                        div {
+                            attrId("description")
+                            dataInit(get(::getClickToLoadDescription))
+                        }
                         div {
                             attrId("demo")
                             dataSignals("offset" to 0, "limit" to 5)
@@ -70,7 +72,7 @@ val hfClickToLoad: String =
                             attrClass("info wide")
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled", fetching)
-                            dataOn("click", !fetching and get(::clickToLoadMore))
+                            dataOn("click", !fetching and get(::getMore))
                             dataText("$fetching ? 'Loading...' : 'Load More'")
                             text("Load More")
                         }
@@ -89,6 +91,3 @@ val hfAgentRowView =
             }
         }
     }
-
-@Path("/click-to-load/more")
-private fun clickToLoadMore() {}

@@ -20,10 +20,8 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfDeleteRow
 import pt.isel.views.htmlflow.hfDeleteRowTable
 
-private val description = loadResource("public/html/fragments/delete-row-description.html")
-private val html =
-    loadResource("public/html/delete-row.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/delete-row-description.html")
+private val html = loadResource("public/html/delete-row.html")
 
 val DEFAULT_USERS =
     listOf(
@@ -49,6 +47,7 @@ fun Route.demoDeleteRow() {
         get("/htmlflow", RoutingContext::getDeleteRowHtmlFlow)
         delete("/{index}", RoutingContext::deleteRow)
         patch("/reset", RoutingContext::resetUsers)
+        get("/description", RoutingContext::getDeleteRowDescription)
     }
 }
 
@@ -84,6 +83,16 @@ private suspend fun RoutingContext.resetUsers() {
         val generator = ServerSentEventGenerator(response(this))
         deletedIndices.clear()
         generator.patchElements(hfUsersTable, options = PatchElementsOptions(selector = "#users-table"))
+    }
+}
+
+private suspend fun RoutingContext.getDeleteRowDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

@@ -7,6 +7,7 @@ import htmlflow.div
 import htmlflow.doc
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
 import io.ktor.server.routing.Route
@@ -19,16 +20,15 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfProgressiveLoad
 import pt.isel.views.htmlflow.loadDiv
 
-private val description = loadResource("public/html/fragments/progressive-load-description.html")
-private val html =
-    loadResource("public/html/progressive-load.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/progressive-load-description.html")
+private val html = loadResource("public/html/progressive-load.html")
 
 fun Route.demoProgressiveLoad() {
     route("/progressive-load") {
         get("/html", RoutingContext::getProgressiveLoadHtml)
         get("/htmlflow", RoutingContext::getProgressiveLoadHtmlFlow)
         get("/updates", RoutingContext::getUpdates)
+        get("/description", RoutingContext::getProgressiveLoadDescription)
     }
 }
 
@@ -146,6 +146,16 @@ private suspend fun RoutingContext.getUpdates() {
 
         delay(1000) // Simulate some delay
         generator.patchElements(loadButton)
+    }
+}
+
+private suspend fun RoutingContext.getProgressiveLoadDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

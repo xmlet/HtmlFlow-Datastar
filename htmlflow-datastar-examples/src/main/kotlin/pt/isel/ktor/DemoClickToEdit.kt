@@ -21,10 +21,9 @@ import pt.isel.views.htmlflow.hfClickToEdit
 import pt.isel.views.htmlflow.hfDisplayFragment
 import pt.isel.views.htmlflow.hfEditModeFragment
 
-private val description = loadResource("public/html/fragments/click-to-edit-description.html")
-private val html =
-    loadResource("public/html/click-to-edit.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/click-to-edit-description.html")
+private val html = loadResource("public/html/click-to-edit.html")
+
 val DEFAULT_USER =
     Profile(
         firstName = "John",
@@ -41,6 +40,7 @@ fun Route.demoClickToEdit() {
         patch("/reset", RoutingContext::resetClickToEdit)
         get("/cancel", RoutingContext::cancelClickToEdit)
         put("", RoutingContext::saveClickToEdit)
+        get("/description", RoutingContext::getClickToEditDescription)
     }
 }
 
@@ -108,6 +108,16 @@ private suspend fun RoutingContext.saveClickToEdit() {
         globalUser.emit(newProfile)
 
         generator.patchElements(hfDisplayFragment.render(newProfile))
+    }
+}
+
+private suspend fun RoutingContext.getClickToEditDescription() {
+    call.respondTextWriter(
+        status = HttpStatusCode.OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

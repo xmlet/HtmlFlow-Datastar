@@ -10,6 +10,7 @@ val demosHttp4kRouting =
         "/" bind static(Classpath("public")),
         *("/counter-signals" bind demoCounterSignals()).toTypedArray(),
         *("/counter" bind demoCounter()).toTypedArray(),
+        *("/click-to-load" bind demoClickToLoad()).toTypedArray(),
         *("/click-to-edit" bind demoClickToEdit()).toTypedArray(),
         *("/click-to-edit-signals" bind demoClickToEditViaSignals()).toTypedArray(),
         *("/edit-row" bind demoEditRow()).toTypedArray(),
@@ -19,4 +20,6 @@ val demosHttp4kRouting =
         *("/lazy-load" bind demoLazyLoad()).toTypedArray(),
         *("/lazy-tabs" bind demoLazyTabs()).toTypedArray(),
         *("/progress-bar" bind demoProgressBar()).toTypedArray(),
+        *("/active-search" bind demoActiveSearch()).toTypedArray(),
+        *("/bulk-update" bind demoBulkUpdate()).toTypedArray(),
     )

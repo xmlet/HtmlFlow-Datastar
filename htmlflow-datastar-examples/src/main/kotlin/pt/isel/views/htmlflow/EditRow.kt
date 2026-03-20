@@ -34,17 +34,17 @@ import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.http4k.cancelEditRow
+import pt.isel.http4k.getEditRowDescription
 import pt.isel.http4k.resetTable
 import pt.isel.ktor.TableState
 import pt.isel.ktor.TableUser
-import pt.isel.utils.loadResource
 
 // Module-level signal accessible to all functions
 private lateinit var editing: Signal<Boolean>
-private val description = loadResource("public/html/fragments/edit-row-description.html")
 
 val hfEditRow: HtmlView<TableState> =
     view {
@@ -63,7 +63,10 @@ val hfEditRow: HtmlView<TableState> =
                 div {
                     hfEditRowTable()
                 }
-                raw(description)
+                div {
+                    attrId("description")
+                    dataInit(get(::getEditRowDescription))
+                }
             }
         }
     }

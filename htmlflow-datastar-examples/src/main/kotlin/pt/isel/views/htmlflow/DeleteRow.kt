@@ -31,7 +31,7 @@ import pt.isel.ktor.DeleteRowsState
 import pt.isel.ktor.TableUser
 import pt.isel.utils.loadResource
 
-private val description = loadResource("public/html/fragments/delete-row-description.html")
+private val description = loadResource("pt/isel/views/fragments/delete-row-description.html")
 
 val hfDeleteRow: HtmlView<DeleteRowsState> =
     view {

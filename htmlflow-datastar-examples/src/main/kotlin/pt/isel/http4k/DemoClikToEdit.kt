@@ -21,6 +21,7 @@ import pt.isel.views.htmlflow.hfClickToEdit
 import pt.isel.views.htmlflow.hfDisplayFragment
 import pt.isel.views.htmlflow.hfEditModeFragment
 
+private val description = loadResource("pt/isel/views/fragments/click-to-edit-description.html")
 private val html = loadResource("public/html/click-to-edit.html")
 
 private val state = UiState(DEFAULT_USER)
@@ -33,6 +34,7 @@ fun demoClickToEdit() =
         "/reset" bindSse ::clickToEditReset,
         "/cancel" bindSse Method.GET to ::clickToEditCancel,
         "" bindSse Method.PUT to ::clickToEditSave,
+        "/description" bindSse Method.GET to ::getClickToEditDescription,
     )
 
 fun getClickToEditHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html")
@@ -74,6 +76,12 @@ fun clickToEditSave(req: Request): SseResponse =
             )
         state.profile = newProfile
         sse.sendPatchElements(Element.of(hfDisplayFragment.render(newProfile))).close()
+    }
+
+@Path("/click-to-edit/description")
+fun getClickToEditDescription(req: Request): SseResponse =
+    SseResponse { sse ->
+        sse.sendPatchElements(Element.of(description))
     }
 
 data class UiState(

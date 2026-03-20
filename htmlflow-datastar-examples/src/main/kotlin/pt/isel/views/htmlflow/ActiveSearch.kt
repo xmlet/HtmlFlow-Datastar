@@ -4,7 +4,6 @@ import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
@@ -24,12 +23,13 @@ import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.http4k.getActiveSearchDescription
+import pt.isel.http4k.getSearchContacts
 import pt.isel.ktor.Contact
 import pt.isel.utils.loadResource
 import kotlin.time.Duration.Companion.milliseconds
-
-private val description = loadResource("public/html/fragments/active-search-description.html")
 
 val hfActiveSearch: HtmlView<List<Contact>> =
     view {
@@ -45,7 +45,10 @@ val hfActiveSearch: HtmlView<List<Contact>> =
                 }
             }
             body {
-                raw(description)
+                div {
+                    attrId("description")
+                    dataInit(get(::getActiveSearchDescription))
+                }
                 div {
                     hfActiveSearchTable()
                 }
@@ -59,7 +62,7 @@ fun Div<*>.hfActiveSearchTable() {
         attrType(EnumTypeInputType.TEXT)
         attrPlaceholder("Search...")
         dataBind("search")
-        dataOn("input", get(::activeSearch)) {
+        dataOn("input", get(::getSearchContacts)) {
             mods { debounce(200.milliseconds) }
         }
     }
@@ -108,6 +111,3 @@ fun contactRowsFragment(contacts: List<Contact>): String =
             }
             append("</tbody>")
         }.toString()
-
-@Path("/active-search/search")
-private fun activeSearch() {}

@@ -18,7 +18,7 @@ import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.utils.loadResource
 
-private val description = loadResource("public/html/fragments/lazy-tabs-description.html")
+private val description = loadResource("pt/isel/views/fragments/lazy-tabs-description.html")
 
 val TAB_CONTENTS =
     listOf(

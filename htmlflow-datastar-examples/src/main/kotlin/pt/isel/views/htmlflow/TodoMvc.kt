@@ -27,7 +27,6 @@ import pt.isel.datastar.expressions.delete
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.post
 import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
@@ -36,7 +35,7 @@ import pt.isel.ktor.Status
 import pt.isel.ktor.TodoUiState
 import pt.isel.utils.loadResource
 
-private val description = loadResource("public/html/fragments/todo-mvc-description.html")
+private val description = loadResource("pt/isel/views/fragments/todo-mvc-description.html")
 
 val hfTodoMvcView: HtmlView<TodoUiState> =
     view<TodoUiState> {

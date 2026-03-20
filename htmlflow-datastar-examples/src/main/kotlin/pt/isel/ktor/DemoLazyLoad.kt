@@ -15,16 +15,15 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfLazyLoadDoc
 import pt.isel.views.htmlflow.hfLazyLoadView
 
-private val description = loadResource("public/html/fragments/lazy-load-description.html")
-private val html =
-    loadResource("public/html/lazy-load.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/lazy-load-description.html")
+private val html = loadResource("public/html/lazy-load.html")
 
 fun Route.demoLazyLoad() {
     route("/lazy-load") {
         get("/html", RoutingContext::getLazyLoadHtml)
         get("/htmlflow", RoutingContext::getLazyLoadHtmlFlow)
         get("/graph", RoutingContext::getLazyLoadGraph)
+        get("/description", RoutingContext::getLazyLoadDescription)
     }
 }
 
@@ -45,6 +44,16 @@ private suspend fun RoutingContext.getLazyLoadGraph() {
         delay(2000)
 
         generator.patchElements(hfLazyLoadView.render(TOKYO_IMAGE))
+    }
+}
+
+private suspend fun RoutingContext.getLazyLoadDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

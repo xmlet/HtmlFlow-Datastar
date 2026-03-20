@@ -21,7 +21,7 @@ import pt.isel.datastar.extensions.dataSignals
 import pt.isel.http4k.getMoreAgents
 import pt.isel.utils.loadResource
 
-private val description = loadResource("public/html/fragments/infinite-scroll-description.html")
+private val description = loadResource("pt/isel/views/fragments/infinite-scroll-description.html")
 
 val hfInfiniteScroll =
     StringBuilder()

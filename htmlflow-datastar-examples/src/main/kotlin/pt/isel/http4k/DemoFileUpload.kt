@@ -11,6 +11,7 @@ import org.http4k.datastar.Element
 import org.http4k.datastar.MorphMode
 import org.http4k.datastar.Selector
 import org.http4k.routing.bind
+import org.http4k.routing.bindSse
 import org.http4k.routing.poly
 import org.http4k.routing.to
 import org.http4k.sse.SseResponse
@@ -22,6 +23,7 @@ import pt.isel.views.htmlflow.fileUploadTable
 import pt.isel.views.htmlflow.hfFileUpload
 import kotlin.io.encoding.Base64
 
+private val description = loadResource("pt/isel/views/fragments/file-upload-description.html")
 private val html = loadResource("public/html/file-upload.html")
 
 fun demoFileUpload(): PolyHandler =
@@ -29,6 +31,7 @@ fun demoFileUpload(): PolyHandler =
         "/html" bind Method.GET to ::getFileUploadHtml,
         "/htmlflow" bind Method.GET to ::getFileUploadHtmFlow,
         "" bind Method.POST to ::uploadFile,
+        "/description" bindSse Method.GET to ::getFileUploadDescription,
     )
 
 fun getFileUploadHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html; charset=utf-8")
@@ -63,5 +66,13 @@ fun uploadFile(req: Request): SseResponse =
             Element.of(fileUploadTable.render(validFiles)),
             selector = Selector.of("#file-upload"),
             morphMode = MorphMode.replace,
+        )
+    }
+
+@Path("/file-upload/description")
+fun getFileUploadDescription(req: Request): SseResponse =
+    SseResponse { sse ->
+        sse.sendPatchElements(
+            elements = listOf(Element.of(description)),
         )
     }

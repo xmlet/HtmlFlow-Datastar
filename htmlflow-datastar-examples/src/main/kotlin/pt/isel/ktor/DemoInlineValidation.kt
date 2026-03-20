@@ -2,7 +2,7 @@ package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
@@ -19,10 +19,8 @@ import pt.isel.views.htmlflow.hfInlineValidationView
 import pt.isel.views.htmlflow.hfInputFieldsDiv
 import pt.isel.views.htmlflow.hfSignUpDoc
 
-private val description = loadResource("public/html/fragments/inline-validation-description.html")
-private val html =
-    loadResource("public/html/inline-validation.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/inline-validation-description.html")
+private val html = loadResource("public/html/inline-validation.html")
 
 fun Route.demoInlineValidation() {
     route("/inline-validation") {
@@ -30,6 +28,7 @@ fun Route.demoInlineValidation() {
         get("/htmlflow", RoutingContext::getInlineValidationHtmlFlow)
         post("/validate", RoutingContext::validateFields)
         post("", RoutingContext::signUp)
+        get("/description", RoutingContext::getInlineValidationDescription)
     }
 }
 
@@ -43,7 +42,7 @@ private suspend fun RoutingContext.getInlineValidationHtmlFlow() {
 
 private suspend fun RoutingContext.validateFields() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
@@ -58,12 +57,22 @@ private suspend fun RoutingContext.validateFields() {
 
 private suspend fun RoutingContext.signUp() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
 
         generator.patchElements(hfSignUpDoc)
+    }
+}
+
+private suspend fun RoutingContext.getInlineValidationDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

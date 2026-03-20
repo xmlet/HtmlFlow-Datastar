@@ -20,6 +20,7 @@ import pt.isel.utils.loadResource
 import pt.isel.views.htmlflow.hfCounter
 import pt.isel.views.htmlflow.hfCounterEventView
 
+private val description = loadResource("pt/isel/views/fragments/counter-description.html")
 private val html = loadResource("public/html/counter.html")
 
 private val bus = EventBus(0)
@@ -31,6 +32,7 @@ fun demoCounter() =
         "/increment" bind Method.POST to ::incrementCounter,
         "/decrement" bind Method.POST to ::decrementCounter,
         "/events" bindSse Method.GET to ::counterEvents,
+        "/description" bindSse Method.GET to ::getCounterDescription,
     )
 
 fun getCounterPageHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html")
@@ -65,6 +67,14 @@ fun counterEvents(req: Request): SseResponse {
         }
     }
 }
+
+@Path("/counter/description")
+fun getCounterDescription(req: Request): SseResponse =
+    SseResponse { sse ->
+        sse.sendPatchElements(
+            elements = listOf(Element.of(description)),
+        )
+    }
 
 @Path("/counter/increment")
 fun incrementCounter(req: Request): Response {

@@ -18,10 +18,8 @@ import pt.isel.utils.response
 import pt.isel.views.htmlflow.hfBulkUpdate
 import pt.isel.views.htmlflow.userRowsFragment
 
-private val description = loadResource("public/html/fragments/bulk-update-description.html")
-private val html =
-    loadResource("public/html/bulk-update.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/bulk-update-description.html")
+private val html = loadResource("public/html/bulk-update.html")
 private val users =
     mutableListOf(
         User("Joe Smith", "joe@smith.org", UserStatus.ACTIVE),
@@ -36,6 +34,7 @@ fun Route.demoBulkUpdate() {
         get("/htmlflow", RoutingContext::getBulkUpdateHtmlFlow)
         put("/activate", RoutingContext::activateUsers)
         put("/deactivate", RoutingContext::deactivateUsers)
+        get("/description", RoutingContext::getBulkUpdateDescription)
     }
 }
 
@@ -90,6 +89,16 @@ private suspend fun RoutingContext.deactivateUsers() {
             }
         }
         generator.patchElements(userRowsFragment(users))
+    }
+}
+
+private suspend fun RoutingContext.getBulkUpdateDescription() {
+    call.respondTextWriter(
+        status = HttpStatusCode.OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 

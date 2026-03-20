@@ -7,18 +7,21 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NO_CONTENT
 import org.http4k.core.Status.Companion.OK
+import org.http4k.datastar.Element
 import org.http4k.datastar.Signal
 import org.http4k.routing.bind
 import org.http4k.routing.bindSse
 import org.http4k.routing.poly
 import org.http4k.routing.to
 import org.http4k.sse.SseResponse
+import org.http4k.sse.sendPatchElements
 import org.http4k.sse.sendPatchSignals
 import pt.isel.ktor.ClickToEditSignals
 import pt.isel.utils.EventBus
 import pt.isel.utils.loadResource
 import pt.isel.views.htmlflow.hfClickToEditSignals
 
+private val description = loadResource("pt/isel/views/fragments/click-to-edit-signals-description.html")
 private val html = loadResource("public/html/click-to-edit-signals.html")
 private val bus = EventBus(ClickToEditSignals())
 
@@ -30,11 +33,17 @@ fun demoClickToEditViaSignals() =
         "/reset" bind Method.PATCH to ::clickToEditSignalsReset,
         "/cancel" bind Method.GET to ::clickToEditSignalsCancel,
         "" bind Method.PUT to ::clickToEditSignalsSave,
+        "description" bindSse Method.GET to ::getClickToEditSignalsDescription,
     )
 
 fun getClickToEditSignalsHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html")
 
-fun getClickToEditSignalsHf(req: Request): Response = Response(OK).body(hfClickToEditSignals).header("Content-Type", "text/html")
+fun getClickToEditSignalsHf(req: Request): Response =
+    Response(OK).body(hfClickToEditSignals).header(
+        "Content-Type",
+        @Suppress("ktlint:standard:max-line-length")
+        "text/html; charset=utf-8",
+    )
 
 @Path("/click-to-edit-signals/events")
 fun getClickToEditEvents(req: Request): SseResponse {
@@ -73,3 +82,9 @@ fun clickToEditSignalsSave(req: Request): Response {
     bus.publish(signals)
     return Response(NO_CONTENT)
 }
+
+@Path("/click-to-edit-signals/description")
+fun getClickToEditSignalsDescription(req: Request): SseResponse =
+    SseResponse { sse ->
+        sse.sendPatchElements(Element.of(description))
+    }

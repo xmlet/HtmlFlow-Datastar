@@ -14,8 +14,8 @@ plugins {
 
 repositories {
     // Use Maven Central for resolving dependencies.
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
@@ -71,4 +71,12 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/kotlin")
+        }
+    }
 }

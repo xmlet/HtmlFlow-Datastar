@@ -16,16 +16,15 @@ import pt.isel.views.htmlflow.hfProgressBar
 import pt.isel.views.htmlflow.renderProgressBarFragment
 import kotlin.random.Random
 
-private val description = loadResource("public/html/fragments/progress-bar-description.html")
-private val html =
-    loadResource("public/html/progress-bar.html")
-        .replace("<!-- DESCRIPTION -->", description)
+private val description = loadResource("pt/isel/views/fragments/progress-bar-description.html")
+private val html = loadResource("public/html/progress-bar.html")
 
 fun Route.demoProgressBar() {
     route("/progress-bar") {
         get("/html", RoutingContext::getProgressBarHtml)
         get("/htmlflow", RoutingContext::getProgressBarHtmlFlow)
         get("/updates", RoutingContext::progressBarUpdates)
+        get("/description", RoutingContext::getProgressBarDescription)
     }
 }
 
@@ -55,6 +54,16 @@ private suspend fun RoutingContext.progressBarUpdates() {
 
         val finalState = ProgressBarState(progress = 100, completed = true)
         generator.patchElements(renderProgressBarFragment.render(finalState))
+    }
+}
+
+private suspend fun RoutingContext.getProgressBarDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(description)
     }
 }
 
