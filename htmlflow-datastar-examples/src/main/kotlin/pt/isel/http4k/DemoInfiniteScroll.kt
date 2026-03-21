@@ -22,6 +22,7 @@ import pt.isel.ktor.Agent
 import pt.isel.ktor.Signals
 import pt.isel.ktor.newAgents
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfInfiniteScrollDescription
 import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfInfiniteScroll
 
@@ -31,6 +32,7 @@ fun demoInfiniteScroll(): PolyHandler =
     poly(
         "/html" bind Method.GET to ::getInfiniteScrollHtml,
         "/htmlflow" bind Method.GET to ::getInfiniteScrollHtmlFlow,
+        "/description" bindSse Method.GET to ::getInfiniteScrollDescription,
         "/more" bindSse Method.GET to ::getMoreAgents,
     )
 
@@ -58,4 +60,10 @@ fun getMoreAgents(req: Request): SseResponse =
             selector = Selector.of("#agents"),
             morphMode = MorphMode.append,
         )
+    }
+
+@Path("/infinite-scroll/description")
+fun getInfiniteScrollDescription(req: Request): SseResponse =
+    SseResponse { sse ->
+        sse.sendPatchElements(Element.of(hfInfiniteScrollDescription))
     }

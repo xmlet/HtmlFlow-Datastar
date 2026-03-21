@@ -17,13 +17,13 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.http4k.getProgressBarDescription
+import pt.isel.http4k.progressBarUpdates
 import pt.isel.ktor.ProgressBarState
-import pt.isel.utils.loadResource
 import kotlin.math.roundToInt
-
-private val description = loadResource("pt/isel/views/fragments/progress-bar-description.html")
 
 val hfProgressBar: String =
     StringBuilder()
@@ -42,11 +42,14 @@ val hfProgressBar: String =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit(get(::getProgressBarDescription))
+                        }
+                        div {
                             attrId("progress-bar")
-                            dataInit("@get('/progress-bar/updates', {openWhenHidden: true})")
+                            dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
                             renderProgressSvg(0)
                         }
-                        raw(description)
                     }
                 }
             }
@@ -59,14 +62,14 @@ val renderProgressBarFragment: HtmlView<ProgressBarState> =
                 attrId("progress-bar")
 
                 if (!state.completed) {
-                    dataInit("@get('/progress-bar/updates', {openWhenHidden: true})")
+                    dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
                 }
 
                 renderProgressSvg(state.progress)
 
                 if (state.completed) {
                     div {
-                        dataOn("click", "@get('/progress-bar/updates', {openWhenHidden: true})")
+                        dataOn("click", get(::progressBarUpdates, "{openWhenHidden: true}"))
                         button {
                             text("Completed! Try again?")
                         }

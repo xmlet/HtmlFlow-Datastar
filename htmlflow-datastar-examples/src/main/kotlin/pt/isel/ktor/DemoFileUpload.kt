@@ -4,7 +4,6 @@ import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respondText
@@ -18,12 +17,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfFileUploadDescription
 import pt.isel.views.htmlflow.fileUploadTable
 import pt.isel.views.htmlflow.hfFileUpload
 import java.security.MessageDigest
 import kotlin.io.encoding.Base64
 
-private val description = loadResource("pt/isel/views/fragments/file-upload-description.html")
 private val html = loadResource("public/html/file-upload.html")
 
 private const val MAX_FILE_SIZE = 1_000_000 // 1 MB
@@ -32,8 +31,8 @@ fun Route.demoFileUpload() {
     route("/file-upload") {
         get("/html", RoutingContext::getFileUploadHtml)
         get("/htmlflow", RoutingContext::getFileUploadHHtmlFlow)
-        post("", RoutingContext::uploadFile)
         get("/description", RoutingContext::getFileUploadDescription)
+        post("", RoutingContext::uploadFile)
     }
 }
 
@@ -47,7 +46,7 @@ private suspend fun RoutingContext.getFileUploadHHtmlFlow() {
 
 private suspend fun RoutingContext.uploadFile() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
@@ -74,7 +73,7 @@ private suspend fun RoutingContext.getFileUploadDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfFileUploadDescription)
     }
 }
 

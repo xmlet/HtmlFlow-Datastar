@@ -19,19 +19,19 @@ import org.http4k.sse.sendPatchElements
 import pt.isel.ktor.FileInfo
 import pt.isel.ktor.UploadFilesSignals
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfFileUploadDescription
 import pt.isel.views.htmlflow.fileUploadTable
 import pt.isel.views.htmlflow.hfFileUpload
 import kotlin.io.encoding.Base64
 
-private val description = loadResource("pt/isel/views/fragments/file-upload-description.html")
 private val html = loadResource("public/html/file-upload.html")
 
 fun demoFileUpload(): PolyHandler =
     poly(
         "/html" bind Method.GET to ::getFileUploadHtml,
         "/htmlflow" bind Method.GET to ::getFileUploadHtmFlow,
-        "" bind Method.POST to ::uploadFile,
         "/description" bindSse Method.GET to ::getFileUploadDescription,
+        "" bind Method.POST to ::uploadFile,
     )
 
 fun getFileUploadHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html; charset=utf-8")
@@ -73,6 +73,6 @@ fun uploadFile(req: Request): SseResponse =
 fun getFileUploadDescription(req: Request): SseResponse =
     SseResponse { sse ->
         sse.sendPatchElements(
-            elements = listOf(Element.of(description)),
+            elements = listOf(Element.of(hfFileUploadDescription)),
         )
     }

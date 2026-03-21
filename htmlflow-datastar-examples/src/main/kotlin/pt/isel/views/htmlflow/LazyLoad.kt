@@ -16,11 +16,9 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
+import pt.isel.http4k.getLazyLoadDescription
 import pt.isel.http4k.loadGraph
 import pt.isel.ktor.LazyLoadImage
-import pt.isel.utils.loadResource
-
-private val description = loadResource("pt/isel/views/fragments/lazy-load-description.html")
 
 val hfLazyLoadDoc: String =
     StringBuilder()
@@ -39,11 +37,14 @@ val hfLazyLoadDoc: String =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit(get(::getLazyLoadDescription))
+                        }
+                        div {
                             attrId("graph")
                             dataInit(get(::loadGraph))
                             text("Loading...")
                         }
-                        raw(description)
                     }
                 }
             }

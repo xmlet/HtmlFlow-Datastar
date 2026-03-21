@@ -15,6 +15,7 @@ import org.http4k.sse.SseResponse
 import org.http4k.sse.sendPatchElements
 import pt.isel.ktor.TOKYO_IMAGE
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfLazyLoadDescription
 import pt.isel.views.htmlflow.hfLazyLoadDoc
 import pt.isel.views.htmlflow.hfLazyLoadView
 
@@ -24,6 +25,7 @@ fun demoLazyLoad(): PolyHandler =
     poly(
         "/html" bind Method.GET to ::getLazyLoadHtml,
         "/htmlflow" bind Method.GET to ::getLazyLoadHtmlFlow,
+        "/description" bindSse Method.GET to ::getLazyLoadDescription,
         "/graph" bindSse Method.GET to ::loadGraph,
     )
 
@@ -38,4 +40,10 @@ fun loadGraph(req: Request): SseResponse =
         sse.sendPatchElements(
             Element.of(hfLazyLoadView.render(TOKYO_IMAGE)),
         )
+    }
+
+@Path("/lazy-load/description")
+fun getLazyLoadDescription(req: Request): SseResponse =
+    SseResponse { sse ->
+        sse.sendPatchElements(Element.of(hfLazyLoadDescription))
     }

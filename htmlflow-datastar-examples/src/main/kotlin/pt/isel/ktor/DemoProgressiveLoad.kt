@@ -6,7 +6,6 @@ import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import htmlflow.div
 import htmlflow.doc
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
@@ -17,10 +16,10 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfProgressiveLoadDescription
 import pt.isel.views.htmlflow.hfProgressiveLoad
 import pt.isel.views.htmlflow.loadDiv
 
-private val description = loadResource("pt/isel/views/fragments/progressive-load-description.html")
 private val html = loadResource("public/html/progressive-load.html")
 
 fun Route.demoProgressiveLoad() {
@@ -42,7 +41,7 @@ private suspend fun RoutingContext.getProgressiveLoadHtmlFlow() {
 
 private suspend fun RoutingContext.getUpdates() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
@@ -155,7 +154,7 @@ private suspend fun RoutingContext.getProgressiveLoadDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfProgressiveLoadDescription)
     }
 }
 

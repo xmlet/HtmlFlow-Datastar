@@ -19,11 +19,9 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
 import pt.isel.http4k.decrementCounterViaSignals
-import pt.isel.http4k.getClickToLoadDescription
 import pt.isel.http4k.getCounterEventsSignals
 import pt.isel.http4k.getCounterSignalsDescription
 import pt.isel.http4k.incrementCounterViaSignals
-import pt.isel.utils.loadResource
 
 val hfCounterViaSignals: String =
     StringBuilder()

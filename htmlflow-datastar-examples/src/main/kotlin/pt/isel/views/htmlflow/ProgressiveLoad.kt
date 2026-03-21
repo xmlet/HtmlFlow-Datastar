@@ -26,9 +26,6 @@ import pt.isel.datastar.extensions.dataClass
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
-import pt.isel.utils.loadResource
-
-private val description = loadResource("pt/isel/views/fragments/progressive-load-description.html")
 
 val hfProgressiveLoad =
     StringBuilder()
@@ -46,7 +43,10 @@ val hfProgressiveLoad =
                         }
                     }
                     body {
-                        raw(description)
+                        div {
+                            attrId("description")
+                            // dataInit(get(::getProgressiveLoadDescription)) No Http4k handler yet
+                        }
                         div {
                             attrClass("actions")
                             var progressiveLoad: Signal<Boolean>? = null

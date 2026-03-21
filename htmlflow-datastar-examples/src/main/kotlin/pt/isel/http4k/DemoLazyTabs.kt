@@ -1,5 +1,6 @@
 package pt.isel.http4k
 
+import jakarta.ws.rs.Path
 import org.http4k.core.Method
 import org.http4k.core.PolyHandler
 import org.http4k.core.Request
@@ -16,6 +17,7 @@ import org.http4k.routing.to
 import org.http4k.sse.SseResponse
 import org.http4k.sse.sendPatchElements
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfLazyTabsDescription
 import pt.isel.views.htmlflow.TAB_CONTENTS
 import pt.isel.views.htmlflow.hfLazyTabs
 import pt.isel.views.htmlflow.hfTabPanelView
@@ -26,6 +28,7 @@ fun demoLazyTabs(): PolyHandler =
     poly(
         "/html" bind Method.GET to ::getLazyTabsHtml,
         "/htmlflow" bind Method.GET to ::getLazyTabsHtmlFlow,
+        "/description" bindSse Method.GET to ::getLazyTabsDescription,
         "/{index}" bindSse Method.GET to ::getLazyTabsText,
     )
 
@@ -46,3 +49,6 @@ fun getLazyTabsText(req: Request): SseResponse =
         )
         sse.close()
     }
+
+@Path("/lazy-tabs/description")
+fun getLazyTabsDescription(req: Request): SseResponse = SseResponse { sse -> sse.sendPatchElements(Element.of(hfLazyTabsDescription)) }

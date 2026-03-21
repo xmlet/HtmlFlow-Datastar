@@ -37,7 +37,6 @@ import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
-import pt.isel.http4k.cancelEditRow
 import pt.isel.http4k.getEditRowDescription
 import pt.isel.http4k.resetTable
 import pt.isel.ktor.TableState
@@ -61,11 +60,11 @@ val hfEditRow: HtmlView<TableState> =
             }
             body {
                 div {
-                    hfEditRowTable()
-                }
-                div {
                     attrId("description")
                     dataInit(get(::getEditRowDescription))
+                }
+                div {
+                    hfEditRowTable()
                 }
             }
         }
@@ -163,7 +162,7 @@ fun Tr<*>.editRow(index: Int) {
         }
         button {
             attrId("cancel-row-$index")
-            dataOn("click", editing setValue false semiColon get(::cancelEditRow))
+            dataOn("click", editing setValue false semiColon get("/edit-row/cancel"))
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled", fetching)
             i { attrClass("pixelarticons:close") }

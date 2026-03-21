@@ -1,8 +1,0 @@
-<div id="description" class="demo-description">
-    <h2>File Upload — Description</h2>
-    <ol>
-        <li>On page load, a <code>files</code> signal is initialised via <code>data-signals</code>. The file input binds to it via <code>data-bind</code>.</li>
-        <li>Clicking <strong>Submit</strong> sends a POST to <code>/file-upload</code> with the <code>files</code> signal (name, contents as Base64, MIME type) in the request body — the server validates each file against the 1MB limit, logs invalid files via <code>executeScript</code>, and patches <code>#file-upload</code> with a table of valid files via <code>patchElements</code> with <code>mode = Replace</code>.</li>
-        <li>The button is disabled via <code>aria-disabled</code> when no files are selected.</li>
-    </ol>
-</div>

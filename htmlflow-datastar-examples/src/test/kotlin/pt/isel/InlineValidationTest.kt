@@ -75,15 +75,16 @@ class InlineValidationTest {
                 page.waitForTimeout(600.0)
 
                 // Wait for error <p> elements to be rendered
-                page.waitForSelector("#email-error")
-                page.waitForSelector("#first-name-error")
+                page.waitForSelector("#email-error-details")
+                page.waitForSelector("#first-name-error-details")
                 page.waitForSelector("#last-name-error")
 
                 // Assert they are visible
-                assertTrue(page.isVisible("#email-error"))
-                assertTrue(page.isVisible("#first-name-error"))
-                assertTrue(page.isVisible("#last-name-error"))
+                assertTrue(page.isVisible("#email-error-details"))
+                assertTrue(page.isVisible("#first-name-error-details"))
+                assertTrue(page.isVisible("#last-name-error-details"))
 
+                assertTrue(page.isDisabled(submitButton))
                 // Fix inputs
                 page.fill(emailInput, "test@test.com")
                 page.keyboard().press("Tab") // triggers keydown
@@ -98,9 +99,9 @@ class InlineValidationTest {
                 page.waitForTimeout(600.0)
 
                 // Assert that error messages are not visible
-                assertFalse(page.isVisible("#email-error"))
-                assertFalse(page.isVisible("#first-name-error"))
-                assertFalse(page.isVisible("#last-name-error"))
+                assertFalse(page.isVisible("#email-error-details"))
+                assertFalse(page.isVisible("#first-name-error-details"))
+                assertFalse(page.isVisible("#last-name-error-details"))
 
                 // Wait until the button becomes enabled
                 page.waitForSelector("button.success")

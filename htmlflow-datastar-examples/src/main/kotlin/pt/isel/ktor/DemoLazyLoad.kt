@@ -12,10 +12,10 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfLazyLoadDescription
 import pt.isel.views.htmlflow.hfLazyLoadDoc
 import pt.isel.views.htmlflow.hfLazyLoadView
 
-private val description = loadResource("pt/isel/views/fragments/lazy-load-description.html")
 private val html = loadResource("public/html/lazy-load.html")
 
 fun Route.demoLazyLoad() {
@@ -53,7 +53,7 @@ private suspend fun RoutingContext.getLazyLoadDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfLazyLoadDescription)
     }
 }
 

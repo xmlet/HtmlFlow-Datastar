@@ -12,11 +12,11 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfProgressBarDescription
 import pt.isel.views.htmlflow.hfProgressBar
 import pt.isel.views.htmlflow.renderProgressBarFragment
 import kotlin.random.Random
 
-private val description = loadResource("pt/isel/views/fragments/progress-bar-description.html")
 private val html = loadResource("public/html/progress-bar.html")
 
 fun Route.demoProgressBar() {
@@ -63,7 +63,7 @@ private suspend fun RoutingContext.getProgressBarDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfProgressBarDescription)
     }
 }
 

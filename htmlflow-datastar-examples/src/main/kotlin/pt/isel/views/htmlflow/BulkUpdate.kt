@@ -4,7 +4,6 @@ import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType

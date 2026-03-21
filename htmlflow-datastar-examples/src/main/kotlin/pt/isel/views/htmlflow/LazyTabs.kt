@@ -15,10 +15,9 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.expressions.get
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
-import pt.isel.utils.loadResource
-
-private val description = loadResource("pt/isel/views/fragments/lazy-tabs-description.html")
+import pt.isel.http4k.getLazyTabsDescription
 
 val TAB_CONTENTS =
     listOf(
@@ -49,6 +48,10 @@ val hfLazyTabs: String =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit(get(::getLazyTabsDescription))
+                        }
+                        div {
                             attrId("lazy-tabs")
                             div {
                                 addAttr("role", "tablist")
@@ -67,7 +70,6 @@ val hfLazyTabs: String =
                                 p { text(TAB_CONTENTS[0]) }
                             }
                         }
-                        raw(description)
                     }
                 }
             }

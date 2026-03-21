@@ -24,6 +24,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfTodoMvcDescription
 import pt.isel.views.htmlflow.buttonsView
 import pt.isel.views.htmlflow.hfTodoMvcView
 import pt.isel.views.htmlflow.tasksView
@@ -34,7 +35,6 @@ import kotlin.collections.map
 private val accounts =
     ConcurrentHashMap<UUID, MutableStateFlow<Account>>()
 
-private val description = loadResource("pt/isel/views/fragments/todo-mvc-description.html")
 private val html = loadResource("public/html/todo-mvc.html")
 
 fun Route.demoTodoMvc() {
@@ -95,7 +95,7 @@ data class TodoUiState(
 
 private suspend fun RoutingContext.getUpdates() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
@@ -266,7 +266,7 @@ private suspend fun RoutingContext.getTodoMvcDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfTodoMvcDescription)
     }
 }
 

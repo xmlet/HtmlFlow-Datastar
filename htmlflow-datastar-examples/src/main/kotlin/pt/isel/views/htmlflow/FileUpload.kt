@@ -52,6 +52,10 @@ val hfFileUpload: String =
                     }
                     body {
                         val files = dataSignal("files")
+                        div {
+                            attrId("description")
+                            dataInit(get(::getFileUploadDescription))
+                        }
                         label {
                             p { text("Pick anything less than 1MB") }
                             input {
@@ -69,10 +73,6 @@ val hfFileUpload: String =
                         div {
                             attrId("file-upload")
                             attrHidden(true)
-                        }
-                        div {
-                            attrId("description")
-                            dataInit(get(::getFileUploadDescription))
                         }
                     }
                 }

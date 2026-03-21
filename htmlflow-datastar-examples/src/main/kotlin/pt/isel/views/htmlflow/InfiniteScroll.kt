@@ -16,12 +16,11 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.expressions.get
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOnIntersect
 import pt.isel.datastar.extensions.dataSignals
+import pt.isel.http4k.getInfiniteScrollDescription
 import pt.isel.http4k.getMoreAgents
-import pt.isel.utils.loadResource
-
-private val description = loadResource("pt/isel/views/fragments/infinite-scroll-description.html")
 
 val hfInfiniteScroll =
     StringBuilder()
@@ -39,7 +38,10 @@ val hfInfiniteScroll =
                         }
                     }
                     body {
-                        raw(description)
+                        div {
+                            attrId("description")
+                            dataInit(get(::getInfiniteScrollDescription))
+                        }
                         div {
                             dataSignals(
                                 "offset" to 10,

@@ -13,11 +13,11 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfLazyTabsDescription
 import pt.isel.views.htmlflow.TAB_CONTENTS
 import pt.isel.views.htmlflow.hfLazyTabs
 import pt.isel.views.htmlflow.hfTabPanelView
 
-private val description = loadResource("pt/isel/views/fragments/lazy-tabs-description.html")
 private val html = loadResource("public/html/lazy-tabs.html")
 
 fun Route.demoLazyTabs() {
@@ -60,6 +60,6 @@ private suspend fun RoutingContext.getLazyTabsDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfLazyTabsDescription)
     }
 }

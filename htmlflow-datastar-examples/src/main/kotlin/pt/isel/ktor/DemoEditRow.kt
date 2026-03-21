@@ -20,11 +20,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfEditRowDescription
 import pt.isel.views.htmlflow.defaultRowView
 import pt.isel.views.htmlflow.hfEditRow
 import pt.isel.views.htmlflow.hfPartialEditRowView
 
-private val description = loadResource("pt/isel/views/fragments/edit-row-description.html")
 private val html = loadResource("public/html/edit-row.html")
 
 private val users = DEFAULT_USERS.toMutableList()
@@ -33,11 +33,11 @@ fun Route.demoEditRow() {
     route("/edit-row") {
         get("/html", RoutingContext::getEditRowHtml)
         get("/htmlflow", RoutingContext::getEditRowHtmlFlow)
+        get("/description", RoutingContext::getEditRowDescription)
         get("/{index}", RoutingContext::editRow)
         put("/reset", RoutingContext::resetUsers)
         get("/cancel", RoutingContext::cancelEditRow)
         patch("/{index}", RoutingContext::saveEditRow)
-        get("/description", RoutingContext::getEditRowDescription)
     }
 }
 
@@ -76,12 +76,14 @@ private suspend fun RoutingContext.cancelEditRow() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        users.forEach { user ->
-            generator.patchElements(
-                defaultRowView.render(user),
-                PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
-            )
-        }
+        val datastarQuery = call.queryParameters["datastar"]
+        checkNotNull(datastarQuery) { "Datastar query parameter can't be null" }
+        val (index, _, _) = Json.decodeFromString<TableUser>(datastarQuery)
+        val user = users.first { it.idx == index }
+        generator.patchElements(
+            defaultRowView.render(user),
+            PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
+        )
     }
 }
 
@@ -111,7 +113,7 @@ private suspend fun RoutingContext.saveEditRow() {
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
 
-        val datastarBodyArgs = call.request.call.receiveText()
+        val datastarBodyArgs = call.receiveText()
         val editedUser = Json.decodeFromString<TableUser>(datastarBodyArgs)
         val userIdx = users.indexOf(users.first { it.idx == index })
         users[userIdx] = editedUser
@@ -129,7 +131,7 @@ private suspend fun RoutingContext.getEditRowDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfEditRowDescription)
     }
 }
 

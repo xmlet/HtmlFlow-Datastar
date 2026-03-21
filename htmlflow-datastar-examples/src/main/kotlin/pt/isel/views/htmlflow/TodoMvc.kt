@@ -33,9 +33,6 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.ktor.Status
 import pt.isel.ktor.TodoUiState
-import pt.isel.utils.loadResource
-
-private val description = loadResource("pt/isel/views/fragments/todo-mvc-description.html")
 
 val hfTodoMvcView: HtmlView<TodoUiState> =
     view<TodoUiState> {
@@ -52,11 +49,14 @@ val hfTodoMvcView: HtmlView<TodoUiState> =
             }
             body {
                 div {
+                    attrId("description")
+                    // dataInit(get(::getToddMvcDescription)) No Http4k handler yet
+                }
+                div {
                     attrId("todo-app")
                     tasksView()
                     buttonsView()
                 }
-                raw(description)
             }
         }
     }

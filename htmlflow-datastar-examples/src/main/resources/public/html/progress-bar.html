@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+<div id="description" data-init="@get('/progress-bar/description')"></div>
 <div>
     <div id="progress-bar" data-init="@get('/progress-bar/updates', {openWhenHidden: true})">
         <svg width="200" height="200" viewbox="-25 -25 250 250" style="transform: rotate(-90deg)">
@@ -23,6 +24,5 @@
         </div>
     </div>
 </div>
-<div id="description" data-init="@get('/progress-bar/description')"></div>
 </body>
 </html>

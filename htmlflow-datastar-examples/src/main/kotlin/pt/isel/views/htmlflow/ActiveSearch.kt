@@ -28,7 +28,6 @@ import pt.isel.datastar.extensions.dataOn
 import pt.isel.http4k.getActiveSearchDescription
 import pt.isel.http4k.getSearchContacts
 import pt.isel.ktor.Contact
-import pt.isel.utils.loadResource
 import kotlin.time.Duration.Companion.milliseconds
 
 val hfActiveSearch: HtmlView<List<Contact>> =

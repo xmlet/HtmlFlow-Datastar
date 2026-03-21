@@ -5,6 +5,7 @@
     </script><link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <div id="description" data-init="@get('/todo-mvc/description')"></div>
     <div id="todo-app">
         <section id="todo-mvc" data-init="@get('/todo-mvc/updates')">
             <header id="todo-header">
@@ -43,6 +44,5 @@
             </div>
         </section>
     </div>
-    <div id="description" data-init="@get('/todo-mvc/description')"></div>
 </body>
 </html>
