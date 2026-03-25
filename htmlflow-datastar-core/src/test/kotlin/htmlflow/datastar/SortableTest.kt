@@ -6,7 +6,6 @@ import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.CustomEvent
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
@@ -37,7 +36,7 @@ class SortableTest {
                         body {
                             div {
                                 val orderInfo = dataSignal("order-info", "Initial order")
-                                dataText(orderInfo)
+                                dataText { +orderInfo }
                             }
                             div {
                                 attrId("sortContainer")

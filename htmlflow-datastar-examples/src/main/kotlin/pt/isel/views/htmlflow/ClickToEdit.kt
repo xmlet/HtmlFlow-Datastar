@@ -20,9 +20,6 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
-import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
@@ -54,7 +51,7 @@ val hfClickToEdit: HtmlView<Profile> =
                         button {
                             attrClass("info")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             dataOn(Click) {
                                 +get(::clickToEditEdit)
                             }
@@ -63,7 +60,7 @@ val hfClickToEdit: HtmlView<Profile> =
                         button {
                             attrClass("warning")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             dataOn(Click) {
                                 +patch(::clickToEditReset)
                             }
@@ -87,7 +84,7 @@ val hfEditModeDoc =
                             attrType(EnumTypeInputType.TEXT)
                             dataBind("first-name")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                         }
                     }
                     label {
@@ -96,7 +93,7 @@ val hfEditModeDoc =
                             attrType(EnumTypeInputType.TEXT)
                             dataBind("last-name")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                         }
                     }
                     label {
@@ -105,7 +102,7 @@ val hfEditModeDoc =
                             attrType(EnumTypeInputType.EMAIL)
                             dataBind("email")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                         }
                     }
                     div {
@@ -113,7 +110,7 @@ val hfEditModeDoc =
                         button {
                             attrClass("success")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             dataOn(Click) {
                                 +put(::clickToEdit)
                             }
@@ -122,7 +119,7 @@ val hfEditModeDoc =
                         button {
                             attrClass("error")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             dataOn(Click) {
                                 +get(::clickToEditCancel)
                             }

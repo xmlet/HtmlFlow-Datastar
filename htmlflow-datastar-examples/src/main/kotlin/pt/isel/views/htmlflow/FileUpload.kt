@@ -7,7 +7,6 @@ import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.*
 
 val hfFileUpload: String =
@@ -40,7 +39,7 @@ val hfFileUpload: String =
                             dataOn(Click) {
                                 +"$files.length && ${post("/file-upload")}"
                             }
-                            dataAttr("aria-disabled", $$"`${!$$files.length}`")
+                            dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                             text("Submit")
                         }
                         div {

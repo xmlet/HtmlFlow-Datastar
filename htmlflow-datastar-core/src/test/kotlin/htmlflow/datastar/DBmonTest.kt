@@ -18,11 +18,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Blur
 import pt.isel.datastar.events.Focus
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
-import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.semiColon
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
@@ -55,10 +51,10 @@ class DBmonTest {
                         body {
                             div {
                                 attrId("demo")
-                                dataInit(get(::dbmonUpdates))
+                                dataInit { +get(::dbmonUpdates) }
                                 val editing =
                                     dataSignal("editing", false) {
-                                        mods { ifMissing() }
+                                        modifiers { ifMissing() }
                                     }
                                 p {
                                     text("Average render time for entire page: { renderTime }")
@@ -76,12 +72,13 @@ class DBmonTest {
                                                 +(editing setValue true)
                                             }
                                             dataOn(Blur) {
-                                                +(put(::dbmonInputs) semiColon (editing setValue false))
+                                                +put(::dbmonInputs)
+                                                +(editing setValue false)
                                             }
                                             val mutationRate = dataBind("mutation-rate")
-                                            dataAttr("data-bind:${mutationRate.name}", editing)
+                                            dataAttr("data-bind:${mutationRate.name}") { +editing }
                                             val mutRate = dataBind("_mutation-rate")
-                                            dataAttr("data-bind:${mutRate.name}", !editing)
+                                            dataAttr("data-bind:${mutRate.name}") { +!editing }
                                         }
                                     }
                                     label {
@@ -99,9 +96,9 @@ class DBmonTest {
                                                 +(editing setValue false)
                                             }
                                             val framesPerSecond = dataBind("fps")
-                                            dataAttr("data-bind:${framesPerSecond.name}", editing)
+                                            dataAttr("data-bind:${framesPerSecond.name}") { +editing }
                                             val fps = dataBind("_fps")
-                                            dataAttr("data-bind:${fps.name}", !editing)
+                                            dataAttr("data-bind:${fps.name}") { +!editing }
                                         }
                                     }
                                 }

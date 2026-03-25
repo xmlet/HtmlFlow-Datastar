@@ -15,7 +15,6 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOn
 
 val TAB_CONTENTS =

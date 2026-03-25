@@ -79,30 +79,30 @@ class OnSignalPatchTest {
                                     h3 { text("Current Values") }
                                     p {
                                         text("Counter: ")
-                                        span { dataText(counter) }
+                                        span { dataText { +counter } }
                                     }
                                     p {
                                         text("Message: ")
-                                        span { dataText(message) }
+                                        span { dataText { +message } }
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch("$counterChanges.push(patch)")
+                                    dataOnSignalPatch { +"$counterChanges.push(patch)" }
                                     dataOnSignalPatchFilter("{include: /^counter$/}")
                                     h3 { text("Counter Changes Only") }
                                     pre {
                                         dataJsonSignals("{include: /^counterChanges/}") {
-                                            mods { terse() }
+                                            modifiers { terse() }
                                         }
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch("$allChanges.push(patch)")
+                                    dataOnSignalPatch { +"$allChanges.push(patch)" }
                                     dataOnSignalPatchFilter("{exclude: /allChanges|counterChanges/}")
                                     h3 { text("All Signal Changes") }
                                     pre {
                                         dataJsonSignals("{include: /^allChanges/}") {
-                                            mods { terse() }
+                                            modifiers { terse() }
                                         }
                                     }
                                 }

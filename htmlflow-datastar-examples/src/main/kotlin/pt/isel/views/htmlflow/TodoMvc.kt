@@ -27,10 +27,6 @@ import pt.isel.datastar.events.Blur
 import pt.isel.datastar.events.Click
 import pt.isel.datastar.events.DblClick
 import pt.isel.datastar.events.Keydown
-import pt.isel.datastar.expressions.delete
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.post
-import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
@@ -65,7 +61,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
     view<TodoUiState> {
         section {
             attrId("todo-mvc")
-            dataInit(get(::updates))
+            dataInit { +get(::updates) }
             dyn { todoUiState: TodoUiState ->
                 header {
                     attrId("todo-header")
@@ -73,9 +69,15 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                         attrType(EnumTypeInputType.CHECKBOX)
                         dataOn(Click) {
                             +post(::minus1Toggle)
-                            mods { prevent() }
+                            modifiers { prevent() }
                         }
-                        dataInit(if (todoUiState.pendingCount == 0) "el.checked = true" else "el.checked = false")
+                        dataInit {
+                            if (todoUiState.pendingCount == 0) {
+                                +"el.checked = true"
+                            } else {
+                                +"el.checked = false"
+                            }
+                        }
                     }
                     input {
                         attrId("new-todo")
@@ -102,10 +104,16 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                 input {
                                     attrId("todo-checkbox-${task.id}")
                                     attrType(EnumTypeInputType.CHECKBOX)
-                                    dataInit(if (task.status == Status.DONE) "el.checked = true" else "el.checked = false")
+                                    dataInit {
+                                        if (task.status == Status.DONE) {
+                                            +"el.checked = true"
+                                        } else {
+                                            +"el.checked = false"
+                                        }
+                                    }
                                     dataOn(Click) {
                                         +post("/todo-mvc/${task.id}/toggle")
-                                        mods { prevent() }
+                                        modifiers { prevent() }
                                     }
                                 }
                                 label {
@@ -124,7 +132,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     attrValue(task.title)
                                     val input = dataSignal("input", task.title)
                                     dataBind(input)
-                                    dataInit("el.focus()")
+                                    dataInit { +"el.focus()" }
                                     dataOn(Blur) {
                                         +put(::cancel)
                                     }

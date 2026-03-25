@@ -45,7 +45,7 @@ class EventBubblingTest {
                                 val key = dataSignal("key")
                                 text("Key pressed:")
                                 span {
-                                    dataText(key)
+                                    dataText { +key }
                                 }
                                 div {
                                     attrId("button-container")

@@ -10,8 +10,6 @@ import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
@@ -40,7 +38,7 @@ class TemplCounterTest {
                         }
                         body {
                             div {
-                                dataInit(get(::getCounterUpdates))
+                                dataInit { +get(::getCounterUpdates) }
                                 comment("Global Counter")
                                 button {
                                     attrId("global")

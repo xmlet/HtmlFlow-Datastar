@@ -16,7 +16,6 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.events.Click
 import pt.isel.datastar.events.Keydown
-import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test
@@ -57,7 +56,7 @@ class InlineValidationTest {
                                         dataBind("email")
                                         dataOn(Keydown) {
                                             +post(::validateInline)
-                                            mods { debounce(500.milliseconds) }
+                                            modifiers { debounce(500.milliseconds) }
                                         }
                                     }
                                 }
@@ -75,7 +74,7 @@ class InlineValidationTest {
                                         dataBind("first-name")
                                         dataOn(Keydown) {
                                             +post(::validateInline)
-                                            mods { debounce(500.milliseconds) }
+                                            modifiers { debounce(500.milliseconds) }
                                         }
                                     }
                                 }
@@ -88,7 +87,7 @@ class InlineValidationTest {
                                         dataBind("last-name")
                                         dataOn(Keydown) {
                                             +post(::validateInline)
-                                            mods { debounce(500.milliseconds) }
+                                            modifiers { debounce(500.milliseconds) }
                                         }
                                     }
                                 }

@@ -17,8 +17,6 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.delete
-import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -67,7 +65,7 @@ class DeleteRowTest {
                                                         +"confirm('Are you sure?') && ${delete(::deleteRow0)}"
                                                     }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", fetching)
+                                                    dataAttr("disabled") { +fetching }
                                                     text("Delete")
                                                 }
                                             }
@@ -82,7 +80,7 @@ class DeleteRowTest {
                                                         +"confirm('Are you sure?') && ${delete(::deleteRow1)}"
                                                     }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", fetching)
+                                                    dataAttr("disabled") { +fetching }
                                                     text("Delete")
                                                 }
                                             }
@@ -97,7 +95,7 @@ class DeleteRowTest {
                                                         +"confirm('Are you sure?') && ${delete(::deleteRow2)}"
                                                     }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", fetching)
+                                                    dataAttr("disabled") { +fetching }
                                                     text("Delete")
                                                 }
                                             }
@@ -112,7 +110,7 @@ class DeleteRowTest {
                                                         +"confirm('Are you sure?') && ${delete(::deleteRow3)}"
                                                     }
                                                     val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled", fetching)
+                                                    dataAttr("disabled") { +fetching }
                                                     text("Delete")
                                                 }
                                             }

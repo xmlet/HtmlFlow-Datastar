@@ -13,8 +13,6 @@ import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.and
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
@@ -47,7 +45,7 @@ class ProgressBarTest {
                         body {
                             div {
                                 attrId("progress-bar")
-                                dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
+                                dataInit { +get(::progressBarUpdates, "{openWhenHidden: true}") }
                                 comment("When progress is less than 100%")
                                 svg {
                                     attrWidth(200)
@@ -91,7 +89,7 @@ class ProgressBarTest {
                                 comment("When progress is 100%")
                                 button {
                                     val fetching = dataIndicator("fetching")
-                                    dataAttr("aria-disabled", fetching)
+                                    dataAttr("aria-disabled") { +fetching }
                                     dataOn(Click) {
                                         +(!fetching and get(::progressBarUpdates, "{openWhenHidden: true}"))
                                     }

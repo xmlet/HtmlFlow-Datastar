@@ -24,8 +24,6 @@ import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Change
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataEffect
@@ -56,7 +54,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         dataSignals(
                             "_fetching" to false,
                             "selections" to { "Array(4).fill(false)" },
-                        ) { mods { ifMissing() } }
+                        ) { modifiers { ifMissing() } }
                     table {
                         thead {
                             tr {
@@ -66,8 +64,8 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                         dataOn(Change) {
                                             +setAll("el.checked", "{include: /^selections/}")
                                         }
-                                        dataEffect($$"el.checked = $selections.every(Boolean)")
-                                        dataAttr("disabled", fetching)
+                                        dataEffect { +$$"el.checked = $selections.every(Boolean)" }
+                                        dataAttr("disabled") { +fetching }
                                     }
                                 }
                                 th { text("Name") }
@@ -83,7 +81,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                             input {
                                                 attrType(EnumTypeInputType.CHECKBOX)
                                                 dataBind("selections")
-                                                dataAttr("disabled", fetching)
+                                                dataAttr("disabled") { +fetching }
                                             }
                                         }
                                         td { text(user.name) }
@@ -101,7 +99,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                 +put(::activate)
                             }
                             dataIndicator(fetching.name)
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             i { attrClass("pixelarticons:user-plus") }
                             text("Activate")
                         }
@@ -111,7 +109,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                 +put(::deactivate)
                             }
                             dataIndicator(fetching.name)
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             i { attrClass("pixelarticons:user-x") }
                             text("Deactivate")
                         }

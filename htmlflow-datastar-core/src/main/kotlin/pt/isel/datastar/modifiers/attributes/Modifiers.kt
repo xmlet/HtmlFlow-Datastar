@@ -1,6 +1,6 @@
 package pt.isel.datastar.modifiers.attributes
 
-import pt.isel.datastar.modifiers.base.ModifierBuilder
+import pt.isel.datastar.modifiers.base.ModifierAccumulator
 import pt.isel.datastar.modifiers.common.CaseModifiers
 import pt.isel.datastar.modifiers.common.DebounceModifiers
 import pt.isel.datastar.modifiers.common.DelayModifiers
@@ -13,64 +13,64 @@ import pt.isel.datastar.modifiers.common.ThrottleModifiers
 import pt.isel.datastar.modifiers.common.ViewTransitionModifiers
 
 class DataBindModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     CaseModifiers
 
 class DataClassModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     CaseModifiers
 
 class DataComputedModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     CaseModifiers
 
 class DataIgnoreModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     IgnoreModifiers
 
 class DataIndicatorModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     CaseModifiers
 
 class DataInitModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     DelayModifiers,
     ViewTransitionModifiers
 
 class DataJsonSignalsModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     OutputFormatModifiers
 
 class DataOnIntersectModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     IntersectModifiers
 
 class DataOnIntervalModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     DurationModifiers,
     ViewTransitionModifiers
 
 class DataOnModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     EventModifiers,
     CaseModifiers
 
 class DataOnSignalPatchModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     DelayModifiers,
     DebounceModifiers,
     ThrottleModifiers
 
 class DataRefModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     CaseModifiers
 
 class DataSignalModifiers :
-    ModifierBuilder(),
+    ModifierAccumulator(),
     CaseModifiers {
     fun ifMissing() = addModifier("__ifmissing")
 }
 
-class DataSignalsModifiers : ModifierBuilder() {
+class DataSignalsModifiers : ModifierAccumulator() {
     fun ifMissing() = addModifier("__ifmissing")
 }

@@ -7,7 +7,6 @@ import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
@@ -50,7 +49,7 @@ class FileUploadTest {
                                 dataOn(Click) {
                                     +"$files.length && ${post(::uploadFiles)}"
                                 }
-                                dataAttr("aria-disabled", $$"`${!$$files.length}`")
+                                dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                                 text("Submit")
                             }
                         }

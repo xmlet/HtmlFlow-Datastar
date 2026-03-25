@@ -25,9 +25,6 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
-import pt.isel.datastar.expressions.put
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -86,7 +83,7 @@ fun Div<*>.hfEditRowTable() {
                 +put(::editRowReset)
             }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
         }
@@ -106,7 +103,7 @@ private fun Tr<*>.viewRow(
                 +get("/edit-row/$index")
             }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             text("Edit")
         }
     }
@@ -118,7 +115,7 @@ private fun Tr<*>.editRow(index: Int) {
             attrType(EnumTypeInputType.TEXT)
             addAttr("data-bind", "name")
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
         }
     }
     td {
@@ -126,7 +123,7 @@ private fun Tr<*>.editRow(index: Int) {
             attrType(EnumTypeInputType.EMAIL)
             addAttr("data-bind", "email")
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
         }
     }
     td {
@@ -136,7 +133,7 @@ private fun Tr<*>.editRow(index: Int) {
                 +patch("/edit-row/$index")
             }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:check") }
             text("Save")
         }
@@ -146,7 +143,7 @@ private fun Tr<*>.editRow(index: Int) {
                 +get(::editRowCancel)
             }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:close") }
             text("Cancel")
         }

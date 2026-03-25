@@ -8,8 +8,6 @@ import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.Change
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.setAll
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataEffect
@@ -47,7 +45,7 @@ class BulkUpdateTest {
                                     dataSignals(
                                         "_fetching" to false,
                                         "selections" to { "Array(4).fill(false)" },
-                                    ) { mods { ifMissing() } }
+                                    ) { modifiers { ifMissing() } }
                                 table {
                                     thead {
                                         tr {
@@ -57,8 +55,8 @@ class BulkUpdateTest {
                                                     dataOn(Change) {
                                                         +setAll("el.checked", "{include: /^selections/}")
                                                     }
-                                                    dataEffect($$"el.checked = $selections.every(Boolean)")
-                                                    dataAttr("disabled", fetching)
+                                                    dataEffect { +$$"el.checked = $selections.every(Boolean)" }
+                                                    dataAttr("disabled") { +fetching }
                                                 }
                                             }
                                             th { text("Name") }
@@ -72,7 +70,7 @@ class BulkUpdateTest {
                                                 input {
                                                     attrType(EnumTypeInputType.CHECKBOX)
                                                     dataBind(selections)
-                                                    dataAttr("disabled", fetching)
+                                                    dataAttr("disabled") { +fetching }
                                                 }
                                             }
                                             td { text("Joe Smith") }
@@ -88,7 +86,7 @@ class BulkUpdateTest {
                                             +put(::activate)
                                         }
                                         dataIndicator(fetching.name)
-                                        dataAttr("disabled", fetching)
+                                        dataAttr("disabled") { +fetching }
                                         i { attrClass("pixelarticons:user-plus") }
                                         text("Activate")
                                     }
@@ -98,7 +96,7 @@ class BulkUpdateTest {
                                             +put(::deactivate)
                                         }
                                         dataIndicator(fetching.name)
-                                        dataAttr("disabled", fetching)
+                                        dataAttr("disabled") { +fetching }
                                         i { attrClass("pixelarticons:user-x") }
                                         text("Deactivate")
                                     }

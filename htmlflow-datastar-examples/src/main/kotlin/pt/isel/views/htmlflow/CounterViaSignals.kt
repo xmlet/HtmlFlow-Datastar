@@ -14,8 +14,6 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.post
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
@@ -43,10 +41,10 @@ val hfCounterViaSignals: String =
                                 text("Counting Stars HtmlFlow - via Signals")
                             }
                             div {
-                                dataInit(get(::events))
+                                dataInit { +get(::events) }
                                 span {
                                     attrId("counter")
-                                    dataText(count)
+                                    dataText { +count }
                                 }
                             }
                             div {

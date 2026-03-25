@@ -22,8 +22,6 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.delete
-import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -73,7 +71,7 @@ fun Div<*>.hfDeleteRowTable() {
                                     +"confirm('Are you sure?') && ${delete("/delete-row/$index")}"
                                 }
                                 val fetching = dataIndicator("_fetching")
-                                dataAttr("disabled", fetching)
+                                dataAttr("disabled") { +fetching }
                                 text("Delete")
                             }
                         }
@@ -89,7 +87,7 @@ fun Div<*>.hfDeleteRowTable() {
                 +patch(::restoreRows)
             }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
         }

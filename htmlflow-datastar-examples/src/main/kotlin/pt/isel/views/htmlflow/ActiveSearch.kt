@@ -22,7 +22,6 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Input
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.ktor.Contact
@@ -57,7 +56,7 @@ fun Div<*>.hfActiveSearchTable() {
         dataBind("search")
         dataOn(Input) {
             +get(::activeSearch)
-            mods { debounce(200.milliseconds) }
+            modifiers { debounce(200.milliseconds) }
         }
     }
     table {

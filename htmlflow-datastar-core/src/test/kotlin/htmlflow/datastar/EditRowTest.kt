@@ -17,8 +17,6 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataOn
 import kotlin.test.Test

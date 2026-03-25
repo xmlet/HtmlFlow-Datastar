@@ -7,8 +7,6 @@ import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -46,7 +44,7 @@ class ClickToEditTest {
                                     button {
                                         attrClass("info")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", fetching)
+                                        dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
                                             +get(::edit)
                                         }
@@ -55,7 +53,7 @@ class ClickToEditTest {
                                     button {
                                         attrClass("warning")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", fetching)
+                                        dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
                                             +patch(::reset)
                                         }

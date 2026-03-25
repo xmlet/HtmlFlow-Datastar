@@ -15,7 +15,6 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.img
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.ktor.LazyLoadImage
 
@@ -42,7 +41,7 @@ val hfLazyLoad: HtmlView<Unit> =
 
 fun Div<*>.hfLazyLoadGraph() {
     attrId("graph")
-    dataInit(get(::loadGraph))
+    dataInit { +get(::loadGraph) }
     text("Loading...")
 }
 

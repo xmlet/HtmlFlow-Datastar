@@ -14,7 +14,6 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataOnIntersect
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,7 +63,7 @@ class InfiniteScrollTest {
                                 }
                             }
                             div {
-                                dataOnIntersect(get(::getMore))
+                                dataOnIntersect { +get(::getMore) }
                                 text("Loading...")
                             }
                         }

@@ -7,8 +7,6 @@ import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.and
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.not
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
@@ -41,7 +39,7 @@ class ClickToLoadTest {
                             button {
                                 attrClass("info wide")
                                 val fetching = dataIndicator("fetching")
-                                dataAttr("aria-disabled", $$"`${$$fetching}`")
+                                dataAttr("aria-disabled") { +$$"`${$$fetching}`" }
                                 dataOn(Click) {
                                     +(!fetching and get(::loadMore))
                                 }

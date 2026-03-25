@@ -29,7 +29,7 @@ import org.xmlet.htmlapifaster.Input
 import org.xmlet.htmlapifaster.Select
 import org.xmlet.htmlapifaster.Textarea
 import pt.isel.datastar.Signal
-import pt.isel.datastar.expressions.DataStarExpression
+import pt.isel.datastar.builders.ExpressionBuilder
 import kotlin.collections.joinToString
 
 fun List<Pair<String, Any?>>.toJson(): String =
@@ -43,36 +43,6 @@ fun List<Pair<String, Any?>>.toJson(): String =
             }
         "$name: $res"
     }
-
-/**
- *
- * Initializes one or more signals with their initial values.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signals attribute will be added
- * @param signals pairs of signal names and their corresponding values
- * @return a list of Signal instances with the given names and values
- */
-fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(vararg signals: Pair<String, Any?>): List<Signal<Any?>> {
-    signals.toList().toJson().also {
-        this.visitor.visitAttribute("data-signals", it)
-    }
-    return signals.map { (name, value) ->
-        Signal(name, value)
-    }
-}
-
-/**
- * Creates a data signal without an initial value.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-signal attribute will be added
- * @param name the name of the signal
- * @return a Signal instance with the given name and a null value
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(name: String): Signal<*> = dataSignal(name, null)
 
 /**
  * Creates a signal and sets up two-way data binding between it and an element’s value.
@@ -113,30 +83,14 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataBind(signal: Sig
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-attr attribute will be added
  * @param name the name of the HTML attribute to set the value to the expression
- * @param js JavaScript code
+ * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
     name: String,
-    js: String,
+    block: ExpressionBuilder.() -> Unit,
 ) {
-    this.visitor.visitAttribute("data-attr:$name", js)
-}
-
-/**
- *
- * Binds any HTML attribute to an expression, keeping it synchronized.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-attr attribute will be added
- * @param name the name of the HTML attribute to set the value to the expression
- * @param expr DataStarExpression to bind to the attribute
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
-    name: String,
-    expr: DataStarExpression,
-) {
-    this.visitor.visitAttribute("data-attr:$name", expr.expression)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-attr:$name", expression)
 }
 
 /**
@@ -166,10 +120,11 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: 
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-effect attribute will be added
- * @param js JavaScript code
+ * @param block Block with tha lambda containing the expression
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(js: String) {
-    this.visitor.visitAttribute("data-effect", js)
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(block: ExpressionBuilder.() -> Unit) {
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-effect", expression)
 }
 
 /**
@@ -189,68 +144,16 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: Str
 
 /**
  *
- * Runs an expression once when an element is initialized, without modifiers.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-init attribute will be added
- * @param js a JavaScript expression that computes the value of the signal
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(js: String) {
-    this.visitor.visitAttribute("data-init", js)
-}
-
-/**
- *
- * Runs an expression once when an element is initialized, without modifiers.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-init attribute will be added
- * @param expr DataStarExpression that computes the value of the signal
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(expr: DataStarExpression) {
-    this.visitor.visitAttribute("data-init", expr.expression)
-}
-
-/**
- *
  * Toggles element visibility based on an expression.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-show attribute will be added
- * @param js JavaScript code
+ * @param block Block with tha lambda containing the expression
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(js: String) {
-    this.visitor.visitAttribute("data-show", js)
-}
-
-/**
- *
- * Toggles element visibility based on an expression.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-show attribute will be added
- * @param expr DataStarExpression that will be evaluated
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(expr: DataStarExpression) {
-    this.visitor.visitAttribute("data-show", expr.expression)
-}
-
-/**
- *
- * Toggles element visibility based on a Signal's value.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-show attribute will be added
- * @param signal the Signal whose value will be used for the attribute
- * @return a Signal instance with the given name
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(signal: Signal<*>) {
-    this.visitor.visitAttribute("data-show", "$signal")
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(block: ExpressionBuilder.() -> Unit) {
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-show", expression)
 }
 
 /**
@@ -260,24 +163,11 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(signal: Signal
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-text attribute will be added
- * @param js plain JavaScript code to be used for the attribute
+ * @param block Block with tha lambda containing the expression to be used for the attribute
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(js: String) {
-    this.visitor.visitAttribute("data-text", js)
-}
-
-/**
- *
- * Binds the text content of an element to a Signal's value.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-text attribute will be added
- * @param signal the Signal whose value will be used for the attribute
- * @return a Signal instance with the given name
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(signal: Signal<*>) {
-    this.visitor.visitAttribute("data-text", "$signal")
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(block: ExpressionBuilder.() -> Unit) {
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-text", expression)
 }
 
 /**
@@ -287,10 +177,11 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(signal: Signal
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-intersect attribute will be added
- * @param expr DataStarExpression to be ran
+ * @param block Block with tha lambda containing the expression to be ran
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(expr: DataStarExpression) {
-    this.visitor.visitAttribute("data-on-intersect", expr.expression)
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(block: ExpressionBuilder.() -> Unit) {
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-on-intersect", expression)
 }
 
 /**
@@ -300,23 +191,11 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(expr: D
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-signal-patch attribute will be added
- * @param js JavaScript code
+ * @param block Block with tha lambda containing the expression
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(js: String) {
-    this.visitor.visitAttribute("data-on-signal-patch", js)
-}
-
-/**
- *
- * Runs an expression whenever any Signal is patched.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on-signal-patch attribute will be added
- * @param expr DataStarExpression to run
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(expr: DataStarExpression) {
-    this.visitor.visitAttribute("data-on-signal-patch", expr.expression)
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(block: ExpressionBuilder.() -> Unit) {
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-on-signal-patch", expression)
 }
 
 /**
@@ -330,53 +209,4 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(expr:
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter(jsObj: String) {
     this.visitor.visitAttribute("data-on-signal-patch-filter", jsObj)
-}
-
-/**
- *
- * Sets the text content of an element to a reactive JSON stringified version of signals.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-json-signals attribute will be added
- * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(jsObj: String = "") {
-    this.visitor.visitAttribute("data-json-signals", jsObj)
-}
-
-/**
- *
- * Adds or removes a class from an element based on an expression.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-class attribute will be added
- * @param className the name of the class from the element
- * @param expr DataStarExpression that will be evaluated
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
-    className: String,
-    expr: DataStarExpression,
-) {
-    this.visitor.visitAttribute("data-class:$className", expr.expression)
-}
-
-/**
- *
- * Creates a computed signal whose value is derived from an expression.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-computed attribute will be added
- * @param name the name of the signal
- * @param js a JavaScript expression that computes the value of the signal
- * @return a Signal instance with the given name
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
-    name: String,
-    js: String,
-): Signal<Any> {
-    this.visitor.visitAttribute("data-computed-$name", js)
-    return Signal(name, js)
 }

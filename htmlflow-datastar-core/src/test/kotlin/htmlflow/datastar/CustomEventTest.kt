@@ -8,7 +8,6 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import pt.isel.datastar.events.CustomEvent
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
@@ -45,7 +44,7 @@ class CustomEventTest {
                                 dataOn(myEvent) {
                                     +(eventDetails setValue evt.detail)
                                 }
-                                dataText($$"`Last Event Details: ${$$eventDetails}`")
+                                dataText { +$$"`Last Event Details: ${$$eventDetails}`" }
                             }
                             script {
                                 raw(

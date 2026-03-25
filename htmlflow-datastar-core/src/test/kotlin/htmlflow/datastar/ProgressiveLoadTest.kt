@@ -7,9 +7,6 @@ import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.semiColon
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataOn
@@ -46,9 +43,10 @@ class ProgressiveLoadTest {
                                         attrId("load-button")
                                         val loadDisabled = dataSignal("load-disabled", false)
                                         dataOn(Click) {
-                                            +(loadDisabled setValue true semiColon get(::progressiveLoadUpdates))
+                                            +(loadDisabled setValue true)
+                                            +get(::progressiveLoadUpdates)
                                         }
-                                        dataAttr("disabled", loadDisabled)
+                                        dataAttr("disabled") { +loadDisabled }
                                         dataIndicator("progressive-Load")
                                         text("Load")
                                     }
