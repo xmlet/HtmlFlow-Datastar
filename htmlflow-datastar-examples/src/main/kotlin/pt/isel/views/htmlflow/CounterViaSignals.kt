@@ -45,9 +45,6 @@ val hfCounterViaSignals: String =
                         }
                         div {
                             val count = dataSignal("count", 0)
-                            h1 {
-                                text("Counting Stars HtmlFlow - via Signals")
-                            }
                             div {
                                 dataInit(get(::getCounterEventsSignals))
                                 span {

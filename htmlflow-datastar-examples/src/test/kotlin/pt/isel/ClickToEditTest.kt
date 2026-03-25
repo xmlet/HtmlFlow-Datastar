@@ -99,6 +99,8 @@ class ClickToEditTest {
                 page.locator("#cancel").click()
 
                 page.waitForSelector("#edit-form", Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN))
+                page.waitForSelector("p:has-text('First Name')")
+                page.waitForTimeout(300.0)
 
                 // Verify original details are retained
                 val firstNameAfterCancel = page.textContent("p:has-text('First Name')").substringAfter(":").trim()

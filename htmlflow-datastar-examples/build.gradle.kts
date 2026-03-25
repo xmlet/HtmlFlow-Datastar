@@ -72,11 +72,3 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
-
-sourceSets {
-    main {
-        resources {
-            srcDir("src/main/kotlin")
-        }
-    }
-}

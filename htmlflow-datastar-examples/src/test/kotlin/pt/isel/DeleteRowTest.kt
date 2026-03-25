@@ -14,25 +14,25 @@ import kotlin.test.assertFalse
 @ExtendWith(SharedTestServersExtension::class)
 class DeleteRowTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `delete user row and verify removal on HTML`(serverType: String) {
         `delete user row and verify removal`("/delete-row/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `delete user row and verify removal on HtmlFlow`(serverType: String) {
         `delete user row and verify removal`("/delete-row/htmlflow", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `delete all users and reset on HTML`(serverType: String) {
         `delete all users and reset`("/delete-row/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `delete all users and reset on HtmlFlow`(serverType: String) {
         `delete all users and reset`("/delete-row/htmlflow", serverType)
     }

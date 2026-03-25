@@ -4,6 +4,7 @@ import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
@@ -16,10 +17,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfClickToLoadDescription
 import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfClickToLoad
 
-private val description = loadResource("pt/isel/views/fragments/click-to-load-description.html")
 private val html = loadResource("public/html/click-to-load.html")
 
 fun Route.demoClickToLoad() {
@@ -77,7 +78,7 @@ private suspend fun RoutingContext.getClickToLoadDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfClickToLoadDescription)
     }
 }
 

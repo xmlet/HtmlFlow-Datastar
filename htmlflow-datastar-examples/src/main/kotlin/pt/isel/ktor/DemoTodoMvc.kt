@@ -1,5 +1,7 @@
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import htmlflow.div
 import htmlflow.view
@@ -8,6 +10,7 @@ import io.ktor.http.Cookie
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.receiveText
+import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
@@ -73,16 +76,17 @@ private suspend fun RoutingContext.getTodoMvcHtml() {
 }
 
 private suspend fun RoutingContext.getTodoMcvHtmlFlow() {
+    val account = accountFlow()
+
+    val state =
+        TodoUiState(
+            tasks = account.value.tasks,
+            mode = account.value.mode,
+            pendingCount = account.value.tasks.count { it.status == Status.PENDING },
+        )
+
     call.respondText(
-        hfTodoMvcView.render(
-            TodoUiState(
-                initialTasks,
-                Mode.ALL,
-                initialTasks.count {
-                    it.status == Status.PENDING
-                },
-            ),
-        ),
+        hfTodoMvcView.render(state),
         ContentType.Text.Html,
     )
 }
@@ -94,12 +98,12 @@ data class TodoUiState(
 )
 
 private suspend fun RoutingContext.getUpdates() {
+    val account = accountFlow()
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val account = accountFlow()
         account.collect { event ->
             val showingTasks =
                 when (event.mode) {
@@ -107,7 +111,6 @@ private suspend fun RoutingContext.getUpdates() {
                     Mode.DONE -> event.tasks.filter { it.status == Status.DONE }
                     Mode.ALL -> event.tasks
                 }
-
             val todoUiState =
                 TodoUiState(
                     tasks = showingTasks,
@@ -179,7 +182,8 @@ private suspend fun RoutingContext.toggleAll() {
 }
 
 private suspend fun RoutingContext.addTask() {
-    val (input) = Json.decodeFromString<TodoMvcSignals>(call.receiveText())
+    val body = call.receiveText()
+    val (input) = Json.decodeFromString<TodoMvcSignals>(body)
     val account = accountFlow()
     val newTask =
         Task(
@@ -306,13 +310,12 @@ private fun RoutingContext.accountFlow(): MutableStateFlow<Account> {
         call.request.cookies[ACCOUNT_COOKIE]
             ?.let { runCatching { UUID.fromString(it) }.getOrNull() }
             ?: UUID.randomUUID()
-
     val account =
         accounts.computeIfAbsent(accountId) {
             MutableStateFlow(Account(id = accountId, tasks = initialTasks))
         }
 
-    if (call.request.cookies[ACCOUNT_COOKIE] == null) {
+    if (call.request.cookies[ACCOUNT_COOKIE] == null && !call.response.isCommitted) {
         call.response.cookies.append(
             Cookie(
                 name = ACCOUNT_COOKIE,

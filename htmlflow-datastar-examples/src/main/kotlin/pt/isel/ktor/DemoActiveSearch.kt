@@ -13,10 +13,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfActiveSearchDescription
 import pt.isel.views.htmlflow.contactRowsFragment
 import pt.isel.views.htmlflow.hfActiveSearch
 
-private val description = loadResource("pt/isel/views/fragments/active-search-description.html")
 private val html = loadResource("public/html/active-search.html")
 
 fun Route.demoActiveSearch() {
@@ -66,7 +66,7 @@ private suspend fun RoutingContext.getActiveSearchDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfActiveSearchDescription)
     }
 }
 

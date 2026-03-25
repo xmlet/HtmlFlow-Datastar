@@ -15,13 +15,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class ProgressiveLoadTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `click to loads, progressively displays the article and the comments, on Html`(serverType: String) {
         `click to loads, progressively displays the article and the comments`("/progressive-load/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `click to loads, progressively displays the article and the comments, on HtmlFlow`(serverType: String) {
         `click to loads, progressively displays the article and the comments`("/progressive-load/htmlflow", serverType)
     }

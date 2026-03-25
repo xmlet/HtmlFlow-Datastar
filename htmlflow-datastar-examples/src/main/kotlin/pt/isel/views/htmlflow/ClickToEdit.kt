@@ -133,12 +133,12 @@ val hfClickToEdit: HtmlView<Profile> =
                 }
             }
             body {
-                dyn { profile: Profile ->
-                    raw(hfDisplayFragment.render(profile))
-                }
                 div {
                     attrId("description")
                     dataInit(get(::getClickToEditDescription))
+                }
+                dyn { profile: Profile ->
+                    raw(hfDisplayFragment.render(profile))
                 }
             }
         }

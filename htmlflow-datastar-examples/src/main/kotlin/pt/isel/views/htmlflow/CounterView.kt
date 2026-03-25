@@ -23,6 +23,8 @@ import pt.isel.datastar.extensions.dataSignal
 import pt.isel.datastar.extensions.dataText
 import pt.isel.http4k.counterEvents
 import pt.isel.http4k.decrementCounter
+import pt.isel.http4k.getCounterDescription
+import pt.isel.http4k.getCounterSignalsDescription
 import pt.isel.http4k.incrementCounter
 
 val hfCounter: String =
@@ -43,8 +45,12 @@ val hfCounter: String =
                     body {
                         div {
                             val count = dataSignal("count", 0)
-                            h1 {
-                                text("Counting Stars HtmlFlow - via Signals")
+                            div {
+                                attrId("description")
+                                dataInit(
+                                    pt.isel.datastar.expressions
+                                        .get(::getCounterDescription),
+                                )
                             }
                             div {
                                 dataInit(

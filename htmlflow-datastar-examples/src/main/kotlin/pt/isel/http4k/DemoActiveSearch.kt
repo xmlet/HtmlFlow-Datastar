@@ -16,10 +16,10 @@ import org.http4k.sse.sendPatchElements
 import pt.isel.ktor.ActiveSearchSignals
 import pt.isel.ktor.Contact
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfActiveSearchDescription
 import pt.isel.views.htmlflow.contactRowsFragment
 import pt.isel.views.htmlflow.hfActiveSearch
 
-private val description = loadResource("pt/isel/views/fragments/active-search-description.html")
 private val html = loadResource("public/html/active-search.html")
 
 fun demoActiveSearch() =
@@ -60,7 +60,7 @@ fun getSearchContacts(req: Request): SseResponse {
 fun getActiveSearchDescription(req: Request): SseResponse =
     SseResponse { sse ->
         sse.sendPatchElements(
-            elements = listOf(Element.of(description)),
+            elements = listOf(Element.of(hfActiveSearchDescription)),
         )
     }
 

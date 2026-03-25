@@ -14,9 +14,9 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfCounterSignalsDescription
 import pt.isel.views.htmlflow.hfCounterViaSignals
 
-private val description = loadResource("pt/isel/views/fragments/counter-signals-description.html")
 private val html = loadResource("public/html/counter-signals.html")
 
 private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
@@ -65,7 +65,7 @@ private suspend fun RoutingContext.getCounterSignalsDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfCounterSignalsDescription)
     }
 }
 

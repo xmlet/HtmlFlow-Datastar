@@ -22,4 +22,7 @@ val demosHttp4kRouting =
         *("/progress-bar" bind demoProgressBar()).toTypedArray(),
         *("/active-search" bind demoActiveSearch()).toTypedArray(),
         *("/bulk-update" bind demoBulkUpdate()).toTypedArray(),
+        *("/delete-row" bind demoDeleteRow()).toTypedArray(),
+        *("/progressive-load" bind demoProgressiveLoad()).toTypedArray(),
+        *("/todo-mvc" bind demoTodoMvc()).toTypedArray(),
     )

@@ -116,7 +116,6 @@ private suspend fun RoutingContext.getUpdates() {
                 ),
                 Comment(
                     null,
-                    @Suppress("ktlint:standard:max-line-length")
                     "Varius ad consectetur malesuada ligula ante molestie hac bibendum conubia magna, iaculis congue nisi eleifend senectus amet posuere etiam. imperdiet nulla quis..",
                 ),
             )

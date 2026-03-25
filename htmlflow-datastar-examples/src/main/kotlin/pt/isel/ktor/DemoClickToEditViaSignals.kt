@@ -16,12 +16,11 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import pt.isel.ktor.getClickToEditSignalsDescription
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfClickToEditSignalsDescription
 import pt.isel.views.htmlflow.hfClickToEditSignals
 
-private val description = loadResource("pt/isel/views/fragments/click-to-edit-signals-description.html")
 private val html = loadResource("public/html/click-to-edit-signals.html")
 
 private val clickToEditSignals = MutableStateFlow(ClickToEditSignals())
@@ -98,7 +97,7 @@ private suspend fun RoutingContext.getClickToEditSignalsDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfClickToEditSignalsDescription)
     }
 }
 

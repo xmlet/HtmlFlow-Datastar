@@ -19,10 +19,10 @@ import pt.isel.ktor.BulkUpdateSignals
 import pt.isel.ktor.User
 import pt.isel.ktor.UserStatus
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfBulkUpdateDescription
 import pt.isel.views.htmlflow.hfBulkUpdate
 import pt.isel.views.htmlflow.userRowsFragment
 
-private val description = loadResource("pt/isel/views/fragments/bulk-update-description.html")
 private val html = loadResource("public/html/bulk-update.html")
 
 fun demoBulkUpdate() =
@@ -31,7 +31,7 @@ fun demoBulkUpdate() =
         "/htmlflow" bind Method.GET to ::getBulkUpdateHtmlFlow,
         "/activate" bindSse Method.PUT to ::activateUsers,
         "/deactivate" bindSse Method.PUT to ::deactivateUsers,
-        "/description" bindSse Method.GET to ::getBulkUpdateDescription,
+        "/description" bind Method.GET to ::getBulkUpdateDescription,
     )
 
 fun getBulkUpdateHtml(req: Request): Response = Response(OK).body(html).header("Content-Type", "text/html;")
@@ -48,6 +48,7 @@ fun activateUsers(req: Request): SseResponse =
             if (selected) users[index] = users[index].copy(status = UserStatus.ACTIVE)
         }
         sse.sendPatchElements(elements = listOf(Element.of(userRowsFragment(users))))
+        sse.close()
     }
 
 @Path("/bulk-update/deactivate")
@@ -59,13 +60,14 @@ fun deactivateUsers(req: Request): SseResponse =
             if (selected) users[index] = users[index].copy(status = UserStatus.INACTIVE)
         }
         sse.sendPatchElements(elements = listOf(Element.of(userRowsFragment(users))))
+        sse.close()
     }
 
 @Path("/bulk-update/description")
 fun getBulkUpdateDescription(req: Request): SseResponse =
     SseResponse { sse ->
         sse.sendPatchElements(
-            elements = listOf(Element.of(description)),
+            elements = listOf(Element.of(hfBulkUpdateDescription)),
         )
     }
 

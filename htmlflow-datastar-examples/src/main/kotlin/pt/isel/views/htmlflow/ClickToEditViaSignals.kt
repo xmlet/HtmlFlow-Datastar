@@ -52,6 +52,10 @@ val hfClickToEditSignals =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit(get(::getClickToEditSignalsDescription))
+                        }
+                        div {
                             val (firstName, lastName, email, editing) =
                                 dataSignals(
                                     "firstName" to "John",
@@ -140,10 +144,6 @@ val hfClickToEditSignals =
                                     }
                                 }
                             }
-                        }
-                        div {
-                            attrId("description")
-                            dataInit(get(::getClickToEditSignalsDescription))
                         }
                     }
                 }

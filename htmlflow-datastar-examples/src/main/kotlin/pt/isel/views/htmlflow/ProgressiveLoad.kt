@@ -24,8 +24,11 @@ import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataClass
 import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
+import pt.isel.http4k.getProgressiveLoadDescription
+import pt.isel.http4k.getProgressiveLoadUpdates
 
 val hfProgressiveLoad =
     StringBuilder()
@@ -45,7 +48,7 @@ val hfProgressiveLoad =
                     body {
                         div {
                             attrId("description")
-                            // dataInit(get(::getProgressiveLoadDescription)) No Http4k handler yet
+                            dataInit(get(::getProgressiveLoadDescription))
                         }
                         div {
                             attrClass("actions")
@@ -55,7 +58,7 @@ val hfProgressiveLoad =
                                 val loadDisabled = dataSignal("load-disabled", false)
                                 dataOn(
                                     "click",
-                                    loadDisabled setValue true semiColon get(::progressiveLoadUpdates),
+                                    loadDisabled setValue true semiColon get(::getProgressiveLoadUpdates),
                                 )
                                 dataAttr("disabled", loadDisabled)
                                 progressiveLoad = dataIndicator("progressive-load")
@@ -89,6 +92,3 @@ fun HtmlDoc.loadDiv() {
         div { attrId("footer") }
     }
 }
-
-@Path("/progressive-load/updates")
-private fun progressiveLoadUpdates() {}

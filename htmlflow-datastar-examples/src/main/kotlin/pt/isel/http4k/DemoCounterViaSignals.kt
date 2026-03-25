@@ -18,9 +18,9 @@ import org.http4k.sse.sendPatchElements
 import org.http4k.sse.sendPatchSignals
 import pt.isel.utils.EventBus
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfCounterSignalsDescription
 import pt.isel.views.htmlflow.hfCounterViaSignals
 
-private val description = loadResource("pt/isel/views/fragments/counter-signals-description.html")
 private val html = loadResource("public/html/counter-signals.html")
 
 private val bus = EventBus(0)
@@ -73,6 +73,6 @@ fun getCounterSignalsDescription(req: Request): SseResponse =
     SseResponse { sse ->
         sse
             .sendPatchElements(
-                elements = listOf(Element.of(description)),
+                elements = listOf(Element.of(hfCounterSignalsDescription)),
             )
     }

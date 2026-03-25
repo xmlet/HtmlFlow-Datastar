@@ -15,10 +15,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfBulkUpdateDescription
 import pt.isel.views.htmlflow.hfBulkUpdate
 import pt.isel.views.htmlflow.userRowsFragment
 
-private val description = loadResource("pt/isel/views/fragments/bulk-update-description.html")
 private val html = loadResource("public/html/bulk-update.html")
 private val users =
     mutableListOf(
@@ -98,7 +98,7 @@ private suspend fun RoutingContext.getBulkUpdateDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfBulkUpdateDescription)
     }
 }
 

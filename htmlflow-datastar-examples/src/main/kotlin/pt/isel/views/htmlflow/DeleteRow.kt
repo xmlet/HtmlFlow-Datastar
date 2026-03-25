@@ -23,15 +23,18 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.expressions.delete
+import pt.isel.datastar.expressions.get
 import pt.isel.datastar.expressions.patch
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
+import pt.isel.http4k.getDeleteRowDescription
+import pt.isel.http4k.getEditRowDescription
+import pt.isel.http4k.restoreRows
 import pt.isel.ktor.DeleteRowsState
 import pt.isel.ktor.TableUser
 import pt.isel.utils.loadResource
-
-private val description = loadResource("pt/isel/views/fragments/delete-row-description.html")
 
 val hfDeleteRow: HtmlView<DeleteRowsState> =
     view {
@@ -48,10 +51,13 @@ val hfDeleteRow: HtmlView<DeleteRowsState> =
             }
             body {
                 div {
+                    attrId("description")
+                    dataInit(get(::getDeleteRowDescription))
+                }
+                div {
                     attrId("users-table")
                     hfDeleteRowTable()
                 }
-                raw(description)
             }
         }
     }
@@ -102,6 +108,3 @@ fun Tbody<*>.hfTableRow(
         }
     }
 }
-
-@Path("/delete-row/reset")
-private fun restoreRows() {}

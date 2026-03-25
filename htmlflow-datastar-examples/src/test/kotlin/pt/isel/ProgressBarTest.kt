@@ -66,7 +66,9 @@ class ProgressBarTest {
                     "document.querySelector('svg text')?.textContent !== '0%'",
                 )
 
-                page.waitForSelector("text=100%")
+                page.waitForFunction(
+                    "document.querySelector('svg text')?.textContent?.trim() === '100%'",
+                )
 
                 assertEquals(
                     "100%",

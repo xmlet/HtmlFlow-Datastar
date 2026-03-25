@@ -1,8 +1,0 @@
-<div id="description" class="demo-description">
-    <h2>Active Search — Description</h2>
-    <ol>
-        <li>On page load, the full contact list is rendered server-side.</li>
-        <li>As the user types, a debounced input event (200ms) sends a GET to <code>/active-search/search</code> with the <code>search</code> signal as a query parameter (<code>?datastar={"search":"..."}</code>).</li>
-        <li>The server filters the contacts and responds with a <code>patchElements</code> SSE that replaces <code>&lt;tbody&gt;</code> with the filtered rows.</li>
-    </ol>
-</div>

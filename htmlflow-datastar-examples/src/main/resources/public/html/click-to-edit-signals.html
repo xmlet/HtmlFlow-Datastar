@@ -5,6 +5,8 @@
         </script><link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
+        <div id="description" data-init="@get('/click-to-edit-signals/description')"></div>
+
         <div data-signals="{firstName: 'John', lastName: 'Doe', email: 'joe@blow.com', _editing: false}"
              data-init="@get('/click-to-edit-signals/events')"
         >
@@ -44,6 +46,5 @@
                 </div>
             </div>
         </div>
-        <div id="description" data-init="@get('/click-to-edit-signals/description')"></div>
     </body>
 </html>

@@ -17,11 +17,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfClickToEditDescription
 import pt.isel.views.htmlflow.hfClickToEdit
 import pt.isel.views.htmlflow.hfDisplayFragment
 import pt.isel.views.htmlflow.hfEditModeFragment
 
-private val description = loadResource("pt/isel/views/fragments/click-to-edit-description.html")
 private val html = loadResource("public/html/click-to-edit.html")
 
 val DEFAULT_USER =
@@ -117,7 +117,7 @@ private suspend fun RoutingContext.getClickToEditDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfClickToEditDescription)
     }
 }
 

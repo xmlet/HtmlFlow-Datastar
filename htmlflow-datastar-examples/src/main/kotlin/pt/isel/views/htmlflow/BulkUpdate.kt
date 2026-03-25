@@ -53,6 +53,10 @@ val hfBulkUpdate: HtmlView<List<User>> =
             }
             body {
                 div {
+                    attrId("description")
+                    dataInit(get(::getBulkUpdateDescription))
+                }
+                div {
                     attrId("demo")
                     val (fetching, selections) =
                         dataSignals(
@@ -113,10 +117,6 @@ val hfBulkUpdate: HtmlView<List<User>> =
                             text("Deactivate")
                         }
                     }
-                }
-                div {
-                    attrId("description")
-                    dataInit(get(::getBulkUpdateDescription))
                 }
             }
         }

@@ -1,9 +1,0 @@
-<div id="description" class="demo-description">
-    <h2>Bulk Update — Description</h2>
-    <ol>
-        <li>On page load, the user list is rendered server-side with a <code>selections</code> signal initialized.</li>
-        <li>The header checkbox uses <code>data-effect</code> to reflect the state of all selections, and <code>setAll</code> to toggle all checkboxes at once.</li>
-        <li>Clicking <strong>Activate</strong> sends a PUT to <code>/bulk-update/activate</code> with the <code>selections</code> array in the request body — the server updates the selected users to <code>Active</code>, resets <code>selections</code> to all <code>false</code> via <code>patchSignals</code>, and patches <code>&lt;tbody&gt;</code> via <code>patchElements</code>.</li>
-        <li>Clicking <strong>Deactivate</strong> sends a PUT to <code>/bulk-update/deactivate</code> with the same payload — the server updates the selected users to <code>Inactive</code> and responds identically.</li>
-    </ol>
-</div>

@@ -5,6 +5,7 @@
         </script><link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
+        <div id="description" data-init="@get('/bulk-update/description')"></div>
         <div id="demo" data-signals__ifmissing="{_fetching: false, selections: Array(4).fill(false)}">
             <table>
                 <thead>
@@ -59,6 +60,5 @@
                 </button>
             </div>
         </div>
-        <div id="description" data-init="@get('/bulk-update/description')"></div>
     </body>
 </html>

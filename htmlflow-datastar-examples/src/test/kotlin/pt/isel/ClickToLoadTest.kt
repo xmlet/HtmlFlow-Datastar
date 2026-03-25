@@ -14,13 +14,13 @@ import kotlin.test.assertTrue
 @ExtendWith(SharedTestServersExtension::class)
 class ClickToLoadTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `click load more button fetches and appends 5 rows to table on HTML`(serverType: String) {
         `click load more button fetches and appends 5 rows to table`("/click-to-load/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `click load more button fetches and appends 5 rows to table on HtmlFlow`(serverType: String) {
         `click load more button fetches and appends 5 rows to table`("/click-to-load/htmlflow", serverType)
     }

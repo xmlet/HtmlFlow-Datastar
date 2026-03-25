@@ -46,8 +46,10 @@ val hfProgressBar: String =
                             dataInit(get(::getProgressBarDescription))
                         }
                         div {
-                            attrId("progress-bar")
                             dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
+                        }
+                        div {
+                            attrId("progress-bar")
                             renderProgressSvg(0)
                         }
                     }
@@ -58,13 +60,8 @@ val hfProgressBar: String =
 val renderProgressBarFragment: HtmlView<ProgressBarState> =
     view<ProgressBarState> {
         div {
+            attrId("progress-bar")
             dyn { state: ProgressBarState ->
-                attrId("progress-bar")
-
-                if (!state.completed) {
-                    dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
-                }
-
                 renderProgressSvg(state.progress)
 
                 if (state.completed) {

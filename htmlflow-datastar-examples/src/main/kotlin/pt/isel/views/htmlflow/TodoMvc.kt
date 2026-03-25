@@ -1,6 +1,7 @@
 package pt.isel.views.htmlflow
 
 import htmlflow.HtmlView
+import htmlflow.div
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
@@ -31,6 +32,15 @@ import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
+import pt.isel.http4k.cancelEditMode
+import pt.isel.http4k.deleteToggledTasks
+import pt.isel.http4k.getTodoMvcDescription
+import pt.isel.http4k.getUpdates
+import pt.isel.http4k.mode0
+import pt.isel.http4k.mode1
+import pt.isel.http4k.mode2
+import pt.isel.http4k.resetTasks
+import pt.isel.http4k.toggleAll
 import pt.isel.ktor.Status
 import pt.isel.ktor.TodoUiState
 
@@ -50,12 +60,16 @@ val hfTodoMvcView: HtmlView<TodoUiState> =
             body {
                 div {
                     attrId("description")
-                    // dataInit(get(::getToddMvcDescription)) No Http4k handler yet
+                    dataInit(get(::getTodoMvcDescription))
                 }
                 div {
-                    attrId("todo-app")
-                    tasksView()
-                    buttonsView()
+                    attrId("app")
+                    dataInit(get(::getUpdates))
+                    div {
+                        attrId("todo-app")
+                        tasksView()
+                        buttonsView()
+                    }
                 }
             }
         }
@@ -65,13 +79,12 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
     view<TodoUiState> {
         section {
             attrId("todo-mvc")
-            dataInit(get(::updates))
             dyn { todoUiState: TodoUiState ->
                 header {
                     attrId("todo-header")
                     input {
                         attrType(EnumTypeInputType.CHECKBOX)
-                        dataOn("click", post(::minus1Toggle)) {
+                        dataOn("click", post(::toggleAll)) {
                             mods { prevent() }
                         }
                         dataInit(if (todoUiState.pendingCount == 0) "el.checked = true" else "el.checked = false")
@@ -120,7 +133,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     val input = dataSignal("input", task.title)
                                     dataBind(input)
                                     dataInit("el.focus()")
-                                    dataOn("blur", put(::cancel))
+                                    dataOn("blur", put(::cancelEditMode))
                                     dataOn(
                                         "keydown",
                                         """
@@ -164,36 +177,12 @@ fun Div<*>.buttonsView() =
         }
         button {
             attrClass("error small")
-            dataOn("click", delete(::minus1))
+            dataOn("click", delete(::deleteToggledTasks))
             text("Delete")
         }
         button {
             attrClass("warning small")
-            dataOn("click", put(::reset))
+            dataOn("click", put(::resetTasks))
             text("Reset")
         }
     }
-
-@Path("/todo-mvc/updates")
-private fun updates() {}
-
-@Path("/todo-mvc/-1/toggle")
-private fun minus1Toggle() {}
-
-@Path("/todo-mvc/-1")
-private fun minus1() {}
-
-@Path("/todo-mvc/reset")
-private fun reset() {}
-
-@Path("/todo-mvc/cancel")
-private fun cancel() {}
-
-@Path("/todo-mvc/mode/0")
-private fun mode0() {}
-
-@Path("/todo-mvc/mode/1")
-private fun mode1() {}
-
-@Path("/todo-mvc/mode/2")
-private fun mode2() {}

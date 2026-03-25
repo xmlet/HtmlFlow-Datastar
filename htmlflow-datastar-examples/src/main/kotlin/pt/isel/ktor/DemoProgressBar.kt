@@ -46,14 +46,16 @@ private suspend fun RoutingContext.progressBarUpdates() {
 
         while (progress < 100) {
             val state = ProgressBarState(progress = progress, completed = false)
-            generator.patchElements(renderProgressBarFragment.render(state))
+            val fragment = renderProgressBarFragment.render(state)
+            generator.patchElements(fragment)
 
             delay(200)
             progress += Random.nextInt(1, 16)
         }
 
         val finalState = ProgressBarState(progress = 100, completed = true)
-        generator.patchElements(renderProgressBarFragment.render(finalState))
+        val finalFragment = renderProgressBarFragment.render(finalState)
+        generator.patchElements(finalFragment)
     }
 }
 

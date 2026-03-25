@@ -20,10 +20,10 @@ import org.http4k.sse.sendPatchSignals
 import pt.isel.ktor.Signals
 import pt.isel.ktor.newAgents
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfClickToLoadDescription
 import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfClickToLoad
 
-private val description = loadResource("pt/isel/views/fragments/click-to-load-description.html")
 private val html = loadResource("public/html/click-to-load.html")
 
 fun demoClickToLoad() =
@@ -68,6 +68,6 @@ fun getClickToLoadDescription(req: Request): SseResponse =
     SseResponse { sse ->
         sse
             .sendPatchElements(
-                elements = listOf(Element.of(description)),
+                elements = listOf(Element.of(hfClickToLoadDescription)),
             )
     }

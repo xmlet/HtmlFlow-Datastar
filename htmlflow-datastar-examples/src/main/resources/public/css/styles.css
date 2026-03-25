@@ -115,3 +115,9 @@ table tbody tr:hover {
     border-radius: 4px;
     color: #c0392b;
 }
+
+.demo-description p {
+    margin: 0 0 0.75rem;
+    color: #444;
+    line-height: 1.6;
+}

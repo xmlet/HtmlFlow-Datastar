@@ -13,13 +13,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class BulkUpdateTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `update all users status change status column  on HTML`(serverType: String) {
         `update all users status change status column`("/bulk-update/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `update all users status change status column on HtmlFlow`(serverType: String) {
         `update all users status change status column`("/bulk-update/htmlflow", serverType)
     }

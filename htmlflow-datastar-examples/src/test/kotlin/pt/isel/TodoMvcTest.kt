@@ -13,13 +13,13 @@ import kotlin.test.assertEquals
 @ExtendWith(SharedTestServersExtension::class)
 class TodoMvcTest {
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `todo mvc app works as expected, on Html`(serverType: String) {
         `todo mvc app works as expected`("/todo-mvc/html", serverType)
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Ktor"])
+    @ValueSource(strings = ["Ktor", "Http4k"])
     fun `todo mvc app works as expected, on HtmlFlow`(serverType: String) {
         `todo mvc app works as expected`("/todo-mvc/htmlflow", serverType)
     }
@@ -47,8 +47,12 @@ class TodoMvcTest {
                 )
             val context = browser.newContext()
             val page = context.newPage()
-			
+
             try {
+                page.onConsoleMessage { msg ->
+                    println("Browser console: ${msg.text()}")
+                }
+
                 // Navigate to the lazy-load page
                 val url = "http://localhost:$port$path"
                 val response = page.navigate(url)
@@ -67,7 +71,7 @@ class TodoMvcTest {
                 page.fill("#new-todo", "Write Playwright test")
                 page.press("#new-todo", "Enter")
 
-                page.waitForTimeout(200.0)
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === 5")
                 assertEquals(initialCount + 1, page.locator("#todo-list li").count())
 
                 // ─────────────────────────────────────────────
@@ -133,7 +137,7 @@ class TodoMvcTest {
 
                 // Pending → none
                 page.locator("#todo-actions button:has-text(\"Pending\")").click()
-                page.waitForTimeout(200.0)
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === 0")
                 assertEquals(0, page.locator("#todo-list li").count())
 
                 val pendingCount =
@@ -142,8 +146,10 @@ class TodoMvcTest {
                 assertEquals("0", pendingCount)
 
                 // Done → all
-                page.click("text=Completed")
-                page.waitForTimeout(200.0)
+                val completedButton = page.locator("#todo-actions button:has-text(\"Completed\")")
+                completedButton.waitFor()
+                completedButton.click()
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === $initialCount")
                 assertEquals(initialCount, page.locator("#todo-list li").count())
 
                 // All → all

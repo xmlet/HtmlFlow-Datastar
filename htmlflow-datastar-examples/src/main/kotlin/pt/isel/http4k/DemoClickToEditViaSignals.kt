@@ -19,9 +19,9 @@ import org.http4k.sse.sendPatchSignals
 import pt.isel.ktor.ClickToEditSignals
 import pt.isel.utils.EventBus
 import pt.isel.utils.loadResource
+import pt.isel.views.fragments.hfClickToEditSignalsDescription
 import pt.isel.views.htmlflow.hfClickToEditSignals
 
-private val description = loadResource("pt/isel/views/fragments/click-to-edit-signals-description.html")
 private val html = loadResource("public/html/click-to-edit-signals.html")
 private val bus = EventBus(ClickToEditSignals())
 
@@ -41,7 +41,6 @@ fun getClickToEditSignalsHtml(req: Request): Response = Response(OK).body(html).
 fun getClickToEditSignalsHf(req: Request): Response =
     Response(OK).body(hfClickToEditSignals).header(
         "Content-Type",
-        @Suppress("ktlint:standard:max-line-length")
         "text/html; charset=utf-8",
     )
 
@@ -86,5 +85,5 @@ fun clickToEditSignalsSave(req: Request): Response {
 @Path("/click-to-edit-signals/description")
 fun getClickToEditSignalsDescription(req: Request): SseResponse =
     SseResponse { sse ->
-        sse.sendPatchElements(Element.of(description))
+        sse.sendPatchElements(Element.of(hfClickToEditSignalsDescription))
     }

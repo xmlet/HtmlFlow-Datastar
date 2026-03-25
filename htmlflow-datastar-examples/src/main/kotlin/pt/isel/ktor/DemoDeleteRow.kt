@@ -17,10 +17,10 @@ import io.ktor.server.routing.patch
 import io.ktor.server.routing.route
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
+import pt.isel.views.fragments.hfDeleteRowDescription
 import pt.isel.views.htmlflow.hfDeleteRow
 import pt.isel.views.htmlflow.hfDeleteRowTable
 
-private val description = loadResource("pt/isel/views/fragments/delete-row-description.html")
 private val html = loadResource("public/html/delete-row.html")
 
 val DEFAULT_USERS =
@@ -92,7 +92,7 @@ private suspend fun RoutingContext.getDeleteRowDescription() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(description)
+        generator.patchElements(hfDeleteRowDescription)
     }
 }
 
