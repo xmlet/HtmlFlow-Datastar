@@ -85,8 +85,8 @@ class ClickToLoadTest {
 
                     // Verify the ID column exists and is non-empty
                     val id = cells[2].textContent().trim()
-                    assertTrue(id?.isNotEmpty() == true, "Row $i should have a non-empty ID")
-                    assertTrue(id?.length == 16, "ID should be 16 characters (8 hex bytes)")
+                    assertEquals(id.isNotEmpty(), true, "Row $i should have a non-empty ID")
+                    assertEquals(id.length, 16, "ID should be 16 characters (8 hex bytes)")
                 }
 
                 // Verify the HTML structure matches the expected format

@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     // HtmlFlow Kotlin dependency
-    implementation("com.github.xmlet:htmlflow-kotlin:5.0.3")
     api("com.github.xmlet:htmlflow-kotlin:5.0.3")
 
     // Jakarta web service annotations API for using annotation @Path

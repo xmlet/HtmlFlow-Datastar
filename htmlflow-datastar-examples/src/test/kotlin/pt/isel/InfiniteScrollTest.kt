@@ -74,7 +74,7 @@ class InfiniteScrollTest {
                 }
                 val lastAgentName = page.textContent("#agents tr:last-child td:first-child").trim()
 
-                assert(lastAgentName!!.startsWith("Agent Smith")) { "Unexpected agent name: $lastAgentName" }
+                assert(lastAgentName.startsWith("Agent Smith")) { "Unexpected agent name: $lastAgentName" }
             } finally {
                 page.close()
                 context.close()
