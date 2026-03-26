@@ -81,8 +81,10 @@ is expressed in Kotlin through HtmlFlow in a type-safe way:
 ```kotlin
 button {
   val fetching = dataIndicator("_fetching")
-  dataAttr("disabled", fetching)
-  dataOn("click", !fetching and get(::clickToLoadMore))
+  dataAttr("disabled") { +fetching }
+  dataOn(Click) {
+      +(!fetching and get(::clickToLoadMore))
+  }
   text("Load More")
 }
 ```
