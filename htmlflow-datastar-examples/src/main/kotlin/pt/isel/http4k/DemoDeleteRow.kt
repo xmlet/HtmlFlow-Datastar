@@ -13,7 +13,6 @@ import org.http4k.routing.bindSse
 import org.http4k.routing.path
 import org.http4k.routing.poly
 import org.http4k.routing.to
-import org.http4k.sse.SseHandler
 import org.http4k.sse.SseResponse
 import org.http4k.sse.sendPatchElements
 import pt.isel.ktor.DEFAULT_USERS

@@ -11,7 +11,6 @@ import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
-import org.xmlet.htmlapifaster.h1
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
@@ -24,7 +23,6 @@ import pt.isel.datastar.extensions.dataText
 import pt.isel.http4k.counterEvents
 import pt.isel.http4k.decrementCounter
 import pt.isel.http4k.getCounterDescription
-import pt.isel.http4k.getCounterSignalsDescription
 import pt.isel.http4k.incrementCounter
 
 val hfCounter: String =

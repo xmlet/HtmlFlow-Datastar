@@ -4,7 +4,6 @@ import dev.datastar.kotlin.sdk.ElementPatchMode
 import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter

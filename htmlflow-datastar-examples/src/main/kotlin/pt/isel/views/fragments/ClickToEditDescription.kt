@@ -2,7 +2,6 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
-import org.xmlet.htmlapifaster.br
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p

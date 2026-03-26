@@ -1,7 +1,5 @@
 package pt.isel.ktor
 
-import dev.datastar.kotlin.sdk.ElementPatchMode
-import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import htmlflow.div
 import htmlflow.view
@@ -10,7 +8,6 @@ import io.ktor.http.Cookie
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.receiveText
-import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
