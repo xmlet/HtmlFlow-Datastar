@@ -3,6 +3,7 @@ package pt.isel.views.htmlflow
 import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
+import htmlflow.tbody
 import htmlflow.view
 import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
@@ -90,16 +91,13 @@ fun Tbody<*>.hfContactRows() {
     }
 }
 
-/*
-* val hfactivefrag = view {
-*    tbody {
-*           attrId("contacts")
-*           hfContactRows()
-*       }
-* }
-*
-* hfactivefrag.render(filteredContacts)
-*/
+val hfActiveSearchContactsRowsFragment: HtmlView<List<Contact>> =
+    view {
+        tbody {
+            attrId("contacts")
+            hfContactRows()
+        }
+    }
 
 fun contactRowsFragment(contacts: List<Contact>): String =
     StringBuilder()

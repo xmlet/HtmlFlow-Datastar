@@ -47,7 +47,7 @@ fun activateUsers(req: Request): SseResponse =
         selections.forEachIndexed { index, selected ->
             if (selected) users[index] = users[index].copy(status = UserStatus.ACTIVE)
         }
-        sse.sendPatchElements(elements = listOf(Element.of(userRowsFragment(users))))
+        sse.sendPatchElements(elements = listOf(Element.of(userRowsFragment.render(users))))
         sse.close()
     }
 
@@ -59,7 +59,7 @@ fun deactivateUsers(req: Request): SseResponse =
         selections.forEachIndexed { index, selected ->
             if (selected) users[index] = users[index].copy(status = UserStatus.INACTIVE)
         }
-        sse.sendPatchElements(elements = listOf(Element.of(userRowsFragment(users))))
+        sse.sendPatchElements(elements = listOf(Element.of(userRowsFragment.render(users))))
         sse.close()
     }
 

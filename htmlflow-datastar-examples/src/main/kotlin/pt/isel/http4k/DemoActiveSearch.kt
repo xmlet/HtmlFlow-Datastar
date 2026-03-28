@@ -17,8 +17,8 @@ import pt.isel.ktor.ActiveSearchSignals
 import pt.isel.ktor.Contact
 import pt.isel.utils.loadResource
 import pt.isel.views.fragments.hfActiveSearchDescription
-import pt.isel.views.htmlflow.contactRowsFragment
 import pt.isel.views.htmlflow.hfActiveSearch
+import pt.isel.views.htmlflow.hfActiveSearchContactsRowsFragment
 
 private val html = loadResource("public/html/active-search.html")
 
@@ -52,7 +52,7 @@ fun getSearchContacts(req: Request): SseResponse {
             }
         }
     return SseResponse { sse ->
-        sse.sendPatchElements(elements = listOf(Element.of(contactRowsFragment(filteredContacts))))
+        sse.sendPatchElements(elements = listOf(Element.of(hfActiveSearchContactsRowsFragment.render(filteredContacts))))
     }
 }
 

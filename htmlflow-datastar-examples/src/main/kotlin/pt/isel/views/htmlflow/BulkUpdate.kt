@@ -3,10 +3,13 @@ package pt.isel.views.htmlflow
 import htmlflow.HtmlView
 import htmlflow.dyn
 import htmlflow.html
+import htmlflow.tbody
 import htmlflow.view
 import org.xmlet.htmlapifaster.EnumRelType
+import org.xmlet.htmlapifaster.EnumTypeButtonType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tbody
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
@@ -34,9 +37,40 @@ import pt.isel.datastar.extensions.dataSignals
 import pt.isel.http4k.activateUsers
 import pt.isel.http4k.deactivateUsers
 import pt.isel.http4k.getBulkUpdateDescription
+import pt.isel.ktor.Contact
 import pt.isel.ktor.User
 import kotlin.collections.component1
 import kotlin.collections.component2
+import kotlin.collections.forEach
+
+private const val FETCHING_SIGNAL = "\$_fetching"
+
+fun Tbody<*>.hfUserRows() {
+    dyn { users: List<User> ->
+        users.forEach { user ->
+            tr {
+                td {
+                    input {
+                        attrType(EnumTypeInputType.CHECKBOX)
+                        dataBind("selections")
+                        dataAttr("disabled", FETCHING_SIGNAL)
+                    }
+                }
+                td { text(user.name) }
+                td { text(user.email) }
+                td { text(user.status.syntax) }
+            }
+        }
+    }
+}
+
+val userRowsFragment: HtmlView<List<User>> =
+    view {
+        tbody {
+            attrId("users")
+            hfUserRows()
+        }
+    }
 
 val hfBulkUpdate: HtmlView<List<User>> =
     view {
@@ -81,27 +115,13 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         }
                         tbody {
                             attrId("users")
-                            dyn { users: List<User> ->
-                                users.forEach { user: User ->
-                                    tr {
-                                        td {
-                                            input {
-                                                attrType(EnumTypeInputType.CHECKBOX)
-                                                dataBind("selections")
-                                                dataAttr("disabled", fetching)
-                                            }
-                                        }
-                                        td { text(user.name) }
-                                        td { text(user.email) }
-                                        td { text(user.status.syntax) }
-                                    }
-                                }
-                            }
+                            hfUserRows()
                         }
                     }
                     div {
                         button {
                             attrClass("success")
+                            attrType(EnumTypeButtonType.BUTTON)
                             dataOn("click", put(::activateUsers))
                             dataIndicator(fetching.name)
                             dataAttr("disabled", fetching)
@@ -110,6 +130,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         }
                         button {
                             attrClass("error")
+                            attrType(EnumTypeButtonType.BUTTON)
                             dataOn("click", put(::deactivateUsers))
                             dataIndicator(fetching.name)
                             dataAttr("disabled", fetching)
@@ -120,21 +141,4 @@ val hfBulkUpdate: HtmlView<List<User>> =
                 }
             }
         }
-    }
-
-private fun buildUserRow(user: User): String =
-    buildString {
-        appendLine("\t<tr>")
-        appendLine("\t\t<td><input type=\"checkbox\" data-bind:selections=\"\" data-attr:disabled=\"\$_fetching\"></td>")
-        appendLine("\t\t<td>${user.name}</td>")
-        appendLine("\t\t<td>${user.email}</td>")
-        appendLine("\t\t<td>${user.status.syntax}</td>")
-        appendLine("\t</tr>")
-    }
-
-fun userRowsFragment(users: List<User>): String =
-    buildString {
-        appendLine("""<tbody id="users">""")
-        users.forEach { append(buildUserRow(it)) }
-        append("</tbody>")
     }

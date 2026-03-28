@@ -65,7 +65,7 @@ private suspend fun RoutingContext.activateUsers() {
                 users[index] = users[index].copy(status = UserStatus.ACTIVE)
             }
         }
-        generator.patchElements(userRowsFragment(users))
+        generator.patchElements(userRowsFragment.render(users))
     }
 }
 
@@ -88,7 +88,7 @@ private suspend fun RoutingContext.deactivateUsers() {
                 users[index] = users[index].copy(status = UserStatus.INACTIVE)
             }
         }
-        generator.patchElements(userRowsFragment(users))
+        generator.patchElements(userRowsFragment.render(users))
     }
 }
 

@@ -14,8 +14,8 @@ import kotlinx.serialization.json.Json
 import pt.isel.utils.loadResource
 import pt.isel.utils.response
 import pt.isel.views.fragments.hfActiveSearchDescription
-import pt.isel.views.htmlflow.contactRowsFragment
 import pt.isel.views.htmlflow.hfActiveSearch
+import pt.isel.views.htmlflow.hfActiveSearchContactsRowsFragment
 
 private val html = loadResource("public/html/active-search.html")
 
@@ -56,7 +56,7 @@ private suspend fun RoutingContext.searchContacts() {
                         it.lastName.contains(search, ignoreCase = true)
                 }
             }
-        generator.patchElements(contactRowsFragment(filteredContacts))
+        generator.patchElements(hfActiveSearchContactsRowsFragment.render(filteredContacts))
     }
 }
 
