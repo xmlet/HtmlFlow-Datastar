@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfCounterSignalsDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/counter-signals/events")
+                                text("/counter-signals/events")
+                            }
                             text(
-                                "GET /counter-signals/events — Opens a persistent SSE stream with the current counter value. " +
+                                " — Opens a persistent SSE stream with the current counter value. " +
                                     "Triggered on page init (dataInit). " +
                                     "Response (text/event-stream): signal patch with the updated count value on every counter change. " +
                                     "The counter span updates reactively via the bound signal.",
