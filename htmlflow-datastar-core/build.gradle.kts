@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.xmlet"
-version = "1.0.0-beta"
+version = "1.0.0-alpha"
 
 repositories {
     mavenCentral()
