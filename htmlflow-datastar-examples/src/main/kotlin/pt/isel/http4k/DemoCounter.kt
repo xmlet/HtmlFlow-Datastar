@@ -35,7 +35,6 @@ fun demoCounter() =
         "/increment" bind Method.POST to ::incrementCounter,
         "/decrement" bind Method.POST to ::decrementCounter,
         "/events" bindSse Method.GET to ::counterEvents,
-        "/events" bind Method.GET to ::counterEventsHttp,
         "/description" bind Method.GET to ::getCounterDescription,
     )
 
@@ -70,35 +69,6 @@ fun counterEvents(req: Request): SseResponse {
             }
         }
     }
-}
-
-fun counterEventsHttp(req: Request): Response {
-    val queue = bus.subscribe()
-    val pipe = PipedOutputStream()
-    val writer = pipe.bufferedWriter()
-
-    Thread {
-        try {
-            while (true) {
-                val event = queue.take()
-                writer.write("event: datastar-patch-elements\n")
-                hfCounterEventView.render(event).lines().forEach {
-                    writer.write("data: elements $it\n")
-                }
-                writer.write("\n")
-                writer.flush()
-            }
-        } catch (_: Exception) {
-            bus.unsubscribe(queue)
-            pipe.close()
-        }
-    }.also { it.isDaemon = true }.start()
-
-    return Response(OK)
-        .header("Content-Type", "text/event-stream")
-        .header("Cache-Control", "no-cache")
-        .header("X-Accel-Buffering", "no")
-        .body(PipedInputStream(pipe))
 }
 
 @Path("/counter/description")

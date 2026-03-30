@@ -33,7 +33,6 @@ fun demoCounterSignals(): PolyHandler =
         "/htmlflow" bind Method.GET to ::getCounterSignalsPageHtmlFlow,
         "/increment" bind Method.POST to ::incrementCounterViaSignals,
         "/decrement" bind Method.POST to ::decrementCounterViaSignals,
-        "/events" bind Method.GET to ::counterSignalsEventsHttp,
         "/events" bindSse ::getCounterEventsSignals,
         "/description" bindSse Method.GET to ::getCounterSignalsDescription,
     )
@@ -53,33 +52,6 @@ fun getCounterEventsSignals(req: Request): SseResponse {
             sse.sendPatchSignals(Signal.of("{count: $value}"))
         }
     }
-}
-
-fun counterSignalsEventsHttp(req: Request): Response {
-    val queue = bus.subscribe()
-    val pipe = PipedOutputStream()
-    val writer = pipe.bufferedWriter()
-
-    Thread {
-        try {
-            while (true) {
-                val value = queue.take()
-                writer.write("event: datastar-patch-signals\n")
-                writer.write("data: signals {count: $value}\n")
-                writer.write("\n")
-                writer.flush()
-            }
-        } catch (_: Exception) {
-            bus.unsubscribe(queue)
-            pipe.close()
-        }
-    }.also { it.isDaemon = true }.start()
-
-    return Response(OK)
-        .header("Content-Type", "text/event-stream")
-        .header("Cache-Control", "no-cache")
-        .header("X-Accel-Buffering", "no")
-        .body(PipedInputStream(pipe))
 }
 
 @Path("/counter-signals/increment")
