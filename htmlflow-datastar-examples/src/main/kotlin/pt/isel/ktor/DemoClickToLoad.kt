@@ -14,6 +14,9 @@ import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfClickToLoadDescription
 import pt.isel.views.htmlflow.hfAgentRowView
 import pt.isel.views.htmlflow.hfClickToLoad
 
@@ -24,6 +27,7 @@ fun Route.demoClickToLoad() {
         get("/html", RoutingContext::getClickToLoadHtml)
         get("/htmlflow", RoutingContext::getClickToLoadHtmlFlow)
         get("/more", RoutingContext::getMore)
+        get("/description", RoutingContext::getClickToLoadDescription)
     }
 }
 
@@ -67,7 +71,17 @@ suspend fun RoutingContext.getMore() {
     }
 }
 
-private fun newAgents(
+private suspend fun RoutingContext.getClickToLoadDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfClickToLoadDescription)
+    }
+}
+
+fun newAgents(
     from: Int,
     to: Int,
 ) = sequence {

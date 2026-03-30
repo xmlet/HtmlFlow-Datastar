@@ -44,7 +44,7 @@ class Signal<T>(
 ) : DataStarExpression(makeExpression(name, case)) {
     init {
         require(
-            !name.startsWith("__"),
+            !name.startsWith("__") && !name.contains("__"),
         ) { "Signal names cannot begin with nor contain a double underscore, due to its use as a modifier delimiter." }
     }
 }

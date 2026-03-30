@@ -3,28 +3,30 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class TodoMvcTest {
-    @Test
-    fun `todo mvc app works as expected, on Html`() {
-        `todo mvc app works as expected`("/todo-mvc/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `todo mvc app works as expected, on Html`(serverType: String) {
+        `todo mvc app works as expected`("/todo-mvc/html", serverType)
     }
 
-    @Test
-    fun `todo mvc app works as expected, on HtmlFlow`() {
-        `todo mvc app works as expected`("/todo-mvc/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `todo mvc app works as expected, on HtmlFlow`(serverType: String) {
+        `todo mvc app works as expected`("/todo-mvc/htmlflow", serverType)
     }
 
     /**
-     * Test that the Todo-Mvc app works as expected, by performing the following steps:
-     * 1. Navigate to the Todo-Mvc page.
+     * Test that the to do-Mvc app works as expected, by performing the following steps:
+     * 1. Navigate to the To do-Mvc page.
      * 2. Add a new task and verify that it appears in the list.
      * 3. Toggle the task's status and verify that it updates correctly.
      * 4. Edit the task's description and verify that it updates correctly.
@@ -32,19 +34,11 @@ class TodoMvcTest {
      * 6. Add multiple tasks, toggle some of them, and verify that the "Toggle All" functionality works as expected.
      * 7. Verify that the filtering options (All, Pending, Done) work correctly by applying each filter and checking the displayed tasks
      */
-    fun `todo mvc app works as expected`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `todo mvc app works as expected`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -53,8 +47,12 @@ class TodoMvcTest {
                 )
             val context = browser.newContext()
             val page = context.newPage()
-			
+
             try {
+                page.onConsoleMessage { msg ->
+                    println("Browser console: ${msg.text()}")
+                }
+
                 // Navigate to the lazy-load page
                 val url = "http://localhost:$port$path"
                 val response = page.navigate(url)
@@ -73,7 +71,7 @@ class TodoMvcTest {
                 page.fill("#new-todo", "Write Playwright test")
                 page.press("#new-todo", "Enter")
 
-                page.waitForTimeout(200.0)
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === 5")
                 assertEquals(initialCount + 1, page.locator("#todo-list li").count())
 
                 // ─────────────────────────────────────────────
@@ -139,7 +137,7 @@ class TodoMvcTest {
 
                 // Pending → none
                 page.locator("#todo-actions button:has-text(\"Pending\")").click()
-                page.waitForTimeout(200.0)
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === 0")
                 assertEquals(0, page.locator("#todo-list li").count())
 
                 val pendingCount =
@@ -148,8 +146,10 @@ class TodoMvcTest {
                 assertEquals("0", pendingCount)
 
                 // Done → all
-                page.click("text=Completed")
-                page.waitForTimeout(200.0)
+                val completedButton = page.locator("#todo-actions button:has-text(\"Completed\")")
+                completedButton.waitFor()
+                completedButton.click()
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === $initialCount")
                 assertEquals(initialCount, page.locator("#todo-list li").count())
 
                 // All → all
@@ -160,7 +160,6 @@ class TodoMvcTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

@@ -1,40 +1,9 @@
-package pt.isel.ktor
+package pt.isel.utils
 
 import dev.datastar.kotlin.sdk.Response
-import io.ktor.server.application.Application
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.http.content.staticResources
-import io.ktor.server.netty.Netty
-import io.ktor.server.routing.routing
 import java.io.Writer
 import java.nio.file.Path
 import java.nio.file.Paths
-
-fun main() {
-    embeddedServer(Netty, port = 8080) {
-        demoHtmlFlowDatastarRouting()
-    }.start(wait = true)
-}
-
-fun Application.demoHtmlFlowDatastarRouting() =
-    routing {
-        staticResources("/", "public")
-        demoCounter()
-        demoCounterSignals()
-        demoClickToLoad()
-        demoActiveSearch()
-        demoBulkUpdate()
-        demoClickToEdit()
-        demoFileUpload()
-        demoInfiniteScroll()
-        demoInlineValidation()
-        demoDeleteRow()
-        demoEditRow()
-        demoLazyLoad()
-        demoLazyTabs()
-        demoProgressiveLoad()
-        demoTodoMvc()
-    }
 
 /**
  * Loads a resource file from the classpath and returns its content as a String.
@@ -50,7 +19,7 @@ fun loadResource(path: String): String =
         ?.readText() ?: throw IllegalArgumentException("Resource not found:$path")
 
 /**
- * Get a resource absolute from the classpath and returns its.
+ * Get a resource absolute Path from the classpath and returns its.
  *
  * @param path The path to the resource file relative to the classpath.
  * @return The url to the resource file as a String.

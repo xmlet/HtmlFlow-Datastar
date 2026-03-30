@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalSerializationApi::class)
-
 package pt.isel.ktor
 
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
@@ -15,24 +13,34 @@ import io.ktor.server.routing.patch
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfClickToEditDescription
 import pt.isel.views.htmlflow.hfClickToEdit
-import pt.isel.views.htmlflow.hfEditModeDoc
+import pt.isel.views.htmlflow.hfDisplayFragment
+import pt.isel.views.htmlflow.hfEditModeFragment
 
 private val html = loadResource("public/html/click-to-edit.html")
 
+val DEFAULT_USER =
+    Profile(
+        firstName = "John",
+        lastName = "Doe",
+        email = "joe@blow.com",
+    )
+private val globalUser = MutableStateFlow(DEFAULT_USER)
+
 fun Route.demoClickToEdit() {
-    val currentUser = MutableStateFlow(DEFAULT_USER)
     route("/click-to-edit") {
         get("/html", RoutingContext::getClickToEditHtml)
         get("/htmlflow", RoutingContext::getClickToEditHtmlFlow)
-        get("/edit") { editClickToEdit(currentUser) }
-        patch("/reset") { resetClickToEdit(currentUser) }
-        get("/cancel") { cancelClickToEdit(currentUser) }
-        put("") { saveClickToEdit(currentUser) }
+        get("/edit", RoutingContext::editClickToEdit)
+        patch("/reset", RoutingContext::resetClickToEdit)
+        get("/cancel", RoutingContext::cancelClickToEdit)
+        put("", RoutingContext::saveClickToEdit)
+        get("/description", RoutingContext::getClickToEditDescription)
     }
 }
 
@@ -42,100 +50,82 @@ private suspend fun RoutingContext.getClickToEditHtml() {
 
 private suspend fun RoutingContext.getClickToEditHtmlFlow() {
     call.respondText(
-        hfClickToEdit.render(DEFAULT_USER),
+        hfClickToEdit.render(globalUser.value),
         ContentType.Text.Html,
     )
 }
 
-private val DEFAULT_USER =
-    Profile(
-        firstName = "John",
-        lastName = "Doe",
-        email = "joe@blow.com",
-    )
-
-private suspend fun RoutingContext.editClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.editClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val datastarQueryArg = call.request.queryParameters["datastar"]
-        requireNotNull(datastarQueryArg)
-
-        // Decode the signals from the datastar query argument
-        val (firstName, lastName, email) =
-            try {
-                Json.decodeFromString<ClickToEditSignals>(datastarQueryArg)
-            } catch (_: MissingFieldException) {
-                ClickToEditSignals(DEFAULT_USER.firstName, DEFAULT_USER.lastName, DEFAULT_USER.email)
-            }
-
-        // Send the patches to enter edit mode with current values
-        generator.patchSignals(
-            """ { firstName: "$firstName", lastName: "$lastName", email: "$email" } """,
-        )
-        if (currentUser.value != Profile(firstName, lastName, email)) {
-            currentUser.emit(Profile(firstName, lastName, email))
-        }
-        generator.patchElements(hfEditModeDoc)
+        generator.patchElements(hfEditModeFragment.render(globalUser.value))
     }
 }
 
-private suspend fun RoutingContext.resetClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.resetClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val defaultHtml = hfClickToEdit.render(DEFAULT_USER)
-        currentUser.emit(DEFAULT_USER)
-        generator.patchSignals(
-            """ { firstName: "${DEFAULT_USER.firstName}", lastName: "${DEFAULT_USER.lastName}", email: "${DEFAULT_USER.email}" } """,
-        )
-        generator.patchElements(defaultHtml)
+
+        globalUser.emit(DEFAULT_USER)
+
+        generator.patchElements(hfDisplayFragment.render(DEFAULT_USER))
     }
 }
 
-private suspend fun RoutingContext.cancelClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.cancelClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
 
-        // Retrieve the last saved user details
-        val (firstName, lastName, email) = currentUser.value
-        generator.patchSignals(
-            """ { firstName: "$firstName", lastName: "$lastName", email: "$email" } """,
-        )
-
-        generator.patchElements(hfClickToEdit.render(Profile(firstName, lastName, email)))
+        generator.patchElements(hfDisplayFragment.render(globalUser.value))
     }
 }
 
-private suspend fun RoutingContext.saveClickToEdit(currentUser: MutableStateFlow<Profile>) {
+private suspend fun RoutingContext.saveClickToEdit() {
     call.respondTextWriter(
         status = HttpStatusCode.OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val datastarBodyArgs = call.request.call.receiveText()
+        val body = call.receiveText()
+        val signals = Json.decodeFromString<DatastarClickToEdit>(body)
 
-        // Decode the signals from the request body
-        val (firstName, lastName, email) = Json.decodeFromString<ClickToEditSignals>(datastarBodyArgs)
-        val newProfile = Profile(firstName, lastName, email)
+        val newProfile =
+            Profile(
+                firstName = signals.firstName ?: globalUser.value.firstName,
+                lastName = signals.lastName ?: globalUser.value.lastName,
+                email = signals.email ?: globalUser.value.email,
+            )
 
-        currentUser.emit(newProfile)
-        generator.patchElements(hfClickToEdit.render(newProfile))
+        globalUser.emit(newProfile)
+
+        generator.patchElements(hfDisplayFragment.render(newProfile))
+    }
+}
+
+private suspend fun RoutingContext.getClickToEditDescription() {
+    call.respondTextWriter(
+        status = HttpStatusCode.OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfClickToEditDescription)
     }
 }
 
 @Serializable
-data class ClickToEditSignals(
-    val firstName: String,
-    val lastName: String,
-    val email: String,
+data class DatastarClickToEdit(
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
 )
 
 data class Profile(

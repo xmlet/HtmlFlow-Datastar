@@ -13,9 +13,20 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfBulkUpdateDescription
 import pt.isel.views.htmlflow.hfBulkUpdate
+import pt.isel.views.htmlflow.userRowsFragment
 
 private val html = loadResource("public/html/bulk-update.html")
+private val users =
+    mutableListOf(
+        User("Joe Smith", "joe@smith.org", UserStatus.ACTIVE),
+        User("Angie MacDowell", "angie@macdowell.org", UserStatus.ACTIVE),
+        User("Fuqua Tarkenton", "fuqua@tarkenton.org", UserStatus.INACTIVE),
+        User("Kim Yee", "kim@yee.org", UserStatus.INACTIVE),
+    )
 
 fun Route.demoBulkUpdate() {
     route("/bulk-update") {
@@ -23,6 +34,7 @@ fun Route.demoBulkUpdate() {
         get("/htmlflow", RoutingContext::getBulkUpdateHtmlFlow)
         put("/activate", RoutingContext::activateUsers)
         put("/deactivate", RoutingContext::deactivateUsers)
+        get("/description", RoutingContext::getBulkUpdateDescription)
     }
 }
 
@@ -33,14 +45,6 @@ private suspend fun RoutingContext.getBulkUpdateHtml() {
 private suspend fun RoutingContext.getBulkUpdateHtmlFlow() {
     call.respondText(hfBulkUpdate.render(users), ContentType.Text.Html)
 }
-
-val users =
-    mutableListOf(
-        User("Joe Smith", "joe@smith.org", UserStatus.ACTIVE),
-        User("Angie MacDowell", "angie@macdowell.org", UserStatus.ACTIVE),
-        User("Fuqua Tarkenton", "fuqua@tarkenton.org", UserStatus.INACTIVE),
-        User("Kim Yee", "kim@yee.org", UserStatus.INACTIVE),
-    )
 
 private suspend fun RoutingContext.activateUsers() {
     call.respondTextWriter(
@@ -61,8 +65,7 @@ private suspend fun RoutingContext.activateUsers() {
                 users[index] = users[index].copy(status = UserStatus.ACTIVE)
             }
         }
-        val html = hfBulkUpdate.render(users).trimIndent().replace("\n", "")
-        generator.patchElements(html)
+        generator.patchElements(userRowsFragment.render(users))
     }
 }
 
@@ -85,9 +88,17 @@ private suspend fun RoutingContext.deactivateUsers() {
                 users[index] = users[index].copy(status = UserStatus.INACTIVE)
             }
         }
-        val html = hfBulkUpdate.render(users)
+        generator.patchElements(userRowsFragment.render(users))
+    }
+}
 
-        generator.patchElements(html)
+private suspend fun RoutingContext.getBulkUpdateDescription() {
+    call.respondTextWriter(
+        status = HttpStatusCode.OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfBulkUpdateDescription)
     }
 }
 

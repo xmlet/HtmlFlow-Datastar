@@ -2,7 +2,6 @@ package pt.isel.views.htmlflow
 
 import htmlflow.doc
 import htmlflow.html
-import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -16,8 +15,12 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
+import pt.isel.datastar.expressions.get
+import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOnIntersect
 import pt.isel.datastar.extensions.dataSignals
+import pt.isel.http4k.getInfiniteScrollDescription
+import pt.isel.http4k.getMoreAgents
 
 val hfInfiniteScroll =
     StringBuilder()
@@ -36,6 +39,10 @@ val hfInfiniteScroll =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit(get(::getInfiniteScrollDescription))
+                        }
+                        div {
                             dataSignals(
                                 "offset" to 10,
                                 "limit" to 5,
@@ -52,7 +59,7 @@ val hfInfiniteScroll =
                             }
                             tbody {
                                 attrId("agents")
-                                // Firt 10 rows (Agent Smith 0-9)
+                                // First 10 rows (Agent Smith 0-9)
                                 for (i in 0..9) {
                                     tr {
                                         td { text("Agent Smith $i") }
@@ -63,16 +70,13 @@ val hfInfiniteScroll =
                             }
                         }
                         div {
-                            dataOnIntersect { +get(::getMore) }
+                            dataOnIntersect(get(::getMoreAgents))
                             text("Loading...")
                         }
                     }
                 }
             }
         }.toString()
-
-@Path("/infinite-scroll/more")
-private fun getMore() {}
 
 private fun generateId(index: Int): String {
     val ids =

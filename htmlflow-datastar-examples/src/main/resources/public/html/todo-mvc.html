@@ -1,19 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script type="module" src="/js/datastar.js">
-    </script><link rel="stylesheet" href="/css/styles.css">
+    <script type="module" src="/js/datastar.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+<div id="description" data-init="@get('/todo-mvc/description')"></div>
+<div id="app" data-init="@get('/todo-mvc/updates')">
     <div id="todo-app">
-        <section id="todo-mvc" data-init="@get('/todo-mvc/updates')">
+        <section id="todo-mvc">
             <header id="todo-header">
                 <input type="checkbox" data-on:click__prevent="@post('/todo-mvc/-1/toggle')" data-init="el.checked = false">
                 <input id="new-todo" type="text" placeholder="What needs to be done?" data-signals:input="" data-bind:input="" data-on:keydown="evt.key === 'Enter' && $input.trim() && @patch('/todo-mvc/-1') && ($input = '');">
             </header>
             <ul id="todo-list">
                 <li role="button" tabindex="0" data-on:dblclick="evt.target === el && @get('/todo-mvc/0')">
-                    <input id="todo-checkbox-0" type="checkbox" data-init="el.checked = true" data-on:click__prevent="@post('/todo-mvc/0/toggle')">
+                    <input id="todo-checkbox-0" type="checkbox" data-init="el.checked = false" data-on:click__prevent="@post('/todo-mvc/0/toggle')">
                     <label for="todo-checkbox-0">Learn any backend language</label>
                     <button class="error small" data-on:click="@delete('/todo-mvc/0')"></button>
                 </li>
@@ -24,7 +26,7 @@
                 </li>
                 <li role="button" tabindex="0" data-on:dblclick="evt.target === el && @get('/todo-mvc/2')">
                     <input id="todo-checkbox-2" type="checkbox" data-init="el.checked = false" data-on:click__prevent="@post('/todo-mvc/2/toggle')">
-                    <label for="todo-checkbox-2">???</label>
+                    <label for="todo-checkbox-2">Learn HTML Flow</label>
                     <button class="error small" data-on:click="@delete('/todo-mvc/2')"></button>
                 </li>
                 <li role="button" tabindex="0" data-on:dblclick="evt.target === el && @get('/todo-mvc/3')">
@@ -34,14 +36,15 @@
                 </li>
             </ul>
             <div id="todo-actions">
-                <span><strong>3</strong> items pending</span>
+                <span><strong>4</strong> items pending</span>
                 <button class="small info" data-on:click="@put('/todo-mvc/mode/0')">All</button>
                 <button class="small" data-on:click="@put('/todo-mvc/mode/1')">Pending</button>
                 <button class="small" data-on:click="@put('/todo-mvc/mode/2')">Completed</button>
-                <button class="error small" data-on:click="@delete('/todo-mvc/-1')"></button>
-                <button class="warning small" data-on:click="@put('/todo-mvc/reset')"></button>
+                <button class="error small" data-on:click="@delete('/todo-mvc/-1')">Delete</button>
+                <button class="warning small" data-on:click="@put('/todo-mvc/reset')">Reset</button>
             </div>
         </section>
     </div>
+</div>
 </body>
 </html>

@@ -13,9 +13,7 @@ plugins {
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
@@ -25,11 +23,18 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:3.4.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.0")
 
+    // Http4k dependencies
+    implementation(platform("org.http4k:http4k-bom:6.33.0.0"))
+    implementation("org.http4k:http4k-core")
+    implementation("org.http4k:http4k-server-jetty")
+    implementation("org.http4k:http4k-web-datastar")
+
     implementation(project(":htmlflow-datastar-core"))
 
     // Datastar Kotlin dependencies
     implementation("dev.data-star.kotlin:kotlin-sdk:1.0.0-RC3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
     implementation("org.slf4j:slf4j-simple:2.0.16")
     // Jakarta web service annotations API for using annotation @Path
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
@@ -40,6 +45,7 @@ dependencies {
     // Use the JUnit 5 integration.
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
 
     // Ktor test tools for testing
     testImplementation("io.ktor:ktor-server-test-host:3.4.0")
@@ -57,7 +63,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "pt.isel.ktor.AppKt"
+    mainClass = "pt.isel.AppKt"
 }
 
 tasks.named<Test>("test") {

@@ -1,5 +1,7 @@
 # HtmlFlow-Datastar
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=xmlet_HtmlFlow-Datastar&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=xmlet_HtmlFlow-Datastar)
+
 Type-Safe Hypermedia-First DSL for Reactive Backend-Driven Web Applications
 
 ## Examples

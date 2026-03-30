@@ -3,41 +3,35 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class InfiniteScrollTest {
-    @Test
-    fun `should load more agents on scroll on HTML`() {
-        `should load more agents on scroll`("/infinite-scroll/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4K"])
+    fun `should load more agents on scroll on HTML`(serverType: String) {
+        `should load more agents on scroll`("/infinite-scroll/html", serverType)
     }
 
-    @Test
-    fun `should load more agents on scroll on HtmlFlow`() {
-        `should load more agents on scroll`("/infinite-scroll/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4K"])
+    fun `should load more agents on scroll on HtmlFlow`(serverType: String) {
+        `should load more agents on scroll`("/infinite-scroll/htmlflow", serverType)
     }
 
     /**
      * Tests that more agents are loaded when the user scrolls to the bottom of the page.
      */
-    fun `should load more agents on scroll`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `should load more agents on scroll`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -80,12 +74,11 @@ class InfiniteScrollTest {
                 }
                 val lastAgentName = page.textContent("#agents tr:last-child td:first-child").trim()
 
-                assert(lastAgentName!!.startsWith("Agent Smith")) { "Unexpected agent name: $lastAgentName" }
+                assert(lastAgentName.startsWith("Agent Smith")) { "Unexpected agent name: $lastAgentName" }
             } finally {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

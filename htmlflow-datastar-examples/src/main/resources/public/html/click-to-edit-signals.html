@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="module" src="/js/datastar.js">
+        </script><link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+        <div id="description" data-init="@get('/click-to-edit-signals/description')"></div>
+
+        <div data-signals="{firstName: 'John', lastName: 'Doe', email: 'joe@blow.com', _editing: false}"
+             data-init="@get('/click-to-edit-signals/events')"
+        >
+            <div id="Info" data-class:hidden="$_editing">
+                <p>First Name: <span data-text="$firstName"></span></p>
+                <p>Last Name: <span data-text="$lastName"></span></p>
+                <p>Email: <span data-text="$email"></span></p>
+                <div>
+                    <button id="edit" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="$_editing = true">
+                        Edit
+                    </button>
+                    <button id="reset" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@patch('/click-to-edit-signals/reset')">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <div id="edit-form" data-class:hidden="!$_editing">
+                <label>
+                    First Name:
+                    <input type="text" data-bind:first-name data-indicator:_fetching="" data-attr:disabled="$_fetching" />
+                </label>
+                <label>
+                    Last Name:
+                    <input type="text" data-bind:last-name data-indicator:_fetching="" data-attr:disabled="$_fetching" />
+                </label>
+                <label>
+                    Email:
+                    <input type="email" data-bind:email data-indicator:_fetching="" data-attr:disabled="$_fetching" />
+                </label>
+                <div role="group">
+                    <button id="save" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="$_editing = false; @put('/click-to-edit-signals')">
+                        Save
+                    </button>
+                    <button id="cancel" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="$_editing = false; @get('/click-to-edit-signals/cancel')">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

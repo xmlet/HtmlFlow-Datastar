@@ -5,6 +5,7 @@
         </script><link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
+        <div id="description" data-init="@get('/bulk-update/description')"></div>
         <div id="demo" data-signals__ifmissing="{_fetching: false, selections: Array(4).fill(false)}">
             <table>
                 <thead>
@@ -16,7 +17,7 @@
                     <th>Status</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="users">
                 <tr>
                     <td>
                         <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
