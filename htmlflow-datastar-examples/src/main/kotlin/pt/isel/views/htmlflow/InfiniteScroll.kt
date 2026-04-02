@@ -15,7 +15,6 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOnIntersect
 import pt.isel.datastar.extensions.dataSignals
@@ -40,7 +39,7 @@ val hfInfiniteScroll =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getInfiniteScrollDescription))
+                            dataInit { +get(::getInfiniteScrollDescription) }
                         }
                         div {
                             dataSignals(
@@ -70,7 +69,7 @@ val hfInfiniteScroll =
                             }
                         }
                         div {
-                            dataOnIntersect(get(::getMoreAgents))
+                            dataOnIntersect { +get(::getMoreAgents) }
                             text("Loading...")
                         }
                     }

@@ -21,9 +21,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.expressions.delete
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataInit
@@ -49,7 +47,7 @@ val hfDeleteRow: HtmlView<DeleteRowsState> =
             body {
                 div {
                     attrId("description")
-                    dataInit(get(::getDeleteRowDescription))
+                    dataInit { +get(::getDeleteRowDescription) }
                 }
                 div {
                     attrId("users-table")
@@ -79,9 +77,11 @@ fun Div<*>.hfDeleteRowTable() {
     div {
         button {
             attrClass("warning")
-            dataOn("click", patch(::restoreRows))
+            dataOn(Click) {
+                +patch(::restoreRows)
+            }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
         }
@@ -98,9 +98,12 @@ fun Tbody<*>.hfTableRow(
     td {
         button {
             attrClass("error")
-            dataOn("click", "confirm('Are you sure?') && ${delete("/delete-row/$index")}")
+            dataOn(Click) {
+                +"confirm('Are you sure?')"
+                +delete("/delete-row/$index")
+            }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             text("Delete")
         }
     }

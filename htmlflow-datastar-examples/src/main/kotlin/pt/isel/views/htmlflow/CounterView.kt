@@ -15,7 +15,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.expressions.post
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
@@ -45,30 +45,28 @@ val hfCounter: String =
                             val count = dataSignal("count", 0)
                             div {
                                 attrId("description")
-                                dataInit(
-                                    pt.isel.datastar.expressions
-                                        .get(::getCounterDescription),
-                                )
+                                dataInit { +get(::getCounterDescription) }
                             }
                             div {
-                                dataInit(
-                                    pt.isel.datastar.expressions
-                                        .get(::counterEvents),
-                                )
+                                dataInit { +get(::counterEvents) }
                                 span {
                                     attrId("counter")
-                                    dataText(count)
+                                    dataText { +count }
                                 }
                             }
                             div {
                                 button {
                                     attrId("decrement")
-                                    dataOn("click", post(::decrementCounter))
+                                    dataOn(Click) {
+                                        +post(::decrementCounter)
+                                    }
                                     text("−")
                                 }
                                 button {
                                     attrId("increment")
-                                    dataOn("click", post(::incrementCounter))
+                                    dataOn(Click) {
+                                        +post(::incrementCounter)
+                                    }
                                     text("+")
                                 }
                             }

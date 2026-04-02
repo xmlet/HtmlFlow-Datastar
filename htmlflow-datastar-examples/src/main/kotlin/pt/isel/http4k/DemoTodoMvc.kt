@@ -59,7 +59,7 @@ fun demoTodoMvc(): PolyHandler =
         "/html" bind Method.GET to ::getTodoMvcHtml,
         "/htmlflow" bind Method.GET to ::getTodoMvcHtmlFlow,
         "/updates" bindSse Method.GET to ::getUpdates,
-        "/-1/toggle" bind Method.POST to ::toggleAll,
+        "/-1/toggle" bind Method.POST to ::toggleAllCheck,
         "/-1" bind Method.PATCH to ::addTask,
         "/-1" bind Method.DELETE to ::deleteToggledTasks,
         "/cancel" bind Method.PUT to ::cancelEditMode,
@@ -138,7 +138,7 @@ fun getUpdates(req: Request): SseResponse {
 }
 
 @Path("/todo-mvc/-1/toggle")
-fun toggleAll(req: Request): Response {
+fun toggleAllCheck(req: Request): Response {
     val account = accountFlow(req)
     val current = account.currentValue!!
     val allDone = current.tasks.all { it.status == Status.DONE }

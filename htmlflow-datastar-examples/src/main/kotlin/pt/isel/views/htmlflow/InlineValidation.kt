@@ -18,8 +18,8 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.post
+import pt.isel.datastar.events.Click
+import pt.isel.datastar.events.Keydown
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
@@ -48,7 +48,7 @@ val hfInlineValidation =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getInlineValidationDescription))
+                            dataInit { +get(::getInlineValidationDescription) }
                         }
                         div {
                             attrId("demo")
@@ -61,8 +61,9 @@ val hfInlineValidation =
                                     addAttr("aria-live", "polite")
                                     addAttr("aria-describedby", "email-info")
                                     dataBind("email")
-                                    dataOn("keydown", post(::validateFields)) {
-                                        mods { debounce(500.milliseconds) }
+                                    dataOn(Keydown) {
+                                        +post(::validateFields)
+                                        modifiers { debounce(500.milliseconds) }
                                     }
                                 }
                             }
@@ -83,8 +84,9 @@ val hfInlineValidation =
                                     attrRequired(true)
                                     addAttr("aria-live", "polite")
                                     dataBind("first-name")
-                                    dataOn("keydown", post(::validateFields)) {
-                                        mods { debounce(200.milliseconds) }
+                                    dataOn(Keydown) {
+                                        +post(::validateFields)
+                                        modifiers { debounce(200.milliseconds) }
                                     }
                                 }
                             }
@@ -101,8 +103,9 @@ val hfInlineValidation =
                                     attrRequired(true)
                                     addAttr("aria-live", "polite")
                                     dataBind("last-name")
-                                    dataOn("keydown", post(::validateFields)) {
-                                        mods { debounce(500.milliseconds) }
+                                    dataOn(Keydown) {
+                                        +post(::validateFields)
+                                        modifiers { debounce(500.milliseconds) }
                                     }
                                 }
                             }
@@ -113,8 +116,10 @@ val hfInlineValidation =
                             }
                             button {
                                 attrClass("success")
-                                dataOn("click", post(::submitForm))
-                                dataAttr("disabled", error)
+                                dataOn(Click) {
+                                    +post(::submitForm)
+                                }
+                                dataAttr("disabled") { +error }
                                 text("Sign Up")
                             }
                         }

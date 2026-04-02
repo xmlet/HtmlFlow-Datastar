@@ -20,9 +20,6 @@ import pt.isel.utils.loadResource
 import pt.isel.views.fragments.hfCounterDescription
 import pt.isel.views.htmlflow.hfCounter
 import pt.isel.views.htmlflow.hfCounterEventView
-import java.io.InputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 
 private val html = loadResource("public/html/counter.html")
 

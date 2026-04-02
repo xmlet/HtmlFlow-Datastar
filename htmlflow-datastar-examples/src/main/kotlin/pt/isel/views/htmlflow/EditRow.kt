@@ -25,18 +25,14 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import pt.isel.datastar.Signal
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.or
-import pt.isel.datastar.expressions.patch
-import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.semiColon
-import pt.isel.datastar.expressions.setValue
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
+import pt.isel.http4k.cancelEditRow
 import pt.isel.http4k.getEditRowDescription
 import pt.isel.http4k.resetTable
 import pt.isel.ktor.TableState
@@ -61,7 +57,7 @@ val hfEditRow: HtmlView<TableState> =
             body {
                 div {
                     attrId("description")
-                    dataInit(get(::getEditRowDescription))
+                    dataInit { +get(::getEditRowDescription) }
                 }
                 div {
                     hfEditRowTable()
@@ -72,7 +68,7 @@ val hfEditRow: HtmlView<TableState> =
 
 fun Div<*>.hfEditRowTable() {
     attrId("demo")
-    val editing = dataSignal("_editing", false).also { editing = it }
+    val editing = dataSignal("_editing", false).also { editing = it as Signal<Boolean> }
     table {
         thead {
             tr {
@@ -91,9 +87,12 @@ fun Div<*>.hfEditRowTable() {
                         td {
                             button {
                                 attrId("edit-row-${user.idx}")
-                                dataOn("click", editing setValue true semiColon get("/edit-row/${user.idx}"))
+                                dataOn(Click) {
+                                    +editing.setValue(true)
+                                    +get("/edit-row/${user.idx}")
+                                }
                                 val fetching = dataIndicator("_fetching")
-                                dataAttr("disabled", fetching or editing)
+                                dataAttr("disabled") { +fetching.or(editing) }
                                 text("Edit")
                             }
                         }
@@ -105,9 +104,12 @@ fun Div<*>.hfEditRowTable() {
     div {
         button {
             attrId("reset")
-            dataOn("click", editing setValue false semiColon put(::resetTable))
+            dataOn(Click) {
+                +editing.setValue(false)
+                +put(::resetTable)
+            }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:user-plus") }
             text("Reset")
         }
@@ -124,9 +126,12 @@ val defaultRowView: HtmlView<TableUser> =
                 td {
                     button {
                         attrId("edit-row-${user.idx}")
-                        dataOn("click", editing setValue true semiColon get("/edit-row/${user.idx}"))
+                        dataOn(Click) {
+                            +editing.setValue(true)
+                            +get("/edit-row/${user.idx}")
+                        }
                         val fetching = dataIndicator("_fetching")
-                        dataAttr("disabled", fetching or editing)
+                        dataAttr("disabled") { +fetching.or(editing) }
                         text("Edit")
                     }
                 }
@@ -140,7 +145,7 @@ fun Tr<*>.editRow(index: Int) {
             attrType(EnumTypeInputType.TEXT)
             dataBind("name")
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
         }
     }
     td {
@@ -148,23 +153,29 @@ fun Tr<*>.editRow(index: Int) {
             attrType(EnumTypeInputType.EMAIL)
             dataBind("email")
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
         }
     }
     td {
         button {
             attrId("save-row-$index")
-            dataOn("click", editing setValue false semiColon patch("/edit-row/$index"))
+            dataOn(Click) {
+                +editing.setValue(false)
+                +patch("/edit-row/$index")
+            }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:check") }
             text("Save")
         }
         button {
             attrId("cancel-row-$index")
-            dataOn("click", editing setValue false semiColon get("/edit-row/cancel"))
+            dataOn(Click) {
+                +editing.setValue(false)
+                +get(::cancelEditRow)
+            }
             val fetching = dataIndicator("_fetching")
-            dataAttr("disabled", fetching)
+            dataAttr("disabled") { +fetching }
             i { attrClass("pixelarticons:close") }
             text("Cancel")
         }

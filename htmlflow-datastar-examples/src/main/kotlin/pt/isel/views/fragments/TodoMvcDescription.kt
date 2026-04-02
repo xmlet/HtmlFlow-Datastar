@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -22,6 +23,11 @@ val hfTodoMvcDescription =
                     ul {
 
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/todo-mvc/updates")
+                                text("/todo-mvc/updates")
+                            }
                             text(
                                 "GET /todo-mvc/updates — Streams todo application updates. " +
                                     "Triggered on page load. " +

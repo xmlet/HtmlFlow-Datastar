@@ -20,8 +20,6 @@ import pt.isel.utils.EventBus
 import pt.isel.utils.loadResource
 import pt.isel.views.fragments.hfCounterSignalsDescription
 import pt.isel.views.htmlflow.hfCounterViaSignals
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 
 private val html = loadResource("public/html/counter-signals.html")
 

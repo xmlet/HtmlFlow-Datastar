@@ -14,7 +14,6 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.img
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.expressions.get
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.http4k.getLazyLoadDescription
 import pt.isel.http4k.loadGraph
@@ -38,11 +37,11 @@ val hfLazyLoadDoc: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getLazyLoadDescription))
+                            dataInit { +get(::getLazyLoadDescription) }
                         }
                         div {
                             attrId("graph")
-                            dataInit(get(::loadGraph))
+                            dataInit { +get(::loadGraph) }
                             text("Loading...")
                         }
                     }

@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -22,8 +23,13 @@ val hfProgressiveLoadDescription =
                     ul {
 
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/progressive-load/updates")
+                                text("/progressive-load/updates")
+                            }
                             text(
-                                "GET /progressive-load/updates — Progressively loads page content. " +
+                                " — Progressively loads page content. " +
                                     "Triggered when clicking the 'Load' button. " +
                                     "Response (text/event-stream): Streams multiple server-sent events " +
                                     "with intentional delays that patch different sections of the page (header," +

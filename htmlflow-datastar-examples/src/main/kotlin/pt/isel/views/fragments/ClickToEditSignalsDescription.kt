@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfClickToEditSignalsDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/click-to-edit-signals/events")
+                                text("/click-to-edit-signals/events")
+                            }
                             text(
-                                "GET /click-to-edit-signals/events — Opens a persistent SSE stream with the current user signals. " +
+                                " — Opens a persistent SSE stream with the current user signals. " +
                                     "Triggered on page init (dataInit). " +
                                     "Response (text/event-stream): continuous signal patches with firstName, lastName and email, " +
                                     "emitting immediately on connect and again on every server-side state change.",

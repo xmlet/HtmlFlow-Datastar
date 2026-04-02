@@ -17,9 +17,7 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.section
 import pt.isel.datastar.Signal
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.semiColon
-import pt.isel.datastar.expressions.setValue
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataClass
 import pt.isel.datastar.extensions.dataIndicator
@@ -47,7 +45,7 @@ val hfProgressiveLoad =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getProgressiveLoadDescription))
+                            dataInit { +get(::getProgressiveLoadDescription) }
                         }
                         div {
                             attrClass("actions")
@@ -55,18 +53,18 @@ val hfProgressiveLoad =
                             button {
                                 attrId("load-button")
                                 val loadDisabled = dataSignal("load-disabled", false)
-                                dataOn(
-                                    "click",
-                                    loadDisabled setValue true semiColon get(::getProgressiveLoadUpdates),
-                                )
-                                dataAttr("disabled", loadDisabled)
+                                dataOn(Click) {
+                                    +loadDisabled.setValue(true)
+                                    +get(::getProgressiveLoadUpdates)
+                                }
+                                dataAttr("disabled") { +loadDisabled }
                                 progressiveLoad = dataIndicator("progressive-load")
                                 text("Load")
                             }
                             div {
                                 attrClass("indicator")
                                 checkNotNull(progressiveLoad) { "progressiveLoad signal should have been initialized by the dataIndicator" }
-                                dataClass("loading", progressiveLoad)
+                                dataClass("loading") { +progressiveLoad }
                                 img {
                                     attrAlt("Indicator")
                                     attrSrc("/images/rocket-animated.gif")

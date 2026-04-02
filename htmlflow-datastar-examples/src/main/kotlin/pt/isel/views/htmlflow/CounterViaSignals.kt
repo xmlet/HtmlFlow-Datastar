@@ -11,8 +11,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.post
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.datastar.extensions.dataSignal
@@ -40,26 +39,30 @@ val hfCounterViaSignals: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getCounterSignalsDescription))
+                            dataInit { +get(::getCounterSignalsDescription) }
                         }
                         div {
                             val count = dataSignal("count", 0)
                             div {
-                                dataInit(get(::getCounterEventsSignals))
+                                dataInit { +get(::getCounterEventsSignals) }
                                 span {
                                     attrId("counter")
-                                    dataText(count)
+                                    dataText { +count }
                                 }
                             }
                             div {
                                 button {
                                     attrId("decrement")
-                                    dataOn("click", post(::decrementCounterViaSignals))
+                                    dataOn(Click) {
+                                        +post(::decrementCounterViaSignals)
+                                    }
                                     text("−")
                                 }
                                 button {
                                     attrId("increment")
-                                    dataOn("click", post(::incrementCounterViaSignals))
+                                    dataOn(Click) {
+                                        +post(::incrementCounterViaSignals)
+                                    }
                                     text("+")
                                 }
                             }

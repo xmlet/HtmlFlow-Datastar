@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfActiveSearchDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/active-search/search")
+                                text("/active-search/search")
+                            }
                             text(
-                                "GET /active-search/search — Searches and filters the contacts table. " +
+                                " — Searches and filters the contacts table. " +
                                     "Triggered by the search input field (debounced 200ms). " +
                                     "Query parameter: datastar (contains signal: search string). " +
                                     "Response (text/event-stream): HTML patch replacing the contacts tbody " +

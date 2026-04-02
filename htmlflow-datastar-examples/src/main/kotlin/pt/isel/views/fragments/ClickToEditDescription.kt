@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfClickToEditDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/click-to-edit/edit")
+                                text("/click-to-edit/edit")
+                            }
                             text(
-                                "GET /click-to-edit/edit — Enters edit mode. " +
+                                " — Enters edit mode. " +
                                     "Triggered by the 'Edit' button. " +
                                     "Response (text/event-stream): HTML patch replacing the demo div " +
                                     "with an edit form pre-filled with the current user data and signals for firstName, lastName and email.",
@@ -37,8 +43,13 @@ val hfClickToEditDescription =
                             )
                         }
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/click-to-edit/cancel")
+                                text("/click-to-edit/cancel")
+                            }
                             text(
-                                "GET /click-to-edit/cancel — Cancels editing without saving. " +
+                                " — Cancels editing without saving. " +
                                     "Triggered by the 'Cancel' button. " +
                                     "Response (text/event-stream): HTML patch replacing the demo div with the display view showing the unchanged profile.",
                             )

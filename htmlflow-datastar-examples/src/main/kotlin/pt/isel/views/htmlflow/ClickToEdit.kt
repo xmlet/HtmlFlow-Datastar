@@ -16,9 +16,7 @@ import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.patch
-import pt.isel.datastar.expressions.put
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataIndicator
@@ -45,15 +43,19 @@ val hfDisplayFragment: HtmlView<Profile> =
                 button {
                     attrId("edit")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", fetching)
-                    dataOn("click", get(::editProfile))
+                    dataAttr("disabled") { +fetching }
+                    dataOn(Click) {
+                        +get(::editProfile)
+                    }
                     text("Edit")
                 }
                 button {
                     attrId("reset")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", fetching)
-                    dataOn("click", patch(::clickToEditReset))
+                    dataAttr("disabled") { +fetching }
+                    dataOn(Click) {
+                        +patch(::clickToEditReset)
+                    }
                     text("Reset")
                 }
             }
@@ -77,7 +79,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     attrType(EnumTypeInputType.TEXT)
                     dataBind("first-name")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
+                    dataAttr("disabled") { +fetching }
                 }
             }
             label {
@@ -86,7 +88,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     attrType(EnumTypeInputType.TEXT)
                     dataBind("last-name")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
+                    dataAttr("disabled") { +fetching }
                 }
             }
             label {
@@ -95,7 +97,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     attrType(EnumTypeInputType.EMAIL)
                     dataBind("email")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", "$fetching")
+                    dataAttr("disabled") { +fetching }
                 }
             }
             div {
@@ -104,15 +106,19 @@ val hfEditModeFragment: HtmlView<Profile> =
                     attrId("save")
                     attrClass("success")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", fetching)
-                    dataOn("click", put(::clickToEditSave))
+                    dataAttr("disabled") { +fetching }
+                    dataOn(Click) {
+                        +put(::clickToEditSave)
+                    }
                     text("Save")
                 }
                 button {
                     attrId("cancel")
                     val fetching = dataIndicator("_fetching")
-                    dataAttr("disabled", fetching)
-                    dataOn("click", get(::clickToEditCancel))
+                    dataAttr("disabled") { +fetching }
+                    dataOn(Click) {
+                        +get(::clickToEditCancel)
+                    }
                     text("Cancel")
                 }
             }
@@ -135,7 +141,7 @@ val hfClickToEdit: HtmlView<Profile> =
             body {
                 div {
                     attrId("description")
-                    dataInit(get(::getClickToEditDescription))
+                    dataInit { +get(::getClickToEditDescription) }
                 }
                 dyn { profile: Profile ->
                     raw(hfDisplayFragment.render(profile))

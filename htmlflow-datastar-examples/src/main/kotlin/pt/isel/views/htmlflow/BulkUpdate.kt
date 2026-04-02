@@ -24,9 +24,8 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.setAll
+import pt.isel.datastar.events.Change
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataEffect
@@ -37,7 +36,6 @@ import pt.isel.datastar.extensions.dataSignals
 import pt.isel.http4k.activateUsers
 import pt.isel.http4k.deactivateUsers
 import pt.isel.http4k.getBulkUpdateDescription
-import pt.isel.ktor.Contact
 import pt.isel.ktor.User
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -53,7 +51,7 @@ fun Tbody<*>.hfUserRows() {
                     input {
                         attrType(EnumTypeInputType.CHECKBOX)
                         dataBind("selections")
-                        dataAttr("disabled", FETCHING_SIGNAL)
+                        dataAttr("disabled") { +FETCHING_SIGNAL }
                     }
                 }
                 td { text(user.name) }
@@ -88,7 +86,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
             body {
                 div {
                     attrId("description")
-                    dataInit(get(::getBulkUpdateDescription))
+                    dataInit { +get(::getBulkUpdateDescription) }
                 }
                 div {
                     attrId("demo")
@@ -96,16 +94,18 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         dataSignals(
                             "_fetching" to false,
                             "selections" to { "Array(4).fill(false)" },
-                        ) { mods { ifMissing() } }
+                        ) { modifiers { ifMissing() } }
                     table {
                         thead {
                             tr {
                                 th {
                                     input {
                                         attrType(EnumTypeInputType.CHECKBOX)
-                                        dataOn("change", setAll("el.checked", "{include: /^selections/}"))
-                                        dataEffect($$"el.checked = $selections.every(Boolean)")
-                                        dataAttr("disabled", fetching)
+                                        dataOn(Change) {
+                                            +setAll("el.checked", "{include: /^selections/}")
+                                        }
+                                        dataEffect { +$$"el.checked = $selections.every(Boolean)" }
+                                        dataAttr("disabled") { +fetching }
                                     }
                                 }
                                 th { text("Name") }
@@ -122,18 +122,22 @@ val hfBulkUpdate: HtmlView<List<User>> =
                         button {
                             attrClass("success")
                             attrType(EnumTypeButtonType.BUTTON)
-                            dataOn("click", put(::activateUsers))
+                            dataOn(Click) {
+                                +put(::activateUsers)
+                            }
                             dataIndicator(fetching.name)
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             i { attrClass("pixelarticons:user-plus") }
                             text("Activate")
                         }
                         button {
                             attrClass("error")
                             attrType(EnumTypeButtonType.BUTTON)
-                            dataOn("click", put(::deactivateUsers))
+                            dataOn(Click) {
+                                +put(::deactivateUsers)
+                            }
                             dataIndicator(fetching.name)
-                            dataAttr("disabled", fetching)
+                            dataAttr("disabled") { +fetching }
                             i { attrClass("pixelarticons:user-x") }
                             text("Deactivate")
                         }

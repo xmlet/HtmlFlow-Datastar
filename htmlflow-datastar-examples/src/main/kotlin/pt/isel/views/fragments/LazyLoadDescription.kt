@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfLazyLoadDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/lazy-load/graph")
+                                text("/lazy-load/graph")
+                            }
                             text(
-                                "GET /lazy-load/graph — Loads a lazy-loaded graph image. " +
+                                " — Loads a lazy-loaded graph image. " +
                                     "Triggered on page load. " +
                                     "Response (text/event-stream): Intentionally delayed to simulate a slow resource, then replaces the 'Loading...' placeholder with an image element rendered on the server.",
                             )

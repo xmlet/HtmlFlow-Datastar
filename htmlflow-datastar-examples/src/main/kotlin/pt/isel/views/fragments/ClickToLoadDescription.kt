@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfClickToLoadDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/click-to-load/more")
+                                text("/click-to-load/more")
+                            }
                             text(
-                                "GET /click-to-load/more — Loads the next page of agents and appends them to the table. " +
+                                " — Loads the next page of agents and appends them to the table. " +
                                     "Triggered by the 'Load More' button (disabled while fetching). " +
                                     "Query parameter: datastar (contains signals: offset and limit). " +
                                     "Response (text/event-stream): signal patch updating the offset to offset + limit, " +

@@ -24,8 +24,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.expressions.get
-import pt.isel.datastar.expressions.post
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
@@ -54,7 +53,7 @@ val hfFileUpload: String =
                         val files = dataSignal("files")
                         div {
                             attrId("description")
-                            dataInit(get(::getFileUploadDescription))
+                            dataInit { +get(::getFileUploadDescription) }
                         }
                         label {
                             p { text("Pick anything less than 1MB") }
@@ -66,8 +65,11 @@ val hfFileUpload: String =
                         }
                         button {
                             attrClass("warning")
-                            dataOn("click", "$files.length && ${post(::uploadFile)}")
-                            dataAttr("aria-disabled", $$"`${!$$files.length}`")
+                            dataOn(Click) {
+                                +"$files.length"
+                                +post(::uploadFile)
+                            }
+                            dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                             text("Submit")
                         }
                         div {

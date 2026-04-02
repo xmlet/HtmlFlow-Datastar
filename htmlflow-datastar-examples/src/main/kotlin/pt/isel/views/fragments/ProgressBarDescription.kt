@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.a
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -21,8 +22,13 @@ val hfProgressBarDescription =
 
                     ul {
                         li {
+                            text("GET ")
+                            a {
+                                attrHref("/progress-bar/updates")
+                                text("/progress-bar/updates")
+                            }
                             text(
-                                "GET /progress-bar/updates — Starts progress bar updates. " +
+                                " — Starts progress bar updates. " +
                                     "Triggered on page load via or clicking button to restart the progress bar. " +
                                     "Response (text/event-stream): Streams server-sent events that patch the progress bar with updated values until completion (100%).",
                             )

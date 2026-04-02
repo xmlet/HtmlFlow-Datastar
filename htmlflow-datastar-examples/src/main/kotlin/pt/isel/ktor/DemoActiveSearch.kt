@@ -42,8 +42,7 @@ private suspend fun RoutingContext.searchContacts() {
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        val datastarQueryArg = call.request.queryParameters["datastar"]
-        requireNotNull(datastarQueryArg)
+        val datastarQueryArg = call.request.queryParameters["datastar"] ?: """{"search":""}"""
 
         val (search) = Json.decodeFromString<ActiveSearchSignals>(datastarQueryArg)
 

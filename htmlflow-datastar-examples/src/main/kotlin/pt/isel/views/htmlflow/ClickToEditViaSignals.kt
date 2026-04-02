@@ -15,12 +15,8 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.expressions.get
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.expressions.not
-import pt.isel.datastar.expressions.patch
-import pt.isel.datastar.expressions.put
-import pt.isel.datastar.expressions.semiColon
-import pt.isel.datastar.expressions.setValue
 import pt.isel.datastar.extensions.dataAttr
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataClass
@@ -53,7 +49,7 @@ val hfClickToEditSignals =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getClickToEditSignalsDescription))
+                            dataInit { +get(::getClickToEditSignalsDescription) }
                         }
                         div {
                             val (firstName, lastName, email, editing) =
@@ -63,49 +59,53 @@ val hfClickToEditSignals =
                                     "email" to "joe@blow.com",
                                     "_editing" to false,
                                 )
-                            dataInit(get(::getClickToEditEvents))
+                            dataInit { +get(::getClickToEditEvents) }
                             div {
                                 attrId("Info")
-                                dataClass("hidden", editing)
+                                dataClass("hidden") { +editing }
                                 p {
                                     text("First Name: ")
-                                    span { dataText(firstName) }
+                                    span { dataText { +firstName } }
                                 }
                                 p {
                                     text("Last Name: ")
-                                    span { dataText(lastName) }
+                                    span { dataText { +lastName } }
                                 }
                                 p {
                                     text("Email: ")
-                                    span { dataText(email) }
+                                    span { dataText { +email } }
                                 }
                                 div {
                                     button {
                                         attrId("edit")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", fetching)
-                                        dataOn("click", editing setValue true)
+                                        dataAttr("disabled") { +fetching }
+                                        dataOn(Click) {
+                                            +editing.setValue(true)
+                                        }
                                         text("Edit")
                                     }
                                     button {
                                         attrId("reset")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        dataOn("click", patch(::clickToEditSignalsReset))
+                                        dataAttr("disabled") { +fetching }
+                                        dataOn(Click) {
+                                            +patch(::clickToEditSignalsReset)
+                                        }
                                         text("Reset")
                                     }
                                 }
                             }
                             div {
                                 attrId("edit-form")
-                                dataClass("hidden", !editing)
+                                dataClass("hidden") { +!editing }
                                 label {
                                     text("First Name")
                                     input {
                                         attrType(EnumTypeInputType.TEXT)
                                         dataBind("first-name")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
+                                        dataAttr("disabled") { +fetching }
                                     }
                                 }
                                 label {
@@ -114,7 +114,7 @@ val hfClickToEditSignals =
                                         attrType(EnumTypeInputType.TEXT)
                                         dataBind("last-name")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
+                                        dataAttr("disabled") { +fetching }
                                     }
                                 }
                                 label {
@@ -123,7 +123,7 @@ val hfClickToEditSignals =
                                         attrType(EnumTypeInputType.EMAIL)
                                         dataBind(email)
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
+                                        dataAttr("disabled") { +fetching }
                                     }
                                 }
                                 div {
@@ -131,15 +131,21 @@ val hfClickToEditSignals =
                                     button {
                                         attrId("save")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        dataOn("click", editing setValue false semiColon put(::clickToEditSignalsSave))
+                                        dataAttr("disabled") { +fetching }
+                                        dataOn(Click) {
+                                            +editing.setValue(false)
+                                            +put(::clickToEditSignalsSave)
+                                        }
                                         text("Save")
                                     }
                                     button {
                                         attrId("cancel")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        dataOn("click", editing setValue false semiColon get(::clickToEditSignalsCancel))
+                                        dataAttr("disabled") { +fetching }
+                                        dataOn(Click) {
+                                            +editing.setValue(false)
+                                            +get(::clickToEditSignalsCancel)
+                                        }
                                         text("Cancel")
                                     }
                                 }

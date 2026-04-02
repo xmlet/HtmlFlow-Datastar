@@ -22,7 +22,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.expressions.get
+import pt.isel.datastar.events.Input
 import pt.isel.datastar.extensions.dataBind
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
@@ -47,7 +47,7 @@ val hfActiveSearch: HtmlView<List<Contact>> =
             body {
                 div {
                     attrId("description")
-                    dataInit(get(::getActiveSearchDescription))
+                    dataInit { +get(::getActiveSearchDescription) }
                 }
                 div {
                     hfActiveSearchTable()
@@ -62,8 +62,9 @@ fun Div<*>.hfActiveSearchTable() {
         attrType(EnumTypeInputType.TEXT)
         attrPlaceholder("Search...")
         dataBind("search")
-        dataOn("input", get(::getSearchContacts)) {
-            mods { debounce(200.milliseconds) }
+        dataOn(Input) {
+            +get(::getSearchContacts)
+            modifiers { debounce(200.milliseconds) }
         }
     }
     table {
@@ -98,13 +99,3 @@ val hfActiveSearchContactsRowsFragment: HtmlView<List<Contact>> =
             hfContactRows()
         }
     }
-
-fun contactRowsFragment(contacts: List<Contact>): String =
-    StringBuilder()
-        .apply {
-            append("""<tbody id="contacts">""")
-            contacts.forEach { cnt ->
-                append("<tr><td>${cnt.firstName}</td><td>${cnt.lastName}</td></tr>")
-            }
-            append("</tbody>")
-        }.toString()

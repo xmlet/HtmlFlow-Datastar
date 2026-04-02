@@ -17,7 +17,7 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
-import pt.isel.datastar.expressions.get
+import pt.isel.datastar.events.Click
 import pt.isel.datastar.extensions.dataInit
 import pt.isel.datastar.extensions.dataOn
 import pt.isel.http4k.getProgressBarDescription
@@ -43,10 +43,10 @@ val hfProgressBar: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit(get(::getProgressBarDescription))
+                            dataInit { +get(::getProgressBarDescription) }
                         }
                         div {
-                            dataInit(get(::progressBarUpdates, "{openWhenHidden: true}"))
+                            dataInit { +get(::progressBarUpdates, "{openWhenHidden: true}") }
                         }
                         div {
                             attrId("progress-bar")
@@ -66,7 +66,9 @@ val renderProgressBarFragment: HtmlView<ProgressBarState> =
 
                 if (state.completed) {
                     div {
-                        dataOn("click", get(::progressBarUpdates, "{openWhenHidden: true}"))
+                        dataOn(Click) {
+                            +get(::progressBarUpdates, "{openWhenHidden: true}")
+                        }
                         button {
                             text("Completed! Try again?")
                         }

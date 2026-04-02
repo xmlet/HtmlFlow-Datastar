@@ -37,8 +37,7 @@ fun getActiveSearchHtmlFlow(req: Request): Response =
 
 @Path("/active-search/search")
 fun getSearchContacts(req: Request): SseResponse {
-    val datastarQueryArg = req.query("datastar")
-    requireNotNull(datastarQueryArg)
+    val datastarQueryArg = req.query("datastar") ?: """{"search":""}"""
 
     val (search) = Json.decodeFromString<ActiveSearchSignals>(datastarQueryArg)
 

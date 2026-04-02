@@ -76,6 +76,7 @@ fun resetTable(req: Request): SseResponse =
         }
     }
 
+@Path("/edit-row/cancel")
 fun cancelEditRow(req: Request): SseResponse =
     SseResponse { sse ->
         val queryStr = req.query("datastar")
