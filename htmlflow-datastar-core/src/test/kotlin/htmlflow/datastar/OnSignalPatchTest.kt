@@ -12,13 +12,13 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.pre
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataJsonSignals
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataOnSignalPatch
-import pt.isel.datastar.extensions.dataOnSignalPatchFilter
-import pt.isel.datastar.extensions.dataSignals
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataJsonSignals
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataOnSignalPatch
+import org.xmlet.htmlflow.datastar.attributes.dataOnSignalPatchFilter
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

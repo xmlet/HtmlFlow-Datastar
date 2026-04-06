@@ -6,10 +6,10 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

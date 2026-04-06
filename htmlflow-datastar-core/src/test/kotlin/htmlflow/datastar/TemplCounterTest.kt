@@ -9,9 +9,9 @@ import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

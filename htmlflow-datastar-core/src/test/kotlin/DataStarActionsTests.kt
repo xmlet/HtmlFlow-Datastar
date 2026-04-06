@@ -2,8 +2,8 @@ import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
-import pt.isel.datastar.builders.ExpressionBuilder
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

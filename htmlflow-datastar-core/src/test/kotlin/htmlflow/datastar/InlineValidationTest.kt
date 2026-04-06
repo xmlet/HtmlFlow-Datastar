@@ -14,10 +14,10 @@ import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.events.Keydown
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.events.Keydown
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds

@@ -7,10 +7,10 @@ import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.events.CustomEvent
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.CustomEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

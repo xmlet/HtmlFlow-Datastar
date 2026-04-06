@@ -15,9 +15,9 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOnIntersect
-import pt.isel.datastar.extensions.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOnIntersect
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import pt.isel.http4k.getInfiniteScrollDescription
 import pt.isel.http4k.getMoreAgents
 

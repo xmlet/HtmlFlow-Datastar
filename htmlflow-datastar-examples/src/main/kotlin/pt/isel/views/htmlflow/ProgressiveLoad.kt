@@ -16,14 +16,14 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.section
-import pt.isel.datastar.Signal
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataClass
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataClass
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.events.Click
 import pt.isel.http4k.getProgressiveLoadDescription
 import pt.isel.http4k.getProgressiveLoadUpdates
 

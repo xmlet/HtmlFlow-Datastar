@@ -16,14 +16,14 @@ import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
 import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.events.Blur
-import pt.isel.datastar.events.Focus
-import pt.isel.datastar.expressions.not
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.events.Blur
+import org.xmlet.htmlflow.datastar.events.Focus
+import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -11,11 +11,11 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
 import pt.isel.http4k.decrementCounterViaSignals
 import pt.isel.http4k.getCounterEventsSignals
 import pt.isel.http4k.getCounterSignalsDescription

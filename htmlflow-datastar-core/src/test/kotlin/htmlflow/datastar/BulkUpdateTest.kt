@@ -2,18 +2,21 @@
 
 package htmlflow.datastar
 
+import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
+import htmlflow.tbody
+import htmlflow.tr
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.events.Change
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataEffect
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataEffect
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.events.Change
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

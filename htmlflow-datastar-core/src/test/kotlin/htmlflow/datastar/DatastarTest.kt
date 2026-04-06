@@ -33,13 +33,13 @@ import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.not
-import pt.isel.datastar.extensions.dataComputed
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataShow
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataComputed
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataShow
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

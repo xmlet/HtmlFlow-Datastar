@@ -16,9 +16,9 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

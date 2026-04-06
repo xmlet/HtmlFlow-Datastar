@@ -6,7 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataInit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

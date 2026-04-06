@@ -1,5 +1,5 @@
-import pt.isel.datastar.Signal
-import pt.isel.datastar.modifiers.CaseStyle
+import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -12,12 +12,12 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.svg
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.expressions.not
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

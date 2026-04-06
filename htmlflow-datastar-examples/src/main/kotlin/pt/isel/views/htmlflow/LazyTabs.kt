@@ -14,9 +14,9 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import pt.isel.http4k.getLazyTabsDescription
 
 val TAB_CONTENTS =

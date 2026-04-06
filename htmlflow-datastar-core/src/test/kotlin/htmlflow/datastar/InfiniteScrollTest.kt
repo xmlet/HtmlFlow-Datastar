@@ -14,7 +14,7 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.extensions.dataOnIntersect
+import org.xmlet.htmlflow.datastar.attributes.dataOnIntersect
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

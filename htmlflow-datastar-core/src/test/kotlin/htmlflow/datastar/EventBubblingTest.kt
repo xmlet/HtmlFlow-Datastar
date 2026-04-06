@@ -11,10 +11,10 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
 import org.xmlet.htmlapifaster.style
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

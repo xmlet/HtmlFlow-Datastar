@@ -24,24 +24,22 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.events.Change
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataEffect
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataEffect
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.events.Change
+import org.xmlet.htmlflow.datastar.events.Click
 import pt.isel.http4k.activateUsers
 import pt.isel.http4k.deactivateUsers
 import pt.isel.http4k.getBulkUpdateDescription
 import pt.isel.ktor.User
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.forEach
 
-private const val FETCHING_SIGNAL = "\$_fetching"
+private const val FETCHING_SIGNAL = $$"$_fetching"
 
 fun Tbody<*>.hfUserRows() {
     dyn { users: List<User> ->

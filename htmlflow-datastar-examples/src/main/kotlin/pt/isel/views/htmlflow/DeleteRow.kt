@@ -21,11 +21,11 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.events.Click
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import pt.isel.http4k.getDeleteRowDescription
 import pt.isel.http4k.restoreRows
 import pt.isel.ktor.DeleteRowsState

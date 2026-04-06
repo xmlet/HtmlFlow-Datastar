@@ -22,10 +22,10 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.events.Input
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Input
 import pt.isel.http4k.getActiveSearchDescription
 import pt.isel.http4k.getSearchContacts
 import pt.isel.ktor.Contact
