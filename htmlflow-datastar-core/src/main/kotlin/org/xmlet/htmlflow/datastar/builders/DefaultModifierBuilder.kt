@@ -10,7 +10,7 @@ import org.xmlet.htmlflow.datastar.modifiers.base.ModifierAccumulator
  * Example usage:**
  * ```kotlin
  *
- *   modifiers {               // Modifier accumulation
+ *   modifiers { // Modifier accumulation
  *       // Configure modifiers
  *       case(CaseStyle.PASCAL)
  *  }

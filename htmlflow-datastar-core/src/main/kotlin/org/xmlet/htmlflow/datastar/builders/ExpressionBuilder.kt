@@ -20,9 +20,9 @@ import kotlin.reflect.KFunction
  *
  * **Example usage:**
  * ```kotlin
- * +signal1 and action1
- * +expression1 or expression2
- * +signal.setValue(newValue)
+ * +(signal1 and action1)
+ * +(expression1 or expression2)
+ * +(signal.setValue(newValue))
  * ```
  */
 open class ExpressionBuilder {

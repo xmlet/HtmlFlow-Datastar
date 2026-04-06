@@ -18,10 +18,9 @@ import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnModifiers
  * **Example usage:**
  * ```kotlin
  * dataOn(click) {
- *     +signal1.setValue(evt.detail)  // Access event data
- *     and action1                      // Chain actions
+ *     +(signal1.setValue(evt.detail) and action1)  // Access event data and chain actions
  *     modifiers {
- *         debounce = "300ms"          // Configure event modifiers
+ *         debounce(300.milisenconds) // Configure event modifiers
  *     }
  * }
  * ```

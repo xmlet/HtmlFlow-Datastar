@@ -16,7 +16,7 @@ import org.xmlet.htmlflow.datastar.modifiers.base.ModifierAccumulator
  *
  * **Example usage:**
  * ```kotlin
- * +signal1 and action1      // Expression building
+ * +(signal1 and action1)      // Expression building
  * modifiers {               // Modifier accumulation
  *     // Configure modifiers
  *     case(CaseStyle.PASCAL)
