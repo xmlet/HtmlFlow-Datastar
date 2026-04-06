@@ -9,10 +9,21 @@ import pt.isel.datastar.expressions.DataStarExpression
 import kotlin.reflect.KFunction
 
 /**
- * A [ExpressionBuilder] is the class where the lambdas received on data attributes will get applied
- * creating DataStarExpressions. It enables the infix functions for DataStarExpressions and action creating functions.
+ * A DSL builder for constructing DataStar expressions within lambda blocks passed to data attributes.
  *
- * @property builderExpression saves the created expressions.
+ * [ExpressionBuilder] provides a fluent API for building complex DataStar expressions by combining:
+ * - **Expressions**: DataStar expressions (signals, conditions, etc.) added with the unary plus operator (`+`)
+ * - **Actions**: HTTP actions (GET, POST, PUT, DELETE, PATCH) and data manipulation actions (PEEK, SET_ALL, TOGGLE_ALL)
+ * - **Operators**: Infix operators for chaining expressions (`and`, `or`, `equals`) and assignment (`setValue`)
+ *
+ * Multiple expressions are accumulated and separated by semicolons in the final string representation.
+ *
+ * **Example usage:**
+ * ```kotlin
+ * +signal1 and action1
+ * +expression1 or expression2
+ * +signal.setValue(newValue)
+ * ```
  */
 open class ExpressionBuilder {
     private val builderExpression = StringBuilder()
@@ -88,7 +99,7 @@ open class ExpressionBuilder {
     infix fun DataStarExpression.and(action: DataStarAction): DataStarExpression = DataStarExpression("$this && $action")
 
     /**
-     * Equal to the JavaScript ! operator, used to negate an expression.
+     * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
     infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
 
@@ -103,7 +114,7 @@ open class ExpressionBuilder {
     fun <T> Signal<T>.setValue(value: T): DataStarExpression = DataStarExpression("$this = $value")
 
     /**
-     * Equal to the assignment operator in JavaScript, used to assign the passed expression to the precious.
+     * Equal to the assignment operator in JavaScript, used to assign the passed expression to another expression.
      */
     fun DataStarExpression.setValue(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this = $expression")
 }

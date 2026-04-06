@@ -3,17 +3,36 @@ package pt.isel.datastar.builders
 import pt.isel.datastar.modifiers.base.ModifierAccumulator
 
 /**
- * The [ExpressionModifierBuilder] has the functionalities of both the [ExpressionBuilder]
- * and [pt.isel.datastar.builders.ModifierBuilder].
+ * A composite builder that combines the functionalities of [ExpressionBuilder] and [ModifierBuilder].
  *
- * @property builderFactory same as in [pt.isel.datastar.builders.ModifierBuilder]
+ * [ExpressionModifierBuilder] extends both builders to provide a unified DSL for data attributes that require
+ * both expressions and modifiers. It delegates modifier operations to an internal [DefaultModifierBuilder] instance
+ * while inheriting all expression-building capabilities from [ExpressionBuilder].
+ *
+ * This class is useful when you need to:
+ * - Build DataStar expressions (signals, actions, operators)
+ * - Accumulate modifiers for fine-grained control over data-star behavior
+ * - Use both in a single fluent API
+ *
+ * **Example usage:**
+ * ```kotlin
+ * +signal1 and action1      // Expression building
+ * modifiers {               // Modifier accumulation
+ *     // Configure modifiers
+ *     case(CaseStyle.PASCAL)
+ * }
+ * ```
+ *
+ * @param M the type of [ModifierAccumulator] used to build and accumulate modifiers
+ * @param builderFactory a factory function that creates a new instance of the [ModifierAccumulator] used to build modifiers
  */
 open class ExpressionModifierBuilder<M : ModifierAccumulator>(
     builderFactory: () -> M,
-) : ExpressionBuilder() {
-    private val modifierBuilder = ModifierBuilder(builderFactory)
+) : ExpressionBuilder(),
+    ModifierBuilder<M> {
+    private val modifierBuilder = DefaultModifierBuilder(builderFactory)
 
-    fun modifiers(block: M.() -> Unit) = modifierBuilder.modifiers(block)
+    override fun modifiers(block: M.() -> Unit) = modifierBuilder.modifiers(block)
 
-    fun getModifiers(): String = modifierBuilder.getModifiers()
+    override fun getModifiers(): String = modifierBuilder.getModifiers()
 }
