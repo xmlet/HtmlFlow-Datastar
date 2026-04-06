@@ -5,6 +5,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
 import org.http4k.server.Jetty
+import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import org.slf4j.LoggerFactory
 import pt.isel.http4k.demosHttp4kRouting
@@ -26,7 +27,14 @@ object SharedTestServers {
     }
 
     private val serverHttp4k by lazy {
-        demosHttp4kRouting.asServer(Jetty(0)).start().also { logger.info("Started Http4k") }
+        demosHttp4kRouting
+            .asServer(
+                Jetty(
+                    0,
+                    ServerConfig.StopMode.Immediate,
+                ),
+            ).start()
+            .also { logger.info("Started Http4k") }
     }
 
     val http4kPort: Int by lazy { serverHttp4k.port() }
@@ -42,8 +50,10 @@ object SharedTestServers {
     init {
         Runtime.getRuntime().addShutdownHook(
             Thread {
-                serverKtor.stop(1000, 2000)
-                serverHttp4k.stop()
+                runBlocking {
+                    serverHttp4k.stop()
+                    serverKtor.stop(1000, 2000)
+                }
             },
         )
     }
