@@ -28,14 +28,22 @@ import pt.isel.datastar.expressions.DataStarExpression
 import pt.isel.datastar.modifiers.CaseStyle
 
 /**
- * Represents the metadata of a JavaScript Signal.
+ * Represents a Reactive Signal as defined by TC39 proposals.
  *
- * A [Signal] is a static description of a signal used by the data-star processing
- * environment. In HtmlFlow, a signal does not hold state or behavior; it only
- * identifies a signal by name so it can be referenced and managed
- * externally by the data star processor.
+ * A [Signal] is a static representation of a Reactive Signal used by the data-star
+ * processing environment. **Note: This class does not behave as a reactive signal.**
+ * It is only a representation that provides metadata about the signal.
+ *
+ * In HtmlFlow, a signal holds:
+ * - A static name that identifies the signal and is used for referencing and management
+ *   by the data star processor
+ * - An optional value that is set at initialization
+ *
+ * The value is **not reactive** and will not be updated after initialization.
  *
  * @property name the name that identifies the signal
+ * @property value the optional value associated with the signal (immutable after initialization)
+ * @param case the case style that defines how the signal name is formatted in the string representation
  */
 class Signal<T>(
     val name: String,
@@ -44,7 +52,7 @@ class Signal<T>(
 ) : DataStarExpression(makeExpression(name, case)) {
     init {
         require(
-            !name.startsWith("__") && !name.contains("__"),
+            !name.contains("__"),
         ) { "Signal names cannot begin with nor contain a double underscore, due to its use as a modifier delimiter." }
     }
 }
