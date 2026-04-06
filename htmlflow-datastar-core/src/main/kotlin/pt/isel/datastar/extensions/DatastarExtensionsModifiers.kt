@@ -2,17 +2,18 @@ package pt.isel.datastar.extensions
 
 import org.xmlet.htmlapifaster.Element
 import pt.isel.datastar.Signal
+import pt.isel.datastar.builders.DefaultModifierBuilder
 import pt.isel.datastar.builders.EventExpressionBuilder
 import pt.isel.datastar.builders.ExpressionModifierBuilder
-import pt.isel.datastar.builders.ModifierBuilder
 import pt.isel.datastar.events.Event
+import pt.isel.datastar.modifiers.CaseStyle
+import pt.isel.datastar.modifiers.CaseStyle.Companion.extractCaseStyle
 import pt.isel.datastar.modifiers.attributes.DataClassModifiers
 import pt.isel.datastar.modifiers.attributes.DataComputedModifiers
 import pt.isel.datastar.modifiers.attributes.DataInitModifiers
 import pt.isel.datastar.modifiers.attributes.DataJsonSignalsModifiers
 import pt.isel.datastar.modifiers.attributes.DataSignalModifiers
 import pt.isel.datastar.modifiers.attributes.DataSignalsModifiers
-import pt.isel.datastar.modifiers.extractCaseStyle
 
 /**
  *
@@ -27,10 +28,10 @@ import pt.isel.datastar.modifiers.extractCaseStyle
  */
 fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
     vararg signals: Pair<String, Any?>,
-    modifiersBuilder: ModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
+    modifiersBuilder: DefaultModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
 ): List<Signal<Any?>> {
     signals.toList().toJson().also {
-        val mods = ModifierBuilder(::DataSignalsModifiers).apply(modifiersBuilder).getModifiers()
+        val mods = DefaultModifierBuilder(::DataSignalsModifiers).apply(modifiersBuilder).getModifiers()
         signals.toList().toJson().also {
             this.visitor.visitAttribute("data-signals$mods", it)
         }
@@ -56,9 +57,9 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
 fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R?,
-    modifiersBuilder: ModifierBuilder<DataSignalModifiers>.() -> Unit = {},
+    modifiersBuilder: DefaultModifierBuilder<DataSignalModifiers>.() -> Unit = {},
 ): Signal<R?> {
-    val mods = ModifierBuilder(::DataSignalModifiers).apply(modifiersBuilder).getModifiers()
+    val mods = DefaultModifierBuilder(::DataSignalModifiers).apply(modifiersBuilder).getModifiers()
     val res =
         when (value) {
             is String -> "'$value'"
@@ -68,7 +69,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 
     this.visitor.visitAttribute("data-signals:$name$mods", res)
 
-    val caseStyle = extractCaseStyle(mods)
+    val caseStyle = mods.extractCaseStyle() ?: CaseStyle.CAMEL
 
     return Signal(name, value, caseStyle)
 }
@@ -85,7 +86,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     name: String,
-    modifiersBuilder: ModifierBuilder<DataSignalModifiers>.() -> Unit = {},
+    modifiersBuilder: DefaultModifierBuilder<DataSignalModifiers>.() -> Unit = {},
 ): Signal<Any?> = dataSignal(name, null, modifiersBuilder)
 
 fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
@@ -137,7 +138,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     val modifiers = builder.getModifiers()
 
     this.visitor.visitAttribute("data-computed-$name$modifiers", expression)
-    val caseStyle = extractCaseStyle(modifiers)
+
+    val caseStyle = modifiers.extractCaseStyle() ?: CaseStyle.CAMEL
+
     return Signal(name, expression, caseStyle)
 }
 
@@ -153,9 +156,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
     jsObj: String = "",
-    modifiersBuilder: ModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
+    modifiersBuilder: DefaultModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
 ) {
-    val modifiers = ModifierBuilder(::DataJsonSignalsModifiers).apply(modifiersBuilder).getModifiers()
+    val modifiers = DefaultModifierBuilder(::DataJsonSignalsModifiers).apply(modifiersBuilder).getModifiers()
     this.visitor.visitAttribute("data-json-signals$modifiers", jsObj)
 }
 
