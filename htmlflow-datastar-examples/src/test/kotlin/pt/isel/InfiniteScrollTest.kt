@@ -65,8 +65,13 @@ class InfiniteScrollTest {
                 )
 
                 // Wait until more agents are appended
-                page.waitForFunction(" document.querySelectorAll('#agents tr').length > 10")
-
+                page.waitForFunction(
+                    "document.querySelectorAll('#agents tr').length > 10",
+                    null,
+                    com.microsoft.playwright.Page
+                        .WaitForFunctionOptions()
+                        .setTimeout(5000.0),
+                )
                 // Verify new agents were added
                 val finalCount = page.locator("#agents tr").count()
                 assert(finalCount > initialCount) {

@@ -11,7 +11,7 @@
         <section id="todo-mvc">
             <header id="todo-header">
                 <input type="checkbox" data-on:click__prevent="@post('/todo-mvc/-1/toggle')" data-init="el.checked = false">
-                <input id="new-todo" type="text" placeholder="What needs to be done?" data-signals:input="" data-bind:input="" data-on:keydown="evt.key === 'Enter' && $input.trim() && @patch('/todo-mvc/-1') && ($input = '');">
+                <input id="new-todo" type="text" placeholder="What needs to be done?" data-signals:input="" data-bind:input="" data-on:keydown="if (evt.key !== 'Enter' || !$input.trim()) return; @patch('/todo-mvc/-1'); $input = '';">
             </header>
             <ul id="todo-list">
                 <li role="button" tabindex="0" data-on:dblclick="evt.target === el && @get('/todo-mvc/0')">

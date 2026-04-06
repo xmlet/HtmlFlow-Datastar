@@ -61,7 +61,7 @@ class TodoMvcTest {
                 // ─────────────────────────────────────────────
                 // Initial state (4 default tasks)
                 // ─────────────────────────────────────────────
-                page.waitForSelector("#todo-list li")
+                page.waitForFunction("document.querySelectorAll('#todo-list li').length === 4")
                 val initialCount = page.locator("#todo-list li").count()
                 assertEquals(4, initialCount)
 

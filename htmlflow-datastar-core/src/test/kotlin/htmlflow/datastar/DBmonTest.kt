@@ -69,11 +69,11 @@ class DBmonTest {
                                             attrMax("100")
                                             attrValue("20")
                                             dataOn(Focus) {
-                                                +(editing setValue true)
+                                                +editing.setValue(true)
                                             }
                                             dataOn(Blur) {
                                                 +put(::dbmonInputs)
-                                                +(editing setValue false)
+                                                +editing.setValue(false)
                                             }
                                             val mutationRate = dataBind("mutation-rate")
                                             dataAttr("data-bind:${mutationRate.name}") { +editing }
@@ -89,11 +89,11 @@ class DBmonTest {
                                             attrMax("144")
                                             attrValue("60")
                                             dataOn(Focus) {
-                                                +(editing setValue true)
+                                                +editing.setValue(true)
                                             }
                                             dataOn(Blur) {
                                                 +put(::dbmonInputs)
-                                                +(editing setValue false)
+                                                +editing.setValue(false)
                                             }
                                             val framesPerSecond = dataBind("fps")
                                             dataAttr("data-bind:${framesPerSecond.name}") { +editing }

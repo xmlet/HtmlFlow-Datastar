@@ -59,7 +59,7 @@ class ActiveSearchTest {
                 searchInput.fill("Ann")
 
                 // Wait for the table to update
-                page.waitForTimeout(500.0) // Wait for debounce and SSE processing
+                page.waitForFunction("document.querySelectorAll('tbody tr').length === 1")
 
                 val filteredRowCount = page.querySelectorAll("tbody tr").size
                 assertEquals(1, filteredRowCount, "Table should have 1 row after searching")
@@ -74,7 +74,7 @@ class ActiveSearchTest {
 
                 // Clear the search input
                 searchInput.fill("")
-                page.waitForTimeout(500.0) // Wait for debounce and SSE processing
+                page.waitForFunction("document.querySelectorAll('tbody tr').length === 10")
                 val resetRowCount = page.querySelectorAll("tbody tr").size
                 assertEquals(10, resetRowCount, "Table should have 10 rows after clearing search")
             } finally {

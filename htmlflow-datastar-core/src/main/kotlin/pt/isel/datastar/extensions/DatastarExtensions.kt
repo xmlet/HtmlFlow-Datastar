@@ -25,9 +25,8 @@
 package pt.isel.datastar.extensions
 
 import org.xmlet.htmlapifaster.Element
-import org.xmlet.htmlapifaster.Input
-import org.xmlet.htmlapifaster.Select
-import org.xmlet.htmlapifaster.Textarea
+import org.xmlet.htmlapifaster.SelectAll
+import org.xmlet.htmlapifaster.TextGroup
 import pt.isel.datastar.Signal
 import pt.isel.datastar.builders.ExpressionBuilder
 import kotlin.collections.joinToString
@@ -45,32 +44,51 @@ fun List<Pair<String, Any?>>.toJson(): String =
     }
 
 /**
- * Creates a signal and sets up two-way data binding between it and an element’s value.
+ * Creates a signal and sets up two-way data binding between it and a text-based element’s value.
  *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-bind attribute will be added
- * @param name the name of the signal to bind
+ * Applies to elements like Input and Textarea.
+ *
+ * @receiver the TextGroup element to which the data-bind attribute will be added
+ * @param name the name of the signal to create and bind
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataBind(name: String): Signal<Any> {
-    require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
+fun TextGroup<*, *>.dataBind(name: String): Signal<Any> {
     this.visitor.visitAttribute("data-bind:$name", "")
     return Signal(name, null)
 }
 
 /**
+ * Creates a signal and sets up two-way data binding between it and a select element’s value.
  *
- * Creates a signal and sets up two-way data binding between it and an element’s value.
+ * @receiver the Select element to which the data-bind attribute will be added
+ * @param name the name of the signal to create and bind
+ * @return a Signal instance with the given name
+ */
+fun SelectAll<*, *>.dataBind(name: String): Signal<Any> {
+    this.visitor.visitAttribute("data-bind:$name", "")
+    return Signal(name, null)
+}
+
+/**
+ * Binds an existing signal to a text-based element.
  *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-bind attribute will be added
+ * @receiver the TextGroup element to bind
  * @param signal the Signal to bind to (its value takes precedence)
  * @return the same Signal instance
  */
-fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataBind(signal: Signal<R>): Signal<R> {
-    require(this is Input || this is Select || this is Textarea) { "Element must be input, select or text area" }
+fun <R> TextGroup<*, *>.dataBind(signal: Signal<R>): Signal<R> {
+    this.visitor.visitAttribute("data-bind:${signal.name}", "")
+    return signal
+}
+
+/**
+ * Binds an existing signal to a select element.
+ *
+ * @receiver the Select element to bind
+ * @param signal the Signal to bind to (its value takes precedence)
+ * @return the same Signal instance
+ */
+fun <R> SelectAll<*, *>.dataBind(signal: Signal<R>): Signal<R> {
     this.visitor.visitAttribute("data-bind:${signal.name}", "")
     return signal
 }

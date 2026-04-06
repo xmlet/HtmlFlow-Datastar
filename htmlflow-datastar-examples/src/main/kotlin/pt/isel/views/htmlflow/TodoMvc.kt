@@ -143,9 +143,15 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                         +put(::cancelEditMode)
                                     }
                                     dataOn(Keydown) {
-                                        +"if (evt.key === 'Escape') el.blur()"
-                                        +"if (evt.key !== 'Enter' || !$input.trim()) return"
-                                        +patch("/todo-mvc/${task.id}")
+                                        val js =
+                                            $$"""
+                                                if (evt.key === 'Escape') {
+                                                    el.blur();
+                                                } else if (evt.key === 'Enter' && $input.trim()) {
+                                                    @patch('/todo-mvc/$${task.id}');
+                                                }
+                                            """.trimIndent()
+                                        +js
                                     }
                                 }
                             }

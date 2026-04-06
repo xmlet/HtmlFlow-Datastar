@@ -100,10 +100,10 @@ open class ExpressionBuilder {
     /**
      * Equal to the assignment operator in JavaScript, used to assign the signal value to the new value.
      */
-    infix fun <T> Signal<T>.setValue(value: T): DataStarExpression = DataStarExpression("$this = $value")
+    fun <T> Signal<T>.setValue(value: T): DataStarExpression = DataStarExpression("$this = $value")
 
     /**
      * Equal to the assignment operator in JavaScript, used to assign the passed expression to the precious.
      */
-    infix fun DataStarExpression.setValue(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this = $expression")
+    fun DataStarExpression.setValue(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this = $expression")
 }
