@@ -9,6 +9,17 @@ enum class CaseStyle(
     PASCAL("pascal"),
     ;
 
+    companion object {
+        private val caseRegex = "__case\\.([a-z]+)".toRegex()
+
+        fun String.extractCaseStyle(): CaseStyle? =
+            caseRegex
+                .find(this)
+                ?.groupValues
+                ?.get(1)
+                ?.let { tag -> CaseStyle.entries.firstOrNull { it.tag == tag } }
+    }
+
     fun apply(name: String): String =
         when (this) {
             CAMEL -> toCamel(name)
@@ -18,23 +29,13 @@ enum class CaseStyle(
         }
 }
 
-private val caseRegex = "__case\\.([a-z]+)".toRegex()
+private fun toCamel(name: String): String = convertCase(name, style = CaseStyle.CAMEL)
 
-fun extractCaseStyle(modifiers: String): CaseStyle =
-    caseRegex
-        .find(modifiers)
-        ?.groupValues
-        ?.get(1)
-        ?.let { tag -> CaseStyle.entries.firstOrNull { it.tag == tag } }
-        ?: CaseStyle.CAMEL
+private fun toPascal(name: String): String = convertCase(name, style = CaseStyle.PASCAL)
 
-fun toCamel(name: String): String = convertCase(name, style = CaseStyle.CAMEL)
+private fun toSnake(name: String): String = convertCase(name, style = CaseStyle.SNAKE)
 
-fun toPascal(name: String): String = convertCase(name, style = CaseStyle.PASCAL)
-
-fun toSnake(name: String): String = convertCase(name, style = CaseStyle.SNAKE)
-
-fun toKebab(name: String): String = convertCase(name, style = CaseStyle.KEBAB)
+private fun toKebab(name: String): String = convertCase(name, style = CaseStyle.KEBAB)
 
 private fun convertCase(
     name: String,
