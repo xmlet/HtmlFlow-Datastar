@@ -1,3 +1,6 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
+
 plugins {
     kotlin("jvm") version "2.3.0"
 
@@ -5,10 +8,8 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
 
     id("org.jetbrains.dokka") version "2.1.0"
-	
-    // For publishing the library to a Maven repository
-    `maven-publish`
-    signing
+
+    id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 group = "com.github.xmlet"
@@ -38,79 +39,52 @@ tasks.test {
     useJUnitPlatform()
 }
 
-// Create Javadoc JAR from dokkaGenerate output
-tasks.register<Jar>("dokkaJavadocJar") {
-    archiveClassifier.set("javadoc")
-    dependsOn(tasks.dokkaGenerate)
-    from(layout.buildDirectory.dir("dokka/html"))
-}
-
-// Configure publishing to Maven Central
-publishing {
-    repositories {
-        maven {
-            name = "sonatype"
-            url = uri("https://central.sonatype.com/api/v1/publisher")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME") ?: ""
-                password = System.getenv("MAVEN_PASSWORD") ?: ""
-            }
-        }
-    }
-
-    publications {
-        register<MavenPublication>("mavenJava") {
-            from(components["java"])
-
-            artifactId = project.name
-            groupId = project.group.toString()
-            version = project.version.toString()
-			
-            artifact(tasks.kotlinSourcesJar)
-            artifact(tasks.named("dokkaJavadocJar"))
-
-            pom {
-                name.set("HtmlFlow-Datastar")
-                description.set("Type-Safe Hypermedia-First DSL for Reactive Backend-Driven Web Applications")
-                url.set("https://github.com/xmlet/HtmlFlow-Datastar")
-
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-
-                developers {
-                    developer {
-                        name.set("Miguel Gamboa")
-                    }
-                    developer {
-                        name.set("Paulo Carvalho")
-                    }
-                    developer {
-                        name.set("Leonel Correia")
-                    }
-                    developer {
-                        name.set("Ricardo Gomes")
-                    }
-                }
-
-                scm {
-                    connection.set("scm:git:https://github.com/xmlet/HtmlFlow-Datastar.git")
-                    developerConnection.set("scm:git:https://github.com/xmlet/HtmlFlow-Datastar.git")
-                    url.set("https://github.com/xmlet/HtmlFlow-Datastar")
-                }
-            }
-        }
-    }
-}
-
-// Configure signing
-signing {
-    useInMemoryPgpKeys(
-        System.getenv("GPG_PRIVATE_KEY"),
-        System.getenv("GPG_PASSPHRASE"),
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+    configure(
+        KotlinJvm(
+            javadocJar = JavadocJar.Dokka("dokkaGenerate"),
+        ),
     )
-    sign(publishing.publications["mavenJava"])
+    coordinates(groupId = project.group.toString(), artifactId = project.name, version = project.version.toString())
+    pom {
+        name.set("HtmlFlow-Datastar")
+        description.set("Type-Safe Hypermedia-First DSL for Reactive Backend-Driven Web Applications")
+        inceptionYear.set("2026")
+        url.set("https://github.com/xmlet/HtmlFlow-Datastar")
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                id.set("fmcarvalho")
+                name.set("Miguel Gamboa de Carvalho")
+                url.set("https://github.com/fmcarvalho")
+            }
+            developer {
+                id.set("PauloCarvalho13")
+                name.set("Paulo Carvalho")
+                url.set("https://github.com/PauloCarvalho13")
+            }
+            developer {
+                id.set("RicardoGomes07")
+                name.set("Ricardo Gomes")
+                url.set("https://github.com/RicardoGomes07")
+            }
+            developer {
+                id.set("LeonelCorreia")
+                name.set("Leonel Correia")
+                url.set("https://github.com/LeonelCorreia")
+            }
+        }
+        scm {
+            url.set("https://github.com/xmlet/HtmlFlow-Datastar")
+            connection.set("scm:git:https://github.com/xmlet/HtmlFlow-Datastar.git")
+            developerConnection.set("scm:git:https://github.com/xmlet/HtmlFlow-Datastar.git")
+        }
+    }
 }
