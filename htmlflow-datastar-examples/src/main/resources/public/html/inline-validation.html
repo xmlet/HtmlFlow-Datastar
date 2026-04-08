@@ -5,23 +5,27 @@
     </script><link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<div id="demo">
+<div id="description" data-init="@get('/inline-validation/description')"></div>
+<div id="demo" data-signals:_error="true">
     <label>
         Email Address
         <input type="email" required="required" aria-live="polite" aria-describedby="email-info" data-bind:email="" data-on:keydown__debounce.500ms="@post('/inline-validation/validate')">
     </label>
-    <p id="email-info" class="info">
+    <div id="email-error" class="error"></div>
+    <div id="email-info" class="info">
         The only valid email address is "test@test.com".
-    </p>
+    </div>
     <label>
         First Name
         <input type="text" required="required" aria-live="polite" data-bind:first-name="" data-on:keydown__debounce.500ms="@post('/inline-validation/validate')">
     </label>
+    <div id="first-name-error" class="error"></div>
     <label>
         Last Name
         <input type="text" required="required" aria-live="polite" data-bind:last-name="" data-on:keydown__debounce.500ms="@post('/inline-validation/validate')">
     </label>
-    <button class="success" data-on:click="@post('/inline-validation')">
+    <div id="last-name-error" class="error"></div>
+    <button class="success" data-on:click="@post('/inline-validation')" data-attr:disabled="$_error">
         Sign Up
     </button>
 </div>

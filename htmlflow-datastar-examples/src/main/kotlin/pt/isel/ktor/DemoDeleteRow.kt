@@ -1,6 +1,10 @@
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
+import htmlflow.div
+import htmlflow.view
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
@@ -11,18 +15,39 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
 import io.ktor.server.routing.route
-import kotlinx.coroutines.flow.MutableStateFlow
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfDeleteRowDescription
 import pt.isel.views.htmlflow.hfDeleteRow
+import pt.isel.views.htmlflow.hfDeleteRowTable
 
 private val html = loadResource("public/html/delete-row.html")
 
+val DEFAULT_USERS =
+    listOf(
+        TableUser(0, "Joe Smith", "joe@smith.org"),
+        TableUser(1, "Angie MacDowell", "angie@macdowell.org"),
+        TableUser(2, "Fuqua Tarkenton", "fuqua@tarkenton.org"),
+        TableUser(3, "Kim Yee", "kim@yee.org"),
+    )
+
+val hfUsersTable: String =
+    view<DeleteRowsState> {
+        div {
+            attrId("users-table")
+            hfDeleteRowTable()
+        }
+    }.render(DeleteRowsState(DEFAULT_USERS))
+
+private val deletedIndices = mutableSetOf<Int>()
+
 fun Route.demoDeleteRow() {
-    val state = MutableStateFlow(TableState(users = DEFAULT_USERS))
     route("/delete-row") {
         get("/html", RoutingContext::getDeleteRowHtml)
         get("/htmlflow", RoutingContext::getDeleteRowHtmlFlow)
-        delete("/{index}") { deleteRow(state) }
-        patch("/reset") { resetUsers(state) }
+        delete("/{index}", RoutingContext::deleteRow)
+        patch("/reset", RoutingContext::resetUsers)
+        get("/description", RoutingContext::getDeleteRowDescription)
     }
 }
 
@@ -31,10 +56,11 @@ private suspend fun RoutingContext.getDeleteRowHtml() {
 }
 
 private suspend fun RoutingContext.getDeleteRowHtmlFlow() {
-    call.respondText(hfDeleteRow.render(TableState(DEFAULT_USERS)), ContentType.Text.Html)
+    val visibleUsers = DEFAULT_USERS.filterIndexed { i, _ -> i !in deletedIndices }
+    call.respondText(hfDeleteRow.render(DeleteRowsState(visibleUsers)), ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.deleteRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.deleteRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -42,32 +68,34 @@ private suspend fun RoutingContext.deleteRow(state: MutableStateFlow<TableState>
         val generator = ServerSentEventGenerator(response(this))
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
-
-        if (index in state.value.users.indices) {
-            val updatedUsers = state.value.users.filterIndexed { i, _ -> i != index }
-            state.emit(state.value.copy(users = updatedUsers))
-        }
-
-        generator.patchElements(hfDeleteRow.render(state.value))
+        deletedIndices.add(index)
+        generator.patchElements(
+            options = PatchElementsOptions(selector = "#row-$index", mode = ElementPatchMode.Remove),
+        )
     }
 }
 
-private suspend fun RoutingContext.resetUsers(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.resetUsers() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        state.emit(TableState(DEFAULT_USERS))
-
-        generator.patchElements(hfDeleteRow.render(state.value))
+        deletedIndices.clear()
+        generator.patchElements(hfUsersTable, options = PatchElementsOptions(selector = "#users-table"))
     }
 }
 
-val DEFAULT_USERS =
-    listOf(
-        TableUser("Joe Smith", "joe@smith.org"),
-        TableUser("Angie MacDowell", "angie@macdowell.org"),
-        TableUser("Fuqua Tarkenton", "fuqua@tarkenton.org"),
-        TableUser("Kim Yee", "kim@yee.org"),
-    )
+private suspend fun RoutingContext.getDeleteRowDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfDeleteRowDescription)
+    }
+}
+
+data class DeleteRowsState(
+    val users: List<TableUser>,
+)

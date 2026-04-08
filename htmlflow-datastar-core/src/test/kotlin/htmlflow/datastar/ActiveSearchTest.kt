@@ -1,12 +1,24 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package htmlflow.datastar
 
+import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
-import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
+import htmlflow.tbody
+import htmlflow.tr
+import jakarta.ws.rs.Path
+import org.xmlet.htmlapifaster.EnumTypeInputType
+import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.body
+import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.input
+import org.xmlet.htmlapifaster.script
+import org.xmlet.htmlapifaster.table
+import org.xmlet.htmlapifaster.td
+import org.xmlet.htmlapifaster.th
+import org.xmlet.htmlapifaster.thead
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Input
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
@@ -40,8 +52,9 @@ class ActiveSearchTest {
                                     attrType(EnumTypeInputType.TEXT)
                                     attrPlaceholder("Search...")
                                     dataBind("search")
-                                    dataOn("input", "@get('/active-search/search')") {
-                                        debounce(200.milliseconds)
+                                    dataOn(Input) {
+                                        +get(::search)
+                                        modifiers { debounce(200.milliseconds) }
                                     }
                                 }
                                 table {
@@ -99,6 +112,9 @@ class ActiveSearchTest {
                     }
                 }
             }
+
+    @Path("/active-search/search")
+    private fun search() {}
 
     private val expectedDatastarRx = """
     <!DOCTYPE html>

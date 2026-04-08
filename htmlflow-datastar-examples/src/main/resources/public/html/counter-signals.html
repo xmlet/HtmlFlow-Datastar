@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+<div id="description" data-init="@get('/counter-signals/description')"></div>
 <div data-signals="{count: 0}">
     <h1>Counting Stars - via Signals</h1>
     <div data-init="@get('/counter-signals/events')">
         <span id="counter" data-text="$count"></span>
     </div>
     <div>
-        <button data-on:click="@post('/counter-signals/decrement')">−</button>
-        <button data-on:click="@post('/counter-signals/increment')">+</button>
+        <button id="decrement" data-on:click="@post('/counter-signals/decrement')">−</button>
+        <button id="increment" data-on:click="@post('/counter-signals/increment')">+</button>
     </div>
 </div>
-
 </body>
 </html>

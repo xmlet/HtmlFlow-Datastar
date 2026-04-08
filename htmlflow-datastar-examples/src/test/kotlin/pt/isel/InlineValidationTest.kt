@@ -3,44 +3,38 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class InlineValidationTest {
-    @Test
-    fun `input fields should be validated inline on HTML`() {
-        `input fields should be validated inline`("/inline-validation/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4K"])
+    fun `input fields should be validated inline on HTML`(serverType: String) {
+        `input fields should be validated inline`("/inline-validation/html", serverType)
     }
 
-    @Test
-    fun `input fields should be validated inline on HtmlFlow`() {
-        `input fields should be validated inline`("/inline-validation/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4K"])
+    fun `input fields should be validated inline on HtmlFlow`(serverType: String) {
+        `input fields should be validated inline`("/inline-validation/htmlflow", serverType)
     }
 
     /**
      * Tests that input fields are validated inline and display correct error messages when
      * the validation fails.
      */
-    fun `input fields should be validated inline`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `input fields should be validated inline`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -81,15 +75,16 @@ class InlineValidationTest {
                 page.waitForTimeout(600.0)
 
                 // Wait for error <p> elements to be rendered
-                page.waitForSelector("#email-error")
-                page.waitForSelector("#first-name-error")
+                page.waitForSelector("#email-error-details")
+                page.waitForSelector("#first-name-error-details")
                 page.waitForSelector("#last-name-error")
 
                 // Assert they are visible
-                assertTrue(page.isVisible("#email-error"))
-                assertTrue(page.isVisible("#first-name-error"))
-                assertTrue(page.isVisible("#last-name-error"))
+                assertTrue(page.isVisible("#email-error-details"))
+                assertTrue(page.isVisible("#first-name-error-details"))
+                assertTrue(page.isVisible("#last-name-error-details"))
 
+                assertTrue(page.isDisabled(submitButton))
                 // Fix inputs
                 page.fill(emailInput, "test@test.com")
                 page.keyboard().press("Tab") // triggers keydown
@@ -104,9 +99,9 @@ class InlineValidationTest {
                 page.waitForTimeout(600.0)
 
                 // Assert that error messages are not visible
-                assertFalse(page.isVisible("#email-error"))
-                assertFalse(page.isVisible("#first-name-error"))
-                assertFalse(page.isVisible("#last-name-error"))
+                assertFalse(page.isVisible("#email-error-details"))
+                assertFalse(page.isVisible("#first-name-error-details"))
+                assertFalse(page.isVisible("#last-name-error-details"))
 
                 // Wait until the button becomes enabled
                 page.waitForSelector("button.success")
@@ -121,7 +116,6 @@ class InlineValidationTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

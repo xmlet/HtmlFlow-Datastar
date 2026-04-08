@@ -3,41 +3,35 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class ActiveSearchTest {
-    @Test
-    fun `search name, filters table rows on HTML`() {
-        `search name, filters table rows`("/active-search/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `search name, filters table rows`(serverType: String) {
+        `search name, filters table rows`("/active-search/html", serverType)
     }
 
-    @Test
-    fun `search name, filters table rows on HtmlFlow`() {
-        `search name, filters table rows`("/active-search/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `search name, filters table rows on HtmlFlow`(serverType: String) {
+        `search name, filters table rows`("/active-search/htmlflow", serverType)
     }
 
     /**
      * Tests that searching for a name filters the table to show only matching rows.
      */
-    fun `search name, filters table rows`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `search name, filters table rows`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -65,7 +59,7 @@ class ActiveSearchTest {
                 searchInput.fill("Ann")
 
                 // Wait for the table to update
-                page.waitForTimeout(500.0) // Wait for debounce and SSE processing
+                page.waitForFunction("document.querySelectorAll('tbody tr').length === 1")
 
                 val filteredRowCount = page.querySelectorAll("tbody tr").size
                 assertEquals(1, filteredRowCount, "Table should have 1 row after searching")
@@ -80,14 +74,13 @@ class ActiveSearchTest {
 
                 // Clear the search input
                 searchInput.fill("")
-                page.waitForTimeout(500.0) // Wait for debounce and SSE processing
+                page.waitForFunction("document.querySelectorAll('tbody tr').length === 10")
                 val resetRowCount = page.querySelectorAll("tbody tr").size
                 assertEquals(10, resetRowCount, "Table should have 10 rows after clearing search")
             } finally {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

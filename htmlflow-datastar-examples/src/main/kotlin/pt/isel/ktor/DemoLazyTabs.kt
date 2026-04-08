@@ -1,5 +1,7 @@
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -9,6 +11,9 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfLazyTabsDescription
 import pt.isel.views.htmlflow.TAB_CONTENTS
 import pt.isel.views.htmlflow.hfLazyTabs
 import pt.isel.views.htmlflow.hfTabPanelView
@@ -20,6 +25,7 @@ fun Route.demoLazyTabs() {
         get("/html", RoutingContext::getLazyTabsHtml)
         get("/htmlflow", RoutingContext::getLazyTabsHtmlFlow)
         get("/{index}", RoutingContext::getLazyTabsText)
+        get("/description", RoutingContext::getLazyTabsDescription)
     }
 }
 
@@ -40,7 +46,20 @@ private suspend fun RoutingContext.getLazyTabsText() {
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
 
-        val content = TAB_CONTENTS.getOrNull(index) ?: return@respondTextWriter
-        generator.patchElements(hfTabPanelView.render(content))
+        val content = TAB_CONTENTS[index]
+        generator.patchElements(
+            hfTabPanelView.render(content),
+            PatchElementsOptions(selector = "#tabpanel", mode = ElementPatchMode.Replace),
+        )
+    }
+}
+
+private suspend fun RoutingContext.getLazyTabsDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfLazyTabsDescription)
     }
 }

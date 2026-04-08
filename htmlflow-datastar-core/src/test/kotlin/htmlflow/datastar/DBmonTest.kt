@@ -2,6 +2,7 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -15,11 +16,14 @@ import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
 import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.events.Blur
+import org.xmlet.htmlflow.datastar.events.Focus
+import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -47,10 +51,10 @@ class DBmonTest {
                         body {
                             div {
                                 attrId("demo")
-                                dataInit("@get('/examples/dbmon/updates')")
+                                dataInit { +get(::dbmonUpdates) }
                                 val editing =
                                     dataSignal("editing", false) {
-                                        ifMissing()
+                                        modifiers { ifMissing() }
                                     }
                                 p {
                                     text("Average render time for entire page: { renderTime }")
@@ -64,12 +68,17 @@ class DBmonTest {
                                             attrMin("0")
                                             attrMax("100")
                                             attrValue("20")
-                                            dataOn("focus", "$editing = true")
-                                            dataOn("blur", "@put('/examples/dbmon/inputs'); $editing = false")
+                                            dataOn(Focus) {
+                                                +editing.setValue(true)
+                                            }
+                                            dataOn(Blur) {
+                                                +put(::dbmonInputs)
+                                                +editing.setValue(false)
+                                            }
                                             val mutationRate = dataBind("mutation-rate")
-                                            dataAttr("data-bind:${mutationRate.name}", "$editing")
+                                            dataAttr("data-bind:${mutationRate.name}") { +editing }
                                             val mutRate = dataBind("_mutation-rate")
-                                            dataAttr("data-bind:${mutRate.name}", "!$editing")
+                                            dataAttr("data-bind:${mutRate.name}") { +!editing }
                                         }
                                     }
                                     label {
@@ -79,12 +88,17 @@ class DBmonTest {
                                             attrMin("1")
                                             attrMax("144")
                                             attrValue("60")
-                                            dataOn("focus", "$editing = true")
-                                            dataOn("blur", "@put('/examples/dbmon/inputs'); $editing = false")
+                                            dataOn(Focus) {
+                                                +editing.setValue(true)
+                                            }
+                                            dataOn(Blur) {
+                                                +put(::dbmonInputs)
+                                                +editing.setValue(false)
+                                            }
                                             val framesPerSecond = dataBind("fps")
-                                            dataAttr("data-bind:${framesPerSecond.name}", "$editing")
+                                            dataAttr("data-bind:${framesPerSecond.name}") { +editing }
                                             val fps = dataBind("_fps")
-                                            dataAttr("data-bind:${fps.name}", "!$editing")
+                                            dataAttr("data-bind:${fps.name}") { +!editing }
                                         }
                                     }
                                 }
@@ -113,6 +127,12 @@ class DBmonTest {
                     }
                 }
             }
+
+    @Path("/examples/dbmon/updates")
+    private fun dbmonUpdates() {}
+
+    @Path("/examples/dbmon/inputs")
+    private fun dbmonInputs() {}
 
     private val expectedDatastarRx =
         $$"""

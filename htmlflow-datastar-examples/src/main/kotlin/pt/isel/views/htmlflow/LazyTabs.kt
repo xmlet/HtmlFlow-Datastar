@@ -14,7 +14,10 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
+import pt.isel.http4k.getLazyTabsDescription
 
 val TAB_CONTENTS =
     listOf(
@@ -45,6 +48,10 @@ val hfLazyTabs: String =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit { +get(::getLazyTabsDescription) }
+                        }
+                        div {
                             attrId("lazy-tabs")
                             div {
                                 addAttr("role", "tablist")
@@ -52,7 +59,9 @@ val hfLazyTabs: String =
                                     button {
                                         addAttr("role", "tab")
                                         addAttr("aria-selected", if (i == 0) "true" else "false")
-                                        dataOn("click", "@get('/lazy-tabs/$i')")
+                                        dataOn(Click) {
+                                            +get("/lazy-tabs/$i")
+                                        }
                                         text("Tab $i")
                                     }
                                 }

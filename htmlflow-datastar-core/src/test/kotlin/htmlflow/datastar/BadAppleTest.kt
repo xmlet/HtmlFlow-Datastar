@@ -4,11 +4,12 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,8 +39,10 @@ class BadAppleTest {
                                 val percentage = dataSignal("percentage", 0)
                                 val contents = dataSignal("contents", "bad apple frames go here")
                                 label {
-                                    dataInit("@get('/examples/bad_apple/updates')")
-                                    span { dataText($$"`Percentage: ${$$percentage.toFixed(2)}%`") }
+                                    dataInit { +get(::badAppleUpdate) }
+                                    span {
+                                        dataText { +$$"`Percentage: ${$$percentage.toFixed(2)}%`" }
+                                    }
                                     input {
                                         attrType(EnumTypeInputType.RANGE)
                                         attrMin("0")
@@ -47,18 +50,21 @@ class BadAppleTest {
                                         attrStep("0.01")
                                         attrDisabled(true)
                                         attrStyle("cursor: default")
-                                        dataAttr("value", "$percentage")
+                                        dataAttr("value") { +percentage }
                                     }
                                 }
                                 pre {
                                     attrStyle("line-height: 100%")
-                                    dataText("$contents")
+                                    dataText { +contents }
                                 }
                             }
                         }
                     }
                 }
             }
+
+    @Path("/examples/bad_apple/updates")
+    private fun badAppleUpdate() {}
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

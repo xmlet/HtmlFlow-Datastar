@@ -1,24 +1,37 @@
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
-import io.ktor.http.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.server.request.receiveText
+import io.ktor.server.response.respondText
+import io.ktor.server.response.respondTextWriter
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.RoutingContext
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfFileUploadDescription
+import pt.isel.views.htmlflow.fileUploadTable
 import pt.isel.views.htmlflow.hfFileUpload
 import java.security.MessageDigest
 import kotlin.io.encoding.Base64
 
 private val html = loadResource("public/html/file-upload.html")
 
+private const val MAX_FILE_SIZE = 1_000_000 // 1 MB
+
 fun Route.demoFileUpload() {
     route("/file-upload") {
         get("/html", RoutingContext::getFileUploadHtml)
         get("/htmlflow", RoutingContext::getFileUploadHHtmlFlow)
+        get("/description", RoutingContext::getFileUploadDescription)
         post("", RoutingContext::uploadFile)
     }
 }
@@ -31,11 +44,9 @@ private suspend fun RoutingContext.getFileUploadHHtmlFlow() {
     call.respondText(hfFileUpload, ContentType.Text.Html)
 }
 
-private const val MAX_FILE_SIZE = 1_000_000 // 1 MB
-
 private suspend fun RoutingContext.uploadFile() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
@@ -44,50 +55,29 @@ private suspend fun RoutingContext.uploadFile() {
         val (files) = Json.decodeFromString<UploadFilesSignals>(callText)
 
         val invalidFiles = files.filter { (_, contents, _) -> Base64.decode(contents).decodeToString().length > MAX_FILE_SIZE }
-        invalidFiles.forEach { file ->
-            generator.executeScript("console.error('File $file is not valid!');")
+        invalidFiles.forEach { (name, _, _) ->
+            generator.executeScript("console.error('File $name is not valid!');")
         }
 
-        val validFiles = files.filterNot { it in invalidFiles }
-
-        val tableEntries =
-            validFiles.joinToString("") { (name, contents, mime) ->
-                val plainText = Base64.decode(contents).decodeToString()
-                val textSize = plainText.length
-                val md5Hash = contents.md5()
-
-                """
-                <tr>
-                    <td>$name</td>
-                    <td>$textSize B</td>
-                    <td>$mime</td>
-                    <td>$md5Hash</td>
-                </tr>    
-                """.trimIndent().replace("\n", "")
-            }
-
-        val table =
-            """
-            <table id="file-upload">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Mime</th>
-                        <th>MD5 Hash</th>
-                    </tr>
-                </thead> 
-                <tbody>
-                    $tableEntries
-                </tbody>
-            </table>
-            """.trimIndent().replace("\n", "")
-
-        generator.patchElements(table)
+        val validFiles = files.filterNot { it in invalidFiles }.map { FileInfo(it) }
+        generator.patchElements(
+            fileUploadTable.render(validFiles),
+            PatchElementsOptions(selector = "#file-upload", mode = ElementPatchMode.Replace),
+        )
     }
 }
 
-private fun String.md5(): String {
+private suspend fun RoutingContext.getFileUploadDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfFileUploadDescription)
+    }
+}
+
+fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")
     val digest = md.digest(this.toByteArray())
     return digest.toHexString()
@@ -104,3 +94,19 @@ data class FileSignal(
     val contents: String,
     val mime: String,
 )
+
+data class FileInfo(
+    val name: String,
+    val mime: String,
+    val plainTex: String,
+    val textSize: Int,
+    val md5Hash: String,
+) {
+    constructor(fileSignal: FileSignal) : this(
+        name = fileSignal.name,
+        mime = fileSignal.mime,
+        plainTex = Base64.decode(fileSignal.contents).decodeToString(),
+        textSize = Base64.decode(fileSignal.contents).decodeToString().length,
+        md5Hash = fileSignal.contents.md5(),
+    )
+}

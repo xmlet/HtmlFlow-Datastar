@@ -4,10 +4,12 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -42,15 +44,19 @@ class ClickToEditTest {
                                     button {
                                         attrClass("info")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        dataOn("click", "@get('/examples/click_to_edit/edit')")
+                                        dataAttr("disabled") { +fetching }
+                                        dataOn(Click) {
+                                            +get(::edit)
+                                        }
                                         text("Edit")
                                     }
                                     button {
                                         attrClass("warning")
                                         val fetching = dataIndicator("_fetching")
-                                        dataAttr("disabled", "$fetching")
-                                        dataOn("click", "@patch('/examples/click_to_edit/reset')")
+                                        dataAttr("disabled") { +fetching }
+                                        dataOn(Click) {
+                                            +patch(::reset)
+                                        }
                                         text("Reset")
                                     }
                                 }
@@ -59,6 +65,12 @@ class ClickToEditTest {
                     }
                 }
             }
+
+    @Path("/examples/click_to_edit/edit")
+    private fun edit() {}
+
+    @Path("/examples/click_to_edit/reset")
+    private fun reset() {}
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

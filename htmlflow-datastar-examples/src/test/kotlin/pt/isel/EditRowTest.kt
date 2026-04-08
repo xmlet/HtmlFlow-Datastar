@@ -3,41 +3,36 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 
+@ExtendWith(SharedTestServersExtension::class)
 class EditRowTest {
-    @Test
-    fun `edit row user details and save changes on HTML`() {
-        `edit row user details and save changes`("/edit-row/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `edit row user details and save changes on HTML`(serverType: String) {
+        `edit row user details and save changes`("/edit-row/html", serverType)
     }
 
-    @Test
-    fun `edit row user details and save changes on HtmlFlow`() {
-        `edit row user details and save changes`("/edit-row/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `edit row user details and save changes on HtmlFlow`(serverType: String) {
+        `edit row user details and save changes`("/edit-row/htmlflow", serverType)
     }
 
     /**
      * Tests that clicking to edit a row allows editing, saving changes updates the row correctly,
      * canceling reverts to original details, and resetting restores all default users.
      */
-    fun `edit row user details and save changes`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `edit row user details and save changes`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -64,7 +59,7 @@ class EditRowTest {
                 assertEquals("joe@smith.org", initialEmail, "Initial first user email should be joe@smith.org")
 
                 // Click the Edit button for the first user
-                page.click("tbody tr:nth-child(1) button:has-text('Edit')")
+                page.click("button#edit-row-0")
 
                 // Wait for edit mode - inputs should be visible
                 page.waitForSelector("tbody tr:nth-child(1) input")
@@ -77,10 +72,10 @@ class EditRowTest {
                 emailInput.fill("joseph.smith@example.com")
 
                 // Click the Save button
-                page.click("tbody tr:nth-child(1) button:has-text('Save')")
+                page.click("button#save-row-0")
 
                 // Wait for view mode to return - Edit button should reappear
-                page.waitForSelector("tbody tr:nth-child(1) button:has-text('Edit')")
+                page.waitForSelector("button#edit-row-0")
 
                 // Verify updated details are displayed
                 val updatedName = page.locator("tbody tr:nth-child(1) td:nth-child(1)").innerText()
@@ -90,7 +85,7 @@ class EditRowTest {
                 assertEquals("joseph.smith@example.com", updatedEmail, "Email should be updated to joseph.smith@example.com")
 
                 // Click the Edit button again for the second user
-                page.click("tbody tr:nth-child(2) button:has-text('Edit')")
+                page.click("button#edit-row-1")
 
                 // Wait for edit mode
                 page.waitForSelector("tbody tr:nth-child(2) input")
@@ -100,10 +95,10 @@ class EditRowTest {
                 page.locator("tbody tr:nth-child(2) input").nth(1).fill("angela.macdowell@example.com")
 
                 // Click the Cancel button
-                page.click("tbody tr:nth-child(2) button:has-text('Cancel')")
+                page.click("button#cancel-row-1")
 
                 // Wait for view mode to return - Edit button should reappear
-                page.waitForSelector("tbody tr:nth-child(2) button:has-text('Edit')")
+                page.waitForSelector("button#edit-row-1")
 
                 // Verify original details are retained (cancel discarded changes)
                 val nameAfterCancel = page.locator("tbody tr:nth-child(2) td:nth-child(1)").innerText()
@@ -116,11 +111,9 @@ class EditRowTest {
                 assertEquals("Joseph Smith Jr.", firstUserName, "First user changes should still be saved")
 
                 // Click the Reset button
-                page.click("button:has-text('Reset')")
+                page.click("button#reset")
 
-                page.waitForFunction(
-                    "document.querySelector('tbody tr:nth-child(1) td:nth-child(1)').innerText === 'Joe Smith'",
-                )
+                page.waitForTimeout(500.0)
 
                 val resetNames = page.locator("tbody tr td:nth-child(1)").allInnerTexts()
                 val resetEmails = page.locator("tbody tr td:nth-child(2)").allInnerTexts()
@@ -137,7 +130,7 @@ class EditRowTest {
                 )
 
                 // Verify that the reset operation completed successfully by editing again
-                page.click("tbody tr:nth-child(1) button:has-text('Edit')")
+                page.click("button#edit-row-0")
 
                 // Wait for edit mode
                 page.waitForSelector("tbody tr:nth-child(1) input")
@@ -151,7 +144,6 @@ class EditRowTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

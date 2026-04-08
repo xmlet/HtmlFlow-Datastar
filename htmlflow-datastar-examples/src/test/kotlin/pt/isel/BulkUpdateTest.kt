@@ -3,42 +3,36 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
-import kotlin.use
 
+@ExtendWith(SharedTestServersExtension::class)
 class BulkUpdateTest {
-    @Test
-    fun `update all users status change status column  on HTML`() {
-        `update all users status change status column`("/bulk-update/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `update all users status change status column  on HTML`(serverType: String) {
+        `update all users status change status column`("/bulk-update/html", serverType)
     }
 
-    @Test
-    fun `update all users status change status column on HtmlFlow`() {
-        `update all users status change status column`("/bulk-update/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `update all users status change status column on HtmlFlow`(serverType: String) {
+        `update all users status change status column`("/bulk-update/htmlflow", serverType)
     }
 
     /**
      * Tests that selecting all users and then clicking "Activate" or "Deactivate"
      * updates the status column for all selected users in the HTML table.
      */
-    fun `update all users status change status column`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `update all users status change status column`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -89,7 +83,6 @@ class BulkUpdateTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

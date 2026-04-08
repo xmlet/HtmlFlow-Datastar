@@ -4,11 +4,13 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -40,8 +42,11 @@ class ProgressiveLoadTest {
                                     button {
                                         attrId("load-button")
                                         val loadDisabled = dataSignal("load-disabled", false)
-                                        dataOn("click", "$loadDisabled=true; @get('/examples/progressive_load/updates')")
-                                        dataAttr("disabled", "$loadDisabled")
+                                        dataOn(Click) {
+                                            +loadDisabled.setValue(true)
+                                            +get(::progressiveLoadUpdates)
+                                        }
+                                        dataAttr("disabled") { +loadDisabled }
                                         dataIndicator("progressive-Load")
                                         text("Load")
                                     }
@@ -91,6 +96,9 @@ class ProgressiveLoadTest {
                 }
             }
 
+    @Path("/examples/progressive_load/updates")
+    private fun progressiveLoadUpdates() {}
+
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>
 <html>
@@ -101,7 +109,7 @@ class ProgressiveLoadTest {
 <body>
     <div>
         <div class="actions">
-            <button id="load-button" data-signals:load-disabled="false" data-on:click="$loadDisabled=true; @get('/examples/progressive_load/updates')" data-attr:disabled="$loadDisabled" data-indicator:progressive-Load="">
+            <button id="load-button" data-signals:load-disabled="false" data-on:click="$loadDisabled = true; @get('/examples/progressive_load/updates')" data-attr:disabled="$loadDisabled" data-indicator:progressive-Load="">
                 Load
             </button>
             <!-- Indicator element -->

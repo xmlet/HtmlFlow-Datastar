@@ -2,14 +2,16 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,19 +38,23 @@ class TemplCounterTest {
                         }
                         body {
                             div {
-                                dataInit("@get('/examples/templ_counter/updates')")
+                                dataInit { +get(::getCounterUpdates) }
                                 comment("Global Counter")
                                 button {
                                     attrId("global")
                                     attrClass("info")
-                                    dataOn("click", "@patch('/examples/templ_counter/global')")
+                                    dataOn(Click) {
+                                        +patch(::globalCounter)
+                                    }
                                     text("Global Clicks: 0")
                                 }
                                 comment("User Counter")
                                 button {
                                     attrId("user")
                                     attrClass("success")
-                                    dataOn("click", "@patch('/examples/templ_counter/user')")
+                                    dataOn(Click) {
+                                        +patch(::userCounter)
+                                    }
                                     text("User Clicks: 0")
                                 }
                             }
@@ -56,6 +62,15 @@ class TemplCounterTest {
                     }
                 }
             }
+
+    @Path("/examples/templ_counter/updates")
+    private fun getCounterUpdates() {}
+
+    @Path("/examples/templ_counter/global")
+    private fun globalCounter() {}
+
+    @Path("/examples/templ_counter/user")
+    private fun userCounter() {}
 
     private val expectedDatastarRx = """
         <!DOCTYPE html>

@@ -10,7 +10,6 @@ import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
-import org.xmlet.htmlapifaster.h1
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
@@ -20,11 +19,16 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignals
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.expressions.not
+import pt.isel.http4k.getClickToLoadDescription
+import pt.isel.http4k.getMore
 import pt.isel.ktor.Agent
 
 val hfClickToLoad: String =
@@ -43,8 +47,9 @@ val hfClickToLoad: String =
                         }
                     }
                     body {
-                        h1 {
-                            text("Click to Load")
+                        div {
+                            attrId("description")
+                            dataInit { +get(::getClickToLoadDescription) }
                         }
                         div {
                             attrId("demo")
@@ -65,11 +70,11 @@ val hfClickToLoad: String =
                         button {
                             attrClass("info wide")
                             val fetching = dataIndicator("_fetching")
-                            dataAttr(
-                                "disabled" to fetching,
-                            )
-                            dataOn("click", "!$fetching && @get('/click-to-load/more')")
-                            dataText("$fetching ? 'Loading...' : 'Load More'")
+                            dataAttr("disabled") { +fetching }
+                            dataOn(Click) {
+                                +(!fetching and get(::getMore))
+                            }
+                            dataText { +"$fetching ? 'Loading...' : 'Load More'" }
                             text("Load More")
                         }
                     }

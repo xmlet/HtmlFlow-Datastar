@@ -5,9 +5,10 @@ package htmlflow.datastar
 import htmlflow.doc
 import htmlflow.html
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.CustomEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,11 +36,14 @@ class SortableTest {
                         body {
                             div {
                                 val orderInfo = dataSignal("order-info", "Initial order")
-                                dataText("$orderInfo")
+                                dataText { +orderInfo }
                             }
                             div {
                                 attrId("sortContainer")
-                                dataOn("reordered", $$"$orderInfo = event.detail.orderInfo")
+                                val reorderedEvent = CustomEvent("reordered")
+                                dataOn(reorderedEvent) {
+                                    +$$"$orderInfo = event.detail.orderInfo"
+                                }
                                 button { text("Item 1") }
                                 button { text("Item 2") }
                                 button { text("Item 3") }

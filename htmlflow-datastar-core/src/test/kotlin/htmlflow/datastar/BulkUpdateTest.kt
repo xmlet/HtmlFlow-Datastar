@@ -2,15 +2,21 @@
 
 package htmlflow.datastar
 
+import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
+import htmlflow.tbody
+import htmlflow.tr
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataEffect
-import pt.isel.datastar.extensions.dataIndicator
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataEffect
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.events.Change
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -41,17 +47,19 @@ class BulkUpdateTest {
                                 val (fetching, selections) =
                                     dataSignals(
                                         "_fetching" to false,
-                                        "selections" to { "Array(4).fill(false)" }, // This must be a JS expression
-                                    ) { ifMissing() }
+                                        "selections" to { "Array(4).fill(false)" },
+                                    ) { modifiers { ifMissing() } }
                                 table {
                                     thead {
                                         tr {
                                             th {
                                                 input {
                                                     attrType(EnumTypeInputType.CHECKBOX)
-                                                    dataOn("change", "@setAll(el.checked, {include: /^selections/})")
-                                                    dataEffect($$"el.checked = $selections.every(Boolean)")
-                                                    dataAttr("disabled", "$fetching")
+                                                    dataOn(Change) {
+                                                        +setAll("el.checked", "{include: /^selections/}")
+                                                    }
+                                                    dataEffect { +$$"el.checked = $selections.every(Boolean)" }
+                                                    dataAttr("disabled") { +fetching }
                                                 }
                                             }
                                             th { text("Name") }
@@ -65,7 +73,7 @@ class BulkUpdateTest {
                                                 input {
                                                     attrType(EnumTypeInputType.CHECKBOX)
                                                     dataBind(selections)
-                                                    dataAttr("disabled", "$fetching")
+                                                    dataAttr("disabled") { +fetching }
                                                 }
                                             }
                                             td { text("Joe Smith") }
@@ -77,17 +85,21 @@ class BulkUpdateTest {
                                 div {
                                     button {
                                         attrClass("success")
-                                        dataOn("click", "@put('/bulk-update/activate')")
+                                        dataOn(Click) {
+                                            +put(::activate)
+                                        }
                                         dataIndicator(fetching.name)
-                                        dataAttr("disabled", "$fetching")
+                                        dataAttr("disabled") { +fetching }
                                         i { attrClass("pixelarticons:user-plus") }
                                         text("Activate")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click", "@put('/bulk-update/deactivate')")
+                                        dataOn(Click) {
+                                            +put(::deactivate)
+                                        }
                                         dataIndicator(fetching.name)
-                                        dataAttr("disabled", "$fetching")
+                                        dataAttr("disabled") { +fetching }
                                         i { attrClass("pixelarticons:user-x") }
                                         text("Deactivate")
                                     }
@@ -97,6 +109,12 @@ class BulkUpdateTest {
                     }
                 }
             }
+
+    @Path("/bulk-update/activate")
+    private fun activate() {}
+
+    @Path("/bulk-update/deactivate")
+    private fun deactivate() {}
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>

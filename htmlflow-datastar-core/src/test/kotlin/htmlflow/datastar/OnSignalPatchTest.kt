@@ -12,12 +12,13 @@ import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.pre
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.extensions.dataJsonSignals
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataOnSignalPatch
-import pt.isel.datastar.extensions.dataOnSignalPatchFilter
-import pt.isel.datastar.extensions.dataSignals
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataJsonSignals
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataOnSignalPatch
+import org.xmlet.htmlflow.datastar.attributes.dataOnSignalPatchFilter
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -55,16 +56,22 @@ class OnSignalPatchTest {
                                 div {
                                     attrClass("actions")
                                     button {
-                                        dataOn("click", $$"$$message = `Updated: ${performance.now().toFixed(2)}`")
+                                        dataOn(Click) {
+                                            +$$"$$message = `Updated: ${performance.now().toFixed(2)}`"
+                                        }
                                         text("Update Message")
                                     }
                                     button {
-                                        dataOn("click", "$counter++")
+                                        dataOn(Click) {
+                                            +"$counter++"
+                                        }
                                         text("Increment Counter")
                                     }
                                     button {
                                         attrClass("error")
-                                        dataOn("click", "$allChanges.length = 0; $counterChanges.length = 0")
+                                        dataOn(Click) {
+                                            +"$allChanges.length = 0; $counterChanges.length = 0"
+                                        }
                                         text("Clear All Changes")
                                     }
                                 }
@@ -72,30 +79,30 @@ class OnSignalPatchTest {
                                     h3 { text("Current Values") }
                                     p {
                                         text("Counter: ")
-                                        span { dataText("$counter") }
+                                        span { dataText { +counter } }
                                     }
                                     p {
                                         text("Message: ")
-                                        span { dataText("$message") }
+                                        span { dataText { +message } }
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch("$counterChanges.push(patch)")
+                                    dataOnSignalPatch { +"$counterChanges.push(patch)" }
                                     dataOnSignalPatchFilter("{include: /^counter$/}")
                                     h3 { text("Counter Changes Only") }
                                     pre {
                                         dataJsonSignals("{include: /^counterChanges/}") {
-                                            terse()
+                                            modifiers { terse() }
                                         }
                                     }
                                 }
                                 div {
-                                    dataOnSignalPatch("$allChanges.push(patch)")
+                                    dataOnSignalPatch { +"$allChanges.push(patch)" }
                                     dataOnSignalPatchFilter("{exclude: /allChanges|counterChanges/}")
                                     h3 { text("All Signal Changes") }
                                     pre {
                                         dataJsonSignals("{include: /^allChanges/}") {
-                                            terse()
+                                            modifiers { terse() }
                                         }
                                     }
                                 }

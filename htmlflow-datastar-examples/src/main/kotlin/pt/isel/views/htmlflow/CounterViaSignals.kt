@@ -7,15 +7,19 @@ import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
-import org.xmlet.htmlapifaster.h1
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
+import pt.isel.http4k.decrementCounterViaSignals
+import pt.isel.http4k.getCounterEventsSignals
+import pt.isel.http4k.getCounterSignalsDescription
+import pt.isel.http4k.incrementCounterViaSignals
 
 val hfCounterViaSignals: String =
     StringBuilder()
@@ -34,24 +38,31 @@ val hfCounterViaSignals: String =
                     }
                     body {
                         div {
+                            attrId("description")
+                            dataInit { +get(::getCounterSignalsDescription) }
+                        }
+                        div {
                             val count = dataSignal("count", 0)
-                            h1 {
-                                text("Counting Stars HtmlFlow - via Signals")
-                            }
                             div {
-                                dataInit("@get('/counter-signals/events')")
+                                dataInit { +get(::getCounterEventsSignals) }
                                 span {
                                     attrId("counter")
-                                    dataText(count)
+                                    dataText { +count }
                                 }
                             }
                             div {
                                 button {
-                                    dataOn("click", "@post('/counter-signals/decrement')")
+                                    attrId("decrement")
+                                    dataOn(Click) {
+                                        +post(::decrementCounterViaSignals)
+                                    }
                                     text("−")
                                 }
                                 button {
-                                    dataOn("click", "@post('/counter-signals/increment')")
+                                    attrId("increment")
+                                    dataOn(Click) {
+                                        +post(::incrementCounterViaSignals)
+                                    }
                                     text("+")
                                 }
                             }

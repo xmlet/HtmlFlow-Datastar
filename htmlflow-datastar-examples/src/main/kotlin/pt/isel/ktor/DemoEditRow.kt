@@ -1,9 +1,13 @@
 package pt.isel.ktor
 
+import dev.datastar.kotlin.sdk.ElementPatchMode
+import dev.datastar.kotlin.sdk.PatchElementsOptions
 import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
 import io.ktor.server.routing.Route
@@ -12,22 +16,28 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfEditRowDescription
+import pt.isel.views.htmlflow.defaultRowView
 import pt.isel.views.htmlflow.hfEditRow
+import pt.isel.views.htmlflow.hfPartialEditRowView
 
 private val html = loadResource("public/html/edit-row.html")
 
+private val users = DEFAULT_USERS.toMutableList()
+
 fun Route.demoEditRow() {
-    val state = MutableStateFlow(TableState(users = DEFAULT_USERS))
     route("/edit-row") {
         get("/html", RoutingContext::getEditRowHtml)
         get("/htmlflow", RoutingContext::getEditRowHtmlFlow)
-        get("/{index}") { editRow(state) }
-        put("/reset") { resetUsers(state) }
-        get("/cancel") { cancelEditRow(state) }
-        patch("/{index}") { saveEditRow(state) }
+        get("/description", RoutingContext::getEditRowDescription)
+        get("/{index}", RoutingContext::editRow)
+        put("/reset", RoutingContext::resetUsers)
+        get("/cancel", RoutingContext::cancelEditRow)
+        patch("/{index}", RoutingContext::saveEditRow)
     }
 }
 
@@ -36,10 +46,10 @@ private suspend fun RoutingContext.getEditRowHtml() {
 }
 
 private suspend fun RoutingContext.getEditRowHtmlFlow() {
-    call.respondText(hfEditRow.render(TableState(DEFAULT_USERS)), ContentType.Text.Html)
+    call.respondText(hfEditRow.render(TableState(users)), ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.editRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.editRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -48,39 +58,53 @@ private suspend fun RoutingContext.editRow(state: MutableStateFlow<TableState>) 
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
 
-        val user = state.value.users.getOrNull(index) ?: return@respondTextWriter
-
+        if (index > users.size - 1) return@respondTextWriter call.respond(HttpStatusCode.BadRequest)
+        val user = users.first { it.idx == index }
         generator.patchSignals(
-            """ { "name": "${user.name}", "email": "${user.email}" } """,
+            """ { "idx":${user.idx}, "name": "${user.name}", "email": "${user.email}" } """,
         )
-        state.emit(state.value.copy(editingIndex = index))
-        generator.patchElements(hfEditRow.render(state.value))
+        generator.patchElements(
+            hfPartialEditRowView.render(user),
+            PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
+        )
     }
 }
 
-private suspend fun RoutingContext.cancelEditRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.cancelEditRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        state.emit(state.value.copy(editingIndex = null))
-        generator.patchElements(hfEditRow.render(state.value))
+        val datastarQuery = call.queryParameters["datastar"]
+        checkNotNull(datastarQuery) { "Datastar query parameter can't be null" }
+        val (index, _, _) = Json.decodeFromString<TableUser>(datastarQuery)
+        val user = users.first { it.idx == index }
+        generator.patchElements(
+            defaultRowView.render(user),
+            PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
+        )
     }
 }
 
-private suspend fun RoutingContext.resetUsers(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.resetUsers() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
-        state.emit(TableState(DEFAULT_USERS))
-        generator.patchElements(hfEditRow.render(state.value))
+        users.clear()
+        users.addAll(DEFAULT_USERS)
+        users.forEach { user ->
+            generator.patchElements(
+                defaultRowView.render(user),
+                PatchElementsOptions("#row-${user.idx}", mode = ElementPatchMode.Replace),
+            )
+        }
     }
 }
 
-private suspend fun RoutingContext.saveEditRow(state: MutableStateFlow<TableState>) {
+private suspend fun RoutingContext.saveEditRow() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -89,29 +113,35 @@ private suspend fun RoutingContext.saveEditRow(state: MutableStateFlow<TableStat
         val index = call.pathParameters["index"]?.toIntOrNull()
         requireNotNull(index)
 
-        val datastarBodyArgs = call.request.call.receiveText()
-
+        val datastarBodyArgs = call.receiveText()
         val editedUser = Json.decodeFromString<TableUser>(datastarBodyArgs)
+        val userIdx = users.indexOf(users.first { it.idx == index })
+        users[userIdx] = editedUser
 
-        if (index in state.value.users.indices) {
-            val updatedUsers =
-                state.value.users
-                    .toMutableList()
-                    .apply { this[index] = editedUser }
-            state.emit(TableState(users = updatedUsers))
-        }
+        generator.patchElements(
+            defaultRowView.render(editedUser),
+            PatchElementsOptions("#row-${editedUser.idx}", mode = ElementPatchMode.Replace),
+        )
+    }
+}
 
-        generator.patchElements(hfEditRow.render(state.value))
+private suspend fun RoutingContext.getEditRowDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfEditRowDescription)
     }
 }
 
 @Serializable
 data class TableUser(
+    val idx: Int,
     val name: String,
     val email: String,
 )
 
 data class TableState(
     val users: List<TableUser>,
-    val editingIndex: Int? = null,
 )

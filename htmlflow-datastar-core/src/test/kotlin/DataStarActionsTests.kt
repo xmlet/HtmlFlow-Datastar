@@ -1,0 +1,63 @@
+import htmlflow.div
+import htmlflow.doc
+import htmlflow.html
+import jakarta.ws.rs.Path
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class DataStarActionsTests {
+    @Test
+    fun `actions toString() must return correct js string `() {
+        val handler = ExpressionBuilder()
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        div {
+                            val bar = dataSignal("bar", "initialValue")
+                            val peekDataStarAction = handler.peek("() => $bar")
+                            assertEquals("@peek(() => $bar)", peekDataStarAction.toString())
+                        }
+                    }
+                }
+            }
+
+        val setAllActions = handler.setAll(true, "{include: /^foo$/}")
+        assertEquals("@setAll(true, {include: /^foo$/})", setAllActions.toString())
+
+        val toggleAllDataStarAction = handler.toggleAll("{include: /^foo$/}")
+        assertEquals("@toggleAll({include: /^foo$/})", toggleAllDataStarAction.toString())
+
+        val getDataStarAction = handler.get(::getUsers)
+        assertEquals("@get('/users')", getDataStarAction.toString())
+
+        val patchDataStarAction = handler.patch(::patchUsers)
+        assertEquals("@patch('/users')", patchDataStarAction.toString())
+
+        val postDataStarAction = handler.post(::createUser)
+        assertEquals("@post('/users')", postDataStarAction.toString())
+
+        val putDataStarAction = handler.put(::editUser)
+        assertEquals("@put('/users')", putDataStarAction.toString())
+
+        val deleteDataStarAction = handler.delete(::deleteUser)
+        assertEquals("@delete('/users')", deleteDataStarAction.toString())
+    }
+
+    @Path("/users")
+    fun getUsers() {}
+
+    @Path("/users")
+    fun patchUsers() {}
+
+    @Path("/users")
+    fun createUser() { }
+
+    @Path("/users")
+    fun editUser() { }
+
+    @Path("/users")
+    fun deleteUser() { }
+}

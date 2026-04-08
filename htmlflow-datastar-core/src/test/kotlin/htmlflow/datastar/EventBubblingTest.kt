@@ -11,9 +11,10 @@ import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
 import org.xmlet.htmlapifaster.style
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -44,11 +45,13 @@ class EventBubblingTest {
                                 val key = dataSignal("key")
                                 text("Key pressed:")
                                 span {
-                                    dataText("$key")
+                                    dataText { +key }
                                 }
                                 div {
                                     attrId("button-container")
-                                    dataOn("click", "$key = evt.target.dataset.id")
+                                    dataOn(Click) {
+                                        +"$key = evt.target.dataset.id"
+                                    }
                                     button {
                                         addAttr("data-id", "KEY ELSE")
                                         attrClass("gray")

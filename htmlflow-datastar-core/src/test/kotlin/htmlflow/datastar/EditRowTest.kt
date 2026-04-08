@@ -1,7 +1,8 @@
-package pt.isel
+package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -15,8 +16,9 @@ import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -56,7 +58,9 @@ class EditRowTest {
                                         td { text("joe@smith.org") }
                                         td {
                                             button {
-                                                dataOn("click", "@get('/examples/edit_row/0')")
+                                                dataOn(Click) {
+                                                    +get(::editRow0)
+                                                }
                                                 text("Edit")
                                             }
                                         }
@@ -88,11 +92,15 @@ class EditRowTest {
                                         }
                                         td {
                                             button {
-                                                dataOn("click", "@get('/examples/edit_row/cancel')")
+                                                dataOn(Click) {
+                                                    +get(::editRowCancel)
+                                                }
                                                 text("Cancel")
                                             }
                                             button {
-                                                dataOn("click", "@patch('/examples/edit_row/0')")
+                                                dataOn(Click) {
+                                                    +patch(::editRow0)
+                                                }
                                                 text("Save")
                                             }
                                         }
@@ -103,6 +111,12 @@ class EditRowTest {
                     }
                 }
             }
+
+    @Path("/examples/edit_row/0")
+    private fun editRow0() {}
+
+    @Path("/examples/edit_row/cancel")
+    private fun editRowCancel() {}
 
     private val expectedDatastarRx =
         """

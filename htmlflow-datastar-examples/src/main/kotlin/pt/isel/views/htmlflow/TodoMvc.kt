@@ -22,10 +22,23 @@ import org.xmlet.htmlapifaster.section
 import org.xmlet.htmlapifaster.span
 import org.xmlet.htmlapifaster.strong
 import org.xmlet.htmlapifaster.ul
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataInit
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataInit
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.events.Blur
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.events.DblClick
+import org.xmlet.htmlflow.datastar.events.Keydown
+import pt.isel.http4k.cancelEditMode
+import pt.isel.http4k.deleteToggledTasks
+import pt.isel.http4k.getTodoMvcDescription
+import pt.isel.http4k.getUpdates
+import pt.isel.http4k.mode0
+import pt.isel.http4k.mode1
+import pt.isel.http4k.mode2
+import pt.isel.http4k.resetTasks
+import pt.isel.http4k.toggleAllCheck
 import pt.isel.ktor.Status
 import pt.isel.ktor.TodoUiState
 
@@ -44,9 +57,17 @@ val hfTodoMvcView: HtmlView<TodoUiState> =
             }
             body {
                 div {
-                    attrId("todo-app")
-                    tasksView()
-                    buttonsView()
+                    attrId("description")
+                    dataInit { +get(::getTodoMvcDescription) }
+                }
+                div {
+                    attrId("app")
+                    dataInit { +get(::getUpdates) }
+                    div {
+                        attrId("todo-app")
+                        tasksView()
+                        buttonsView()
+                    }
                 }
             }
         }
@@ -56,28 +77,28 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
     view<TodoUiState> {
         section {
             attrId("todo-mvc")
-            dataInit("@get('/todo-mvc/updates')")
             dyn { todoUiState: TodoUiState ->
                 header {
                     attrId("todo-header")
                     input {
                         attrType(EnumTypeInputType.CHECKBOX)
-                        dataOn("click", "@post('/todo-mvc/-1/toggle')") {
-                            prevent()
+                        dataOn(Click) {
+                            +post(::toggleAllCheck)
+                            modifiers { prevent() }
                         }
-                        dataInit(if (todoUiState.pendingCount == 0) "el.checked = true" else "el.checked = false")
+                        dataInit { +(if (todoUiState.pendingCount == 0) "el.checked = true" else "el.checked = false") }
                     }
                     input {
                         attrId("new-todo")
                         attrType(EnumTypeInputType.TEXT)
                         attrPlaceholder("What needs to be done?")
                         if (todoUiState.tasks.none { it.editing }) {
-                            val input = dataSignal("input")
-                            dataBind(input)
-                            dataOn(
-                                "keydown",
-                                "evt.key === 'Enter' && $input.trim() && @patch('/todo-mvc/-1') && ($input = '');",
-                            )
+                            val input = dataBind("input")
+                            dataOn(Keydown) {
+                                +$$"if (evt.key !== 'Enter' || !$input.trim()) return"
+                                +patch("/todo-mvc/-1")
+                                +input.setValue("''")
+                            }
                         }
                     }
                 }
@@ -87,14 +108,18 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                         li {
                             addAttr("role", "button")
                             attrTabIndex(0)
-                            dataOn("dblclick", "evt.target === el && @get('/todo-mvc/${task.id}')")
+                            dataOn(DblClick) {
+                                +"evt.target === el"
+                                +get("/todo-mvc/${task.id}")
+                            }
                             if (!task.editing) {
                                 input {
                                     attrId("todo-checkbox-${task.id}")
                                     attrType(EnumTypeInputType.CHECKBOX)
-                                    dataInit(if (task.status == Status.DONE) "el.checked = true" else "el.checked = false")
-                                    dataOn("click", "@post('/todo-mvc/${task.id}/toggle')") {
-                                        prevent()
+                                    dataInit { +if (task.status == Status.DONE) "el.checked = true" else "el.checked = false" }
+                                    dataOn(Click) {
+                                        +post("/todo-mvc/${task.id}/toggle")
+                                        modifiers { prevent() }
                                     }
                                 }
                                 label {
@@ -103,7 +128,9 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                 }
                                 button {
                                     attrClass("error small")
-                                    dataOn("click", "@delete('/todo-mvc/${task.id}')")
+                                    dataOn(Click) {
+                                        +delete("/todo-mvc/${task.id}")
+                                    }
                                 }
                             } else {
                                 input {
@@ -111,18 +138,21 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     attrValue(task.title)
                                     val input = dataSignal("input", task.title)
                                     dataBind(input)
-                                    dataInit("el.focus()")
-                                    dataOn("blur", "@put('/todo-mvc/cancel')")
-                                    dataOn(
-                                        "keydown",
-                                        """
-                                        if (evt.key === 'Escape') {
-                                        	el.blur();
-                                        } else if (evt.key === 'Enter' && $input.trim()) {
-                                        	@patch('/todo-mvc/${task.id}');
-                                        }
-                                        """.trimIndent(),
-                                    )
+                                    dataInit { +"el.focus()" }
+                                    dataOn(Blur) {
+                                        +put(::cancelEditMode)
+                                    }
+                                    dataOn(Keydown) {
+                                        val js =
+                                            $$"""
+                                                if (evt.key === 'Escape') {
+                                                    el.blur();
+                                                } else if (evt.key === 'Enter' && $input.trim()) {
+                                                    @patch('/todo-mvc/$${task.id}');
+                                                }
+                                            """.trimIndent()
+                                        +js
+                                    }
                                 }
                             }
                         }
@@ -141,27 +171,37 @@ fun Div<*>.buttonsView() =
         }
         button {
             attrClass("small info")
-            dataOn("click", "@put('/todo-mvc/mode/0')")
+            dataOn(Click) {
+                +put(::mode0)
+            }
             text("All")
         }
         button {
             attrClass("small")
-            dataOn("click", "@put('/todo-mvc/mode/1')")
+            dataOn(Click) {
+                +put(::mode1)
+            }
             text("Pending")
         }
         button {
             attrClass("small")
-            dataOn("click", "@put('/todo-mvc/mode/2')")
+            dataOn(Click) {
+                +put(::mode2)
+            }
             text("Completed")
         }
         button {
             attrClass("error small")
-            dataOn("click", "@delete('/todo-mvc/-1')")
+            dataOn(Click) {
+                +delete(::deleteToggledTasks)
+            }
             text("Delete")
         }
         button {
             attrClass("warning small")
-            dataOn("click", "@put('/todo-mvc/reset')")
+            dataOn(Click) {
+                +put(::resetTasks)
+            }
             text("Reset")
         }
     }

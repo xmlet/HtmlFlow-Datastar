@@ -2,6 +2,7 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -13,8 +14,10 @@ import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.label
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.events.Keydown
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
@@ -51,8 +54,9 @@ class InlineValidationTest {
                                         addAttr("aria-live", "polite")
                                         addAttr("aria-describedby", "email-info")
                                         dataBind("email")
-                                        dataOn("keydown", "@post('/examples/inline_validation/validate')") {
-                                            debounce(500.milliseconds)
+                                        dataOn(Keydown) {
+                                            +post(::validateInline)
+                                            modifiers { debounce(500.milliseconds) }
                                         }
                                     }
                                 }
@@ -68,8 +72,9 @@ class InlineValidationTest {
                                         attrRequired(true)
                                         addAttr("aria-live", "polite")
                                         dataBind("first-name")
-                                        dataOn("keydown", "@post('/examples/inline_validation/validate')") {
-                                            debounce(500.milliseconds)
+                                        dataOn(Keydown) {
+                                            +post(::validateInline)
+                                            modifiers { debounce(500.milliseconds) }
                                         }
                                     }
                                 }
@@ -80,14 +85,17 @@ class InlineValidationTest {
                                         attrRequired(true)
                                         addAttr("aria-live", "polite")
                                         dataBind("last-name")
-                                        dataOn("keydown", "@post('/examples/inline_validation/validate')") {
-                                            debounce(500.milliseconds)
+                                        dataOn(Keydown) {
+                                            +post(::validateInline)
+                                            modifiers { debounce(500.milliseconds) }
                                         }
                                     }
                                 }
                                 button {
                                     attrClass("success")
-                                    dataOn("click", "@post('/examples/inline_validation')")
+                                    dataOn(Click) {
+                                        +post(::submitForm)
+                                    }
                                     i {
                                         attrClass("material-symbols:person-add")
                                     }
@@ -98,6 +106,12 @@ class InlineValidationTest {
                     }
                 }
             }
+
+    @Path("/examples/inline_validation/validate")
+    private fun validateInline() {}
+
+    @Path("/examples/inline_validation")
+    private fun submitForm() {}
 
     private val expectedDatastarRx = """
         <!DOCTYPE html>

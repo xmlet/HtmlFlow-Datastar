@@ -6,7 +6,7 @@ import dev.datastar.kotlin.sdk.ServerSentEventGenerator
 import htmlflow.div
 import htmlflow.doc
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respondTextWriter
 import io.ktor.server.routing.Route
@@ -14,6 +14,9 @@ import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import kotlinx.coroutines.delay
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfProgressiveLoadDescription
 import pt.isel.views.htmlflow.hfProgressiveLoad
 import pt.isel.views.htmlflow.loadDiv
 
@@ -24,6 +27,7 @@ fun Route.demoProgressiveLoad() {
         get("/html", RoutingContext::getProgressiveLoadHtml)
         get("/htmlflow", RoutingContext::getProgressiveLoadHtmlFlow)
         get("/updates", RoutingContext::getUpdates)
+        get("/description", RoutingContext::getProgressiveLoadDescription)
     }
 }
 
@@ -37,7 +41,7 @@ private suspend fun RoutingContext.getProgressiveLoadHtmlFlow() {
 
 private suspend fun RoutingContext.getUpdates() {
     call.respondTextWriter(
-        status = HttpStatusCode.OK,
+        status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
         val generator = ServerSentEventGenerator(response(this))
@@ -112,7 +116,6 @@ private suspend fun RoutingContext.getUpdates() {
                 ),
                 Comment(
                     null,
-                    @Suppress("ktlint:standard:max-line-length")
                     "Varius ad consectetur malesuada ligula ante molestie hac bibendum conubia magna, iaculis congue nisi eleifend senectus amet posuere etiam. imperdiet nulla quis..",
                 ),
             )
@@ -141,6 +144,16 @@ private suspend fun RoutingContext.getUpdates() {
 
         delay(1000) // Simulate some delay
         generator.patchElements(loadButton)
+    }
+}
+
+private suspend fun RoutingContext.getProgressiveLoadDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfProgressiveLoadDescription)
     }
 }
 

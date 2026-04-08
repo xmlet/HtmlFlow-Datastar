@@ -12,29 +12,28 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.coroutines.flow.MutableStateFlow
+import pt.isel.utils.loadResource
+import pt.isel.utils.response
+import pt.isel.views.fragments.hfCounterSignalsDescription
 import pt.isel.views.htmlflow.hfCounterViaSignals
 
 private val html = loadResource("public/html/counter-signals.html")
 
-fun Route.demoCounterSignals() {
-    val counter: MutableStateFlow<Int> = MutableStateFlow(0)
+private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
+fun Route.demoCounterSignals() {
     route("/counter-signals") {
         get("/html", RoutingContext::getCounterPageHtml)
 
         get("/htmlflow", RoutingContext::getCounterPageHtmlFlow)
 
-        get("/events") {
-            getCounterEvents(counter)
-        }
+        get("/events", RoutingContext::getCounterEvents)
 
-        post("/increment") {
-            postCounterIncrement(counter)
-        }
+        post("/increment", RoutingContext::postCounterIncrement)
 
-        post("/decrement") {
-            postCounterDecrement(counter)
-        }
+        post("/decrement", RoutingContext::postCounterDecrement)
+
+        get("/description", RoutingContext::getCounterSignalsDescription)
     }
 }
 
@@ -46,7 +45,7 @@ private suspend fun RoutingContext.getCounterPageHtmlFlow() {
     call.respondText(hfCounterViaSignals, ContentType.Text.Html)
 }
 
-private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<Int>) {
+private suspend fun RoutingContext.getCounterEvents() {
     call.respondTextWriter(
         status = OK,
         contentType = ContentType.Text.EventStream,
@@ -60,12 +59,22 @@ private suspend fun RoutingContext.getCounterEvents(counter: MutableStateFlow<In
     }
 }
 
-private fun RoutingContext.postCounterIncrement(counter: MutableStateFlow<Int>) {
+private suspend fun RoutingContext.getCounterSignalsDescription() {
+    call.respondTextWriter(
+        status = OK,
+        contentType = ContentType.Text.EventStream,
+    ) {
+        val generator = ServerSentEventGenerator(response(this))
+        generator.patchElements(hfCounterSignalsDescription)
+    }
+}
+
+private fun RoutingContext.postCounterIncrement() {
     counter.value++
     call.response.status(HttpStatusCode.NoContent)
 }
 
-private fun RoutingContext.postCounterDecrement(counter: MutableStateFlow<Int>) {
+private fun RoutingContext.postCounterDecrement() {
     counter.value--
     call.response.status(HttpStatusCode.NoContent)
 }

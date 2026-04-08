@@ -1,208 +1,239 @@
 package pt.isel
 
+import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.routing.routing
-import io.ktor.server.testing.testApplication
-import pt.isel.ktor.demoActiveSearch
-import pt.isel.ktor.demoBulkUpdate
-import pt.isel.ktor.demoClickToEdit
-import pt.isel.ktor.demoClickToLoad
-import pt.isel.ktor.demoCounter
-import pt.isel.ktor.demoCounterSignals
-import pt.isel.ktor.demoDeleteRow
-import pt.isel.ktor.demoEditRow
-import pt.isel.ktor.demoFileUpload
-import pt.isel.ktor.demoInfiniteScroll
-import pt.isel.ktor.demoInlineValidation
-import pt.isel.ktor.demoLazyLoad
-import pt.isel.ktor.demoLazyTabs
-import pt.isel.ktor.demoProgressiveLoad
-import pt.isel.ktor.demoTodoMvc
-import kotlin.test.Test
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@ExtendWith(SharedTestServersExtension::class)
 class AllPagesSimpleTest {
-    @Test
-    fun `demo counter HTML returns page`() {
-        `demo returns page`("/counter/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo counter HTML returns page`(serverType: String) {
+        `demo returns page`("/counter/html", serverType)
     }
 
-    @Test
-    fun `demo counter signals HTML returns page`() {
-        `demo returns page`("/counter-signals/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo counter signals HTML returns page`(serverType: String) {
+        `demo returns page`("/counter-signals/html", serverType)
     }
 
-    @Test
-    fun `demo counter signals HtmlFlow returns page`() {
-        `demo returns page`("/counter-signals/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo counter signals HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/counter-signals/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo click to load HTML returns page`() {
-        `demo returns page`("/click-to-load/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo click to load HTML returns page`(serverType: String) {
+        `demo returns page`("/click-to-load/html", serverType)
     }
 
-    @Test
-    fun `demo click to load HtmlFlow returns page`() {
-        `demo returns page`("/click-to-load/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo click to load HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/click-to-load/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo active search HTML returns page`() {
-        `demo returns page`("/active-search/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo active search HTML returns page`(serverType: String) {
+        `demo returns page`("/active-search/html", serverType)
     }
 
-    @Test
-    fun `demo active search HtmlFlow returns page`() {
-        `demo returns page`("/active-search/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo active search HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/active-search/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo bulk update HTML returns page`() {
-        `demo returns page`("/bulk-update/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo bulk update HTML returns page`(serverType: String) {
+        `demo returns page`("/bulk-update/html", serverType)
     }
 
-    @Test
-    fun `demo bulk update HtmlFlow returns page`() {
-        `demo returns page`("/bulk-update/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo bulk update HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/bulk-update/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo click to edit HTML returns page`() {
-        `demo returns page`("/click-to-edit/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo click to edit via signals HTML returns page`(serverType: String) {
+        `demo returns page`("/click-to-edit-signals/html", serverType)
     }
 
-    @Test
-    fun `demo click to edit HtmlFlow returns page`() {
-        `demo returns page`("/click-to-edit/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo click to edit via signalsHtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/click-to-edit-signals/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo file upload HTML returns page`() {
-        `demo returns page`("/file-upload/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo click to edit HTML returns page`(serverType: String) {
+        `demo returns page`("/click-to-edit/html", serverType)
     }
 
-    @Test
-    fun `demo file upload HtmlFlow returns page`() {
-        `demo returns page`("/file-upload/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo click to edit HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/click-to-edit/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo infinite scroll HTML returns page`() {
-        `demo returns page`("/infinite-scroll/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo file upload HTML returns page`(serverType: String) {
+        `demo returns page`("/file-upload/html", serverType)
     }
 
-    @Test
-    fun `demo infinite scroll HtmlFlow returns page`() {
-        `demo returns page`("/infinite-scroll/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo file upload HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/file-upload/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo inline validation HTML returns page`() {
-        `demo returns page`("/inline-validation/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo infinite scroll HTML returns page`(serverType: String) {
+        `demo returns page`("/infinite-scroll/html", serverType)
     }
 
-    @Test
-    fun `demo inline validation HtmlFlow returns page`() {
-        `demo returns page`("/inline-validation/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo infinite scroll HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/infinite-scroll/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo progressive load HTML returns page`() {
-        `demo returns page`("/progressive-load/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo inline validation HTML returns page`(serverType: String) {
+        `demo returns page`("/inline-validation/html", serverType)
     }
 
-    @Test
-    fun `demo progressive load HtmlFlow returns page`() {
-        `demo returns page`("/progressive-load/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo inline validation HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/inline-validation/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo delete row HTML returns page`() {
-        `demo returns page`("/delete-row/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo progressive load HTML returns page`(serverType: String) {
+        `demo returns page`("/progressive-load/html", serverType)
     }
 
-    @Test
-    fun `demo delete row HtmlFlow returns page`() {
-        `demo returns page`("/delete-row/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo progressive load HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/progressive-load/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo edit row HTML returns page`() {
-        `demo returns page`("/edit-row/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo delete row HTML returns page`(serverType: String) {
+        `demo returns page`("/delete-row/html", serverType)
     }
 
-    @Test
-    fun `demo edit row HtmlFlow returns page`() {
-        `demo returns page`("/edit-row/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo delete row HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/delete-row/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo lazy load HTML returns page`() {
-        `demo returns page`("/lazy-load/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo edit row HTML returns page`(serverType: String) {
+        `demo returns page`("/edit-row/html", serverType)
     }
 
-    @Test
-    fun `demo lazy load HtmlFlow returns page`() {
-        `demo returns page`("/lazy-load/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo edit row HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/edit-row/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo lazy tabs HTML returns page`() {
-        `demo returns page`("/lazy-tabs/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo lazy load HTML returns page`(serverType: String) {
+        `demo returns page`("/lazy-load/html", serverType)
     }
 
-    @Test
-    fun `demo lazy tabs HtmlFlow returns page`() {
-        `demo returns page`("/lazy-tabs/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo lazy load HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/lazy-load/htmlflow", serverType)
     }
 
-    @Test
-    fun `demo todo mvc HTML returns page`() {
-        `demo returns page`("/todo-mvc/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo lazy tabs HTML returns page`(serverType: String) {
+        `demo returns page`("/lazy-tabs/html", serverType)
     }
 
-    @Test
-    fun `demo todo mvc HtmlFlow returns page`() {
-        `demo returns page`("/todo-mvc/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo lazy tabs HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/lazy-tabs/htmlflow", serverType)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo todo mvc HTML returns page`(serverType: String) {
+        `demo returns page`("/todo-mvc/html", serverType)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo todo mvc HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/todo-mvc/htmlflow", serverType)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo progress bar HTML returns page`(serverType: String) {
+        `demo returns page`("/progress-bar/html", serverType)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo progress bar HtmlFlow returns page`(serverType: String) {
+        `demo returns page`("/progress-bar/htmlflow", serverType)
     }
 
     /**
      * Tests that the router serves the corresponding HTML page for the given path.
      */
-    fun `demo returns page`(path: String) =
-        testApplication {
-            application {
-                routing {
-                    demoCounter()
-                    demoCounterSignals()
-                    demoClickToLoad()
-                    demoActiveSearch()
-                    demoBulkUpdate()
-                    demoClickToEdit()
-                    demoFileUpload()
-                    demoInfiniteScroll()
-                    demoInlineValidation()
-                    demoDeleteRow()
-                    demoEditRow()
-                    demoLazyLoad()
-                    demoLazyTabs()
-                    demoProgressiveLoad()
-                    demoTodoMvc()
-                }
+    private fun `demo returns page`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
+
+        val client = HttpClient()
+        client.use { client ->
+            runBlocking {
+                val response = client.get("http://localhost:$port$path")
+
+                // Check that the response status is 200 OK
+                assertEquals(HttpStatusCode.OK, response.status)
+
+                // Check that the response contains HTML content
+                val body = response.bodyAsText()
+                assertTrue(body.isNotEmpty(), "Response body should not be empty")
             }
-
-            // Make a GET request to /counter-signals
-            val response = client.get(path)
-
-            // Check that the response status is 200 OK
-            assertEquals(HttpStatusCode.OK, response.status)
-
-            // Check that the response contains HTML content
-            val body = response.bodyAsText()
-            assertTrue(body.isNotEmpty(), "Response body should not be empty")
         }
+    }
 }

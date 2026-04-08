@@ -3,43 +3,38 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+@ExtendWith(SharedTestServersExtension::class)
 class LazyLoadTest {
-    @Test
-    fun `lazy load shows loading then graph on HTML`() {
-        `lazy load shows loading then graph`("/lazy-load/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `lazy load shows loading then graph on HTML`(serverType: String) {
+        `lazy load shows loading then graph`("/lazy-load/html", serverType)
     }
 
-    @Test
-    fun `lazy load shows loading then graph on HtmlFlow`() {
-        `lazy load shows loading then graph`("/lazy-load/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `lazy load shows loading then graph on HtmlFlow`(serverType: String) {
+        `lazy load shows loading then graph`("/lazy-load/htmlflow", serverType)
     }
 
     /**
      * Tests that the lazy load initially shows "Loading..."
      * and then replaces it with the graph image after the SSE response.
      */
-    fun `lazy load shows loading then graph`(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                demoHtmlFlowDatastarRouting()
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun `lazy load shows loading then graph`(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -110,7 +105,6 @@ class LazyLoadTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

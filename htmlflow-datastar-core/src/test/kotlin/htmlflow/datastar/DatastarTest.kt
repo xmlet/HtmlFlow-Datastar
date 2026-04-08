@@ -33,11 +33,13 @@ import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.span
-import pt.isel.datastar.extensions.dataComputed
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataShow
-import pt.isel.datastar.extensions.dataSignal
-import pt.isel.datastar.extensions.dataText
+import org.xmlet.htmlflow.datastar.attributes.dataComputed
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataShow
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -66,28 +68,43 @@ class DatastarTest {
                             div {
                                 val response = dataSignal("response")
                                 val answer = dataSignal("answer", "bread")
-                                val correct = dataComputed("correct", "$response.toLowerCase() == $answer")
+                                val correct =
+                                    dataComputed("correct") {
+                                        +"$response.toLowerCase() == $answer"
+                                    }
                                 div {
                                     attrId("question")
                                     text("What do you put in a toaster?")
                                 }
                                 button {
-                                    dataOn("click", "$response = prompt('Answer:') ?? ''")
+                                    dataOn(Click) {
+                                        +"$response = prompt('Answer:') ?? ''"
+                                    }
                                     text("BUZZ")
                                 }
                                 div {
-                                    dataShow("$response != ''")
+                                    dataShow {
+                                        +"$response != ''"
+                                    }
                                     raw("You answered \"")
-                                    span { dataText("$response") }
+                                    span {
+                                        dataText {
+                                            +response
+                                        }
+                                    }
                                     raw("\".")
                                     span {
-                                        dataShow(correct)
+                                        dataShow {
+                                            +correct
+                                        }
                                         text("That is correct ✅")
                                     }
                                     span {
-                                        dataShow("!$correct")
+                                        dataShow {
+                                            +!correct
+                                        }
                                         raw("The correct answer is \"")
-                                        span { dataText(answer) }
+                                        span { dataText { +answer } }
                                         raw("\" 🤷")
                                     }
                                 }

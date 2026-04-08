@@ -3,28 +3,31 @@ package pt.isel
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.server.routing.routing
-import kotlinx.coroutines.runBlocking
-import pt.isel.ktor.demoHtmlFlowDatastarRouting
-import kotlin.test.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import pt.isel.infrastructure.SharedTestServers
+import pt.isel.infrastructure.SharedTestServersExtension
 import kotlin.test.assertEquals
 
+@ExtendWith(SharedTestServersExtension::class)
 class CounterTest {
-    @Test
-    fun `demo counter HTML increment button via patch element`() {
-        testDemoCounterSignalsIncrementButton("counter/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo counter HTML increment button via patch element`(serverType: String) {
+        testDemoCounterSignalsIncrementButton("counter/html", serverType)
     }
 
-    @Test
-    fun `demo counter HTML increment button via patch signals`() {
-        testDemoCounterSignalsIncrementButton("counter-signals/html")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo counter HTML increment button via patch signals`(serverType: String) {
+        testDemoCounterSignalsIncrementButton("counter-signals/html", serverType)
     }
 
-    @Test
-    fun `demo counter HtmlFlow increment button via patch signals`() {
-        testDemoCounterSignalsIncrementButton("counter-signals/htmlflow")
+    @ParameterizedTest
+    @ValueSource(strings = ["Ktor", "Http4k"])
+    fun `demo counter HtmlFlow increment button via patch signals`(serverType: String) {
+        testDemoCounterSignalsIncrementButton("counter-signals/htmlflow", serverType)
     }
 
     /**
@@ -38,21 +41,11 @@ class CounterTest {
      * 5. Wait for the fetch request and SSE update
      * 6. Verify the counter DOM element now shows 1
      */
-    fun testDemoCounterSignalsIncrementButton(path: String) {
-        val server =
-            embeddedServer(Netty, port = 0) {
-                routing {
-                    demoHtmlFlowDatastarRouting()
-                }
-            }.start()
-
-        val port =
-            runBlocking {
-                server.engine
-                    .resolvedConnectors()
-                    .first()
-                    .port
-            }
+    private fun testDemoCounterSignalsIncrementButton(
+        path: String,
+        serverType: String,
+    ) {
+        val port = SharedTestServers.getPort(serverType)
 
         Playwright.create().use { playwright ->
             val browser: Browser =
@@ -89,7 +82,7 @@ class CounterTest {
                 }
 
                 // Click the decrement (-) button
-                page.click("button:has-text('−')")
+                page.click("button#decrement")
 
                 // Wait for the counter to update to 0
                 // This waits for the POST request to complete and SSE to update the DOM
@@ -103,7 +96,6 @@ class CounterTest {
                 page.close()
                 context.close()
                 browser.close()
-                server.stop(1000, 2000)
             }
         }
     }

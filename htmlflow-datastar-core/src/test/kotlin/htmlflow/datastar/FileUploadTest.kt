@@ -4,11 +4,13 @@ package htmlflow.datastar
 
 import htmlflow.doc
 import htmlflow.html
+import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import pt.isel.datastar.extensions.dataAttr
-import pt.isel.datastar.extensions.dataBind
-import pt.isel.datastar.extensions.dataOn
-import pt.isel.datastar.extensions.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataAttr
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.events.Click
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -44,14 +46,19 @@ class FileUploadTest {
                             button {
                                 attrClass("warning")
                                 val files = dataSignal("files")
-                                dataOn("click", "$files.length && @post('/examples/file_upload')")
-                                dataAttr("aria-disabled", $$"`${!$$files.length}`")
+                                dataOn(Click) {
+                                    +"$files.length && ${post(::uploadFiles)}"
+                                }
+                                dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                                 text("Submit")
                             }
                         }
                     }
                 }
             }
+
+    @Path("/examples/file_upload")
+    private fun uploadFiles() {}
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>
