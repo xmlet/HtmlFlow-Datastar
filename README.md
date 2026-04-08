@@ -7,10 +7,18 @@ Type-Safe Hypermedia-First DSL for Reactive Backend-Driven Web Applications
 ## Examples
 
 This project includes a demo web application featuring examples from 
-[Data-Star](https://data-star.dev/examples), running on **Ktor** and using the **HtmlFlow Kotlin DSL** to generate HTML.
+[Data-Star](https://data-star.dev/examples), running on **Ktor** and **http4k** and using the **HtmlFlow Kotlin DSL** to generate HTML.
 
-HtmlFlow DSL provides a type-safe way to define Datastar attributes in Kotlin. Next is a sample of the Counter example
+HtmlFlow DSL provides type-safe backend handlers for DataStar actions.
+In the following samples, note how the action `get` is attached to a handler given by a function reference, this function being annotated
+with `Path`, from Jakarta, where the resource location for the
+request is specified.
+
+
+HtmlFlow DSL also provides a type-safe way to define Datastar
+attributes in Kotlin. Next is a sample of the Counter example
 with a strongly typed signal and another one from Active Search using events and modifiers:
+
 
 <table class="table">
 <tr>
@@ -21,10 +29,10 @@ with a strongly typed signal and another one from Active Search using events and
 div {
   val count: Signal = dataSignal("count", 0)
   div {
-    dataInit("@get('/counter/events')")
+    dataInit { +get(::getCounterEvents) }
     span {
       attrId("counter")
-      dataText(count)
+      dataText{ +count }
     }
   }
 }
@@ -41,8 +49,9 @@ div {
     attrType(EnumTypeInputType.TEXT)
     attrPlaceholder("Search...")
     dataBind("search")
-    dataOn("input", "@get('/active-search/search')") {
-      debounce(200.milliseconds)
+    dataOn(Input) {
+      +get(::search)
+      modifiers { debounce(200.milliseconds) }
     }
   }
 }
@@ -62,10 +71,6 @@ div {
     </td>
 </tr>
 </table>
-
-HtmlFlow DSL provides type-safe backend handlers for DataStar actions.
-In the next sample, taken from the “Click to Load” DataStar example, 
-note how the action `get` is attached to the handler given by the function reference `::clickToLoadMore`.
 
 Also, HtmlFlow DSL supports strongly typed DataStar expressions,
 allowing their composition with the infix operator `and`, 
@@ -106,7 +111,7 @@ button {
 </tr>
 </table>
 
-Run with: `./gradlew run` and open `http://localhost:8080` in your browser.
+Run with: `./gradlew run` and open `http://localhost:8080` for the ktor server and `http://localhost:8070` for http4k in your browser.
 
 Check all examples from the index page and corresponding HtmlFlow view definitions:
 * Active Search - [ActiveSearch.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/ActiveSearch.kt)
@@ -114,7 +119,6 @@ Check all examples from the index page and corresponding HtmlFlow view definitio
 * Click To Edit - [ClickToEdit.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/ClickToEdit.kt)
 * Click To Load - [BulkUpdate.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/BulkUpdate.kt)
 * Counter Via Signals - [CounterViaSignals.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/CounterViaSignals.kt)
-* DBmon - [DBmon.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/DBmon.kt)
 * Delete Row - [DeleteRow.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/DeleteRow.kt)
 * File Upload - [FileUpload.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/FileUpload.kt)
 * Infinite Scroll - [InfiniteScroll.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/InfiniteScroll.kt)
