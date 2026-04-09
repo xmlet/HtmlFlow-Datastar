@@ -2,13 +2,26 @@
 
 package htmlflow.datastar
 
-import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
-import htmlflow.tbody
-import htmlflow.tr
 import jakarta.ws.rs.Path
-import org.xmlet.htmlapifaster.*
+import org.xmlet.htmlapifaster.Div
+import org.xmlet.htmlapifaster.EnumTypeInputType
+import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.body
+import org.xmlet.htmlapifaster.button
+import org.xmlet.htmlapifaster.div
+import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.i
+import org.xmlet.htmlapifaster.input
+import org.xmlet.htmlapifaster.script
+import org.xmlet.htmlapifaster.table
+import org.xmlet.htmlapifaster.tbody
+import org.xmlet.htmlapifaster.td
+import org.xmlet.htmlapifaster.th
+import org.xmlet.htmlapifaster.thead
+import org.xmlet.htmlapifaster.tr
+import org.xmlet.htmlflow.datastar.Signal
 import org.xmlet.htmlflow.datastar.attributes.dataAttr
 import org.xmlet.htmlflow.datastar.attributes.dataBind
 import org.xmlet.htmlflow.datastar.attributes.dataEffect
@@ -49,39 +62,7 @@ class BulkUpdateTest {
                                         "_fetching" to false,
                                         "selections" to { "Array(4).fill(false)" },
                                     ) { modifiers { ifMissing() } }
-                                table {
-                                    thead {
-                                        tr {
-                                            th {
-                                                input {
-                                                    attrType(EnumTypeInputType.CHECKBOX)
-                                                    dataOn(Change) {
-                                                        +setAll("el.checked", "{include: /^selections/}")
-                                                    }
-                                                    dataEffect { +$$"el.checked = $selections.every(Boolean)" }
-                                                    dataAttr("disabled") { +fetching }
-                                                }
-                                            }
-                                            th { text("Name") }
-                                            th { text("Email") }
-                                            th { text("Status") }
-                                        }
-                                    }
-                                    tbody {
-                                        tr {
-                                            td {
-                                                input {
-                                                    attrType(EnumTypeInputType.CHECKBOX)
-                                                    dataBind(selections)
-                                                    dataAttr("disabled") { +fetching }
-                                                }
-                                            }
-                                            td { text("Joe Smith") }
-                                            td { text("joe@smith.org") }
-                                            td { text("Active") }
-                                        }
-                                    }
-                                }
+                                buildTable(fetching, selections)
                                 div {
                                     button {
                                         attrClass("success")
@@ -110,11 +91,52 @@ class BulkUpdateTest {
                 }
             }
 
+    fun Div<*>.buildTable(
+        fetching: Signal<Any?>,
+        selections: Signal<Any?>,
+    ) {
+        table {
+            thead {
+                tr {
+                    th {
+                        input {
+                            attrType(EnumTypeInputType.CHECKBOX)
+                            dataOn(Change) {
+                                +setAll("el.checked", "{include: /^selections/}")
+                            }
+                            dataEffect { +$$"el.checked = $selections.every(Boolean)" }
+                            dataAttr("disabled") { +fetching }
+                        }
+                    }
+                    th { text("Name") }
+                    th { text("Email") }
+                    th { text("Status") }
+                }
+            }
+            tbody {
+                tr {
+                    td {
+                        input {
+                            attrType(EnumTypeInputType.CHECKBOX)
+                            dataBind(selections)
+                            dataAttr("disabled") { +fetching }
+                        }
+                    }
+                    td { text("Joe Smith") }
+                    td { text("joe@smith.org") }
+                    td { text("Active") }
+                }
+            }
+        }
+    }
+
     @Path("/bulk-update/activate")
-    private fun activate() {}
+    private fun activate() {
+    }
 
     @Path("/bulk-update/deactivate")
-    private fun deactivate() {}
+    private fun deactivate() {
+    }
 
     private val expectedDatastarRx = $$"""
     <!DOCTYPE html>
