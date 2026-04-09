@@ -39,12 +39,24 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    // dokkaGenerate is the master task that generates all Dokka formats (including HTML)
+    dependsOn(tasks.named("dokkaGenerate"))
+    from(layout.buildDirectory.dir("dokka/html"))
+}
+
+tasks.build {
+    dependsOn(tasks.named("javadocJar"))
+}
+
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
     signAllPublications()
     configure(
         KotlinJvm(
-            javadocJar = JavadocJar.Dokka("dokkaGenerate"),
+            // Reference the custom javadocJar task that contains all Dokka documentation
+            javadocJar = JavadocJar.Dokka("javadocJar"),
         ),
     )
     coordinates(groupId = project.group.toString(), artifactId = project.name, version = project.version.toString())
