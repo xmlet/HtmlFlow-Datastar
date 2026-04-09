@@ -96,12 +96,22 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.and(action: DataStarAction): DataStarExpression = DataStarExpression("$this && $action")
+    infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this && $expression")
+
+    /**
+     * Equal to the JavaScript && operator, used to chain multiple expressions together.
+     */
+    infix fun String.and(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this && $expression")
 
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
     infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
+
+    /**
+     * Equal to the JavaScript || operator, used to chain multiple expressions together.
+     */
+    infix fun String.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
 
     /**
      * Equal to the JavaScript == operator, used to compare two expressions.

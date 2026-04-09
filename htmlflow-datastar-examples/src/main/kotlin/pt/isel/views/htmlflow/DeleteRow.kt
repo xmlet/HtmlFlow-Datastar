@@ -99,8 +99,7 @@ fun Tbody<*>.hfTableRow(
         button {
             attrClass("error")
             dataOn(Click) {
-                +"confirm('Are you sure?')"
-                +delete("/delete-row/$index")
+                +("confirm('Are you sure?')" and delete("/delete-row/$index"))
             }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled") { +fetching }
