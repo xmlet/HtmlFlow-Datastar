@@ -17,9 +17,9 @@ fun main() {
 
     logger.info("Ktor running on http://localhost:8080")
 
-    val http4kServer = demosHttp4kRouting.asServer(Jetty(8000)).start()
+    val http4kServer = demosHttp4kRouting.asServer(Jetty(8070)).start()
 
-    logger.info("http4k running on http://localhost:8000")
+    logger.info("http4k running on http://localhost:8070")
 
     Runtime.getRuntime().addShutdownHook(
         Thread {

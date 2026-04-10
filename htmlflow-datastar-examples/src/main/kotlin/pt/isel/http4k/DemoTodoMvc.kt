@@ -275,11 +275,14 @@ fun resetTasks(req: Request): Response {
 }
 
 @Path("/todo-mvc/description")
-fun getTodoMvcDescription(req: Request): SseResponse =
-    SseResponse { sse ->
-        sse.sendPatchElements(elements = listOf(Element.of(hfTodoMvcDescription)))
+fun getTodoMvcDescription(req: Request): SseResponse {
+    val account = accountFlow(req)
+    val accountId = account.currentValue!!.id
+    return SseResponse { sse ->
+        sse.sendPatchElements(elements = listOf(Element.of(hfTodoMvcDescription(accountId))))
         sse.close()
     }
+}
 
 private const val ACCOUNT_COOKIE = "todo-account-id"
 

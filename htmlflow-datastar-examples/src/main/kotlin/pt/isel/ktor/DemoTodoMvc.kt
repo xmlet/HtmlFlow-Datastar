@@ -266,8 +266,10 @@ private suspend fun RoutingContext.getTodoMvcDescription() {
         status = OK,
         contentType = ContentType.Text.EventStream,
     ) {
+        val account = accountFlow()
+        val accountID = account.value.id
         val generator = ServerSentEventGenerator(response(this))
-        generator.patchElements(hfTodoMvcDescription)
+        generator.patchElements(hfTodoMvcDescription(accountID))
     }
 }
 

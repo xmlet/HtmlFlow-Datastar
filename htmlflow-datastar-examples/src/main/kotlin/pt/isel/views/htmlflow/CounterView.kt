@@ -1,6 +1,5 @@
 package pt.isel.views.htmlflow
 
-import htmlflow.HtmlView
 import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
@@ -76,12 +75,10 @@ val hfCounter: String =
             }
         }.toString()
 
-val hfCounterEventView: HtmlView<Int> =
-    view {
+fun hfCounterEventView(count: Int): String =
+    view<Int> {
         span {
             attrId("counter")
-            dyn { count: Int ->
-                text(count.toString())
-            }
+            dyn { count: Int -> text(count.toString()) }
         }
-    }
+    }.render(count)
