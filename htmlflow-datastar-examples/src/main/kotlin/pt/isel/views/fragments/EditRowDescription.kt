@@ -2,6 +2,7 @@ package pt.isel.views.fragments
 
 import htmlflow.div
 import htmlflow.doc
+import org.xmlet.htmlapifaster.code
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -56,6 +57,13 @@ val hfEditRowDescription =
                                     "Response (text/event-stream): HTML patches for all rows with initial data.",
                             )
                         }
+                    }
+                    p { text("For Http4k limitations use the following curl command:") }
+                    text("Choose a row index from 0 to 3 and run: ")
+                    code {
+                        text(
+                            "curl -N -H \"Accept: text/event-stream\" \"http://localhost:8070/edit-row/(0..3)\"",
+                        )
                     }
                 }
             }

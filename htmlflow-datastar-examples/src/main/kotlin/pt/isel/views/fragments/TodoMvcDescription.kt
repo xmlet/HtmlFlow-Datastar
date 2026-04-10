@@ -3,12 +3,14 @@ package pt.isel.views.fragments
 import htmlflow.div
 import htmlflow.doc
 import org.xmlet.htmlapifaster.a
+import org.xmlet.htmlapifaster.code
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.ul
+import java.util.UUID
 
-val hfTodoMvcDescription =
+fun hfTodoMvcDescription(accountId: UUID) =
     StringBuilder()
         .apply {
             doc {
@@ -21,7 +23,6 @@ val hfTodoMvcDescription =
                     p { text("This page performs the following fetch requests:") }
 
                     ul {
-
                         li {
                             text("GET ")
                             a {
@@ -121,6 +122,12 @@ val hfTodoMvcDescription =
                                     "Response: Initial task list is restored via the '/updates' stream.",
                             )
                         }
+                    }
+                    p { text("For Http4k limitations use the following curl command:") }
+                    code {
+                        text(
+                            "curl -N -H \"Cookie: todo-account-id=${accountId}\" -H \"Accept: text/event-stream\" \"http://localhost:8070/todo-mvc/updates\"",
+                        )
                     }
                 }
             }

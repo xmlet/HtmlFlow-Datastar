@@ -3,6 +3,7 @@ package pt.isel.views.fragments
 import htmlflow.div
 import htmlflow.doc
 import org.xmlet.htmlapifaster.a
+import org.xmlet.htmlapifaster.code
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -61,6 +62,19 @@ val hfClickToEditDescription =
                                     "Response (text/event-stream): HTML patch replacing the demo div with the display view showing the default profile.",
                             )
                         }
+                    }
+                    p { text("For Http4k limitations use the following curl command:") }
+                    text("Edit:")
+                    code {
+                        text(
+                            "curl -N -H \"Accept: text/event-stream\" \"http://localhost:8070/click-to-edit/edit\"",
+                        )
+                    }
+                    text("Cancel:")
+                    code {
+                        text(
+                            "curl -N -H \"Accept: text/event-stream\" \"http://localhost:8070/click-to-edit/cancel\"",
+                        )
                     }
                 }
             }
