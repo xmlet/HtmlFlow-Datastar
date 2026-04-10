@@ -6,6 +6,7 @@ import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
@@ -53,20 +54,7 @@ val hfInlineValidation =
                         div {
                             attrId("demo")
                             val error = dataSignal("_error", true)
-                            label {
-                                text("Email Address")
-                                input {
-                                    attrType(EnumTypeInputType.EMAIL)
-                                    attrRequired(true)
-                                    addAttr("aria-live", "polite")
-                                    addAttr("aria-describedby", "email-info")
-                                    dataBind("email")
-                                    dataOn(Keydown) {
-                                        +post(::validateFields)
-                                        modifiers { debounce(500.milliseconds) }
-                                    }
-                                }
-                            }
+                            buildEmailLabel()
                             div {
                                 attrId("email-error")
                                 attrClass("error")
@@ -76,40 +64,12 @@ val hfInlineValidation =
                                 attrId("email-info-details")
                                 raw("The only valid email address is \"test@test.com\".")
                             }
-
-                            label {
-                                text("First Name")
-                                input {
-                                    attrType(EnumTypeInputType.TEXT)
-                                    attrRequired(true)
-                                    addAttr("aria-live", "polite")
-                                    dataBind("first-name")
-                                    dataOn(Keydown) {
-                                        +post(::validateFields)
-                                        modifiers { debounce(200.milliseconds) }
-                                    }
-                                }
-                            }
-
+                            buildFirstNameLabel()
                             div {
                                 attrId("first-name-error")
                                 attrClass("error")
                             }
-
-                            label {
-                                text("Last Name")
-                                input {
-                                    attrType(EnumTypeInputType.TEXT)
-                                    attrRequired(true)
-                                    addAttr("aria-live", "polite")
-                                    dataBind("last-name")
-                                    dataOn(Keydown) {
-                                        +post(::validateFields)
-                                        modifiers { debounce(500.milliseconds) }
-                                    }
-                                }
-                            }
-
+                            buildLastNameLabel()
                             div {
                                 attrId("last-name-error")
                                 attrClass("error")
@@ -127,6 +87,55 @@ val hfInlineValidation =
                 }
             }
         }.toString()
+
+private fun Div<*>.buildEmailLabel() {
+    label {
+        text("Email Address")
+        input {
+            attrType(EnumTypeInputType.EMAIL)
+            attrRequired(true)
+            addAttr("aria-live", "polite")
+            addAttr("aria-describedby", "email-info")
+            dataBind("email")
+            dataOn(Keydown) {
+                +post(::validateFields)
+                modifiers { debounce(500.milliseconds) }
+            }
+        }
+    }
+}
+
+private fun Div<*>.buildFirstNameLabel() {
+    label {
+        text("First Name")
+        input {
+            attrType(EnumTypeInputType.TEXT)
+            attrRequired(true)
+            addAttr("aria-live", "polite")
+            dataBind("first-name")
+            dataOn(Keydown) {
+                +post(::validateFields)
+                modifiers { debounce(200.milliseconds) }
+            }
+        }
+    }
+}
+
+private fun Div<*>.buildLastNameLabel() {
+    label {
+        text("Last Name")
+        input {
+            attrType(EnumTypeInputType.TEXT)
+            attrRequired(true)
+            addAttr("aria-live", "polite")
+            dataBind("last-name")
+            dataOn(Keydown) {
+                +post(::validateFields)
+                modifiers { debounce(500.milliseconds) }
+            }
+        }
+    }
+}
 
 val hfSignUpDoc =
     StringBuilder()

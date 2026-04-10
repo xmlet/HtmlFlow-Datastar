@@ -37,30 +37,7 @@ class LazyTabsTest {
                                 attrId("demo")
                                 div {
                                     addAttr("role", "tablist")
-                                    button {
-                                        addAttr("role", "tab")
-                                        addAttr("aria-selected", "true")
-                                        dataOn(Click) {
-                                            +get(::lazyTabs0)
-                                        }
-                                        text("Tab 0")
-                                    }
-                                    button {
-                                        addAttr("role", "tab")
-                                        addAttr("aria-selected", "false")
-                                        dataOn(Click) {
-                                            +get(::lazyTabs1)
-                                        }
-                                        text("Tab 1")
-                                    }
-                                    button {
-                                        addAttr("role", "tab")
-                                        addAttr("aria-selected", "false")
-                                        dataOn(Click) {
-                                            +get(::lazyTabs2)
-                                        }
-                                        text("Tab 2")
-                                    }
+                                    buildButtons()
                                 }
                                 div {
                                     addAttr("role", "tabpanel")
@@ -72,6 +49,19 @@ class LazyTabsTest {
                     }
                 }
             }
+
+    fun Div<*>.buildButtons() {
+        (0..2).forEach { i ->
+            button {
+                addAttr("role", "tab")
+                addAttr("aria-selected", if (i == 0) "true" else "false")
+                dataOn(Click) {
+                    +get("/examples/lazy_tabs/$i")
+                }
+                text("Tab $i")
+            }
+        }
+    }
 
     @Path("/examples/lazy_tabs/0")
     private fun lazyTabs0() {}
