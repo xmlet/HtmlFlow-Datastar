@@ -1,14 +1,16 @@
 package htmlflow.datastar
 
-import htmlflow.doc
+import htmlflow.dyn
 import htmlflow.html
+import htmlflow.view
 import jakarta.ws.rs.Path
+import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tbody
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.div
 import org.xmlet.htmlapifaster.head
-import org.xmlet.htmlapifaster.i
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.table
 import org.xmlet.htmlapifaster.tbody
@@ -28,125 +30,100 @@ class DeleteRowTest {
     fun `Delete Row of the Datastar Frontend Reactivity`() {
         val out = demoDastarRx
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
-        out.toString().split("\n").forEach { actual ->
+        out.render(users).toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
         }
     }
 
     private val demoDastarRx =
-        StringBuilder()
-            .apply {
-                doc {
-                    html {
-                        head {
-                            script {
-                                attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
-                            }
-                        }
-                        body {
-                            div {
-                                table {
-                                    thead {
-                                        tr {
-                                            th { text("Name") }
-                                            th { text("Email") }
-                                            th { text("Actions") }
-                                        }
-                                    }
-                                    tbody {
-                                        tr {
-                                            td { text("Joe Smith") }
-                                            td { text("joe@smith.org") }
-                                            td {
-                                                button {
-                                                    attrClass("error")
-                                                    dataOn(Click) {
-                                                        +"confirm('Are you sure?') && ${delete(::deleteRow0)}"
-                                                    }
-                                                    val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled") { +fetching }
-                                                    text("Delete")
-                                                }
-                                            }
-                                        }
-                                        tr {
-                                            td { text("Angie MacDowell") }
-                                            td { text("angie@macdowell.org") }
-                                            td {
-                                                button {
-                                                    attrClass("error")
-                                                    dataOn(Click) {
-                                                        +"confirm('Are you sure?') && ${delete(::deleteRow1)}"
-                                                    }
-                                                    val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled") { +fetching }
-                                                    text("Delete")
-                                                }
-                                            }
-                                        }
-                                        tr {
-                                            td { text("Fuqua Tarkenton") }
-                                            td { text("fuqua@tarkenton.org") }
-                                            td {
-                                                button {
-                                                    attrClass("error")
-                                                    dataOn(Click) {
-                                                        +"confirm('Are you sure?') && ${delete(::deleteRow2)}"
-                                                    }
-                                                    val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled") { +fetching }
-                                                    text("Delete")
-                                                }
-                                            }
-                                        }
-                                        tr {
-                                            td { text("Kim Yee") }
-                                            td { text("kim@yee.org") }
-                                            td {
-                                                button {
-                                                    attrClass("error")
-                                                    dataOn(Click) {
-                                                        +"confirm('Are you sure?') && ${delete(::deleteRow3)}"
-                                                    }
-                                                    val fetching = dataIndicator("_fetching")
-                                                    dataAttr("disabled") { +fetching }
-                                                    text("Delete")
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                div {
-                                    button {
-                                        attrClass("success")
-                                        dataOn(Click) {
-                                            +patch(::restoreRows)
-                                        }
-                                        i { attrClass("pixelarticons:user-plus") }
-                                        text("Reset")
-                                    }
-                                }
-                            }
-                        }
+        view<DeleteRowsState> {
+            html {
+                head {
+                    script {
+                        attrType(EnumTypeScriptType.MODULE)
+                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                    }
+                }
+                body {
+                    div {
+                        attrId("users-table")
+                        hfDeleteRowTable()
                     }
                 }
             }
+        }
 
-    @Path("/examples/delete_row/reset")
+    fun Div<*>.hfDeleteRowTable() {
+        table {
+            thead {
+                tr {
+                    th { text("Name") }
+                    th { text("Email") }
+                    th { text("Actions") }
+                }
+            }
+            tbody {
+                dyn { state: DeleteRowsState ->
+                    state.users.forEachIndexed { index, user ->
+                        hfTableRow(index, user)
+                    }
+                }
+            }
+        }
+        div {
+            button {
+                dataOn(Click) {
+                    +patch(::restoreRows)
+                }
+                val fetching = dataIndicator("_fetching")
+                dataAttr("disabled") { +fetching }
+                text("Reset")
+            }
+        }
+    }
+
+    private fun Tbody<*>.hfTableRow(
+        index: Int,
+        user: TableUser,
+    ) = tr {
+        attrId("row-$index")
+        td { text(user.name) }
+        td { text(user.email) }
+        td {
+            button {
+                attrClass("error")
+                dataOn(Click) {
+                    +("confirm('Are you sure?')" and delete("/examples/delete-row/$index"))
+                }
+                val fetching = dataIndicator("_fetching")
+                dataAttr("disabled") { +fetching }
+                text("Delete")
+            }
+        }
+    }
+
+    private data class TableUser(
+        val id: Int,
+        val name: String,
+        val email: String,
+    )
+
+    private data class DeleteRowsState(
+        val users: List<TableUser>,
+    )
+
+    private val users =
+        DeleteRowsState(
+            listOf(
+                TableUser(0, "Joe Smith", "joe@smith.org"),
+                TableUser(1, "Angie MacDowell", "angie@macdowell.org"),
+                TableUser(2, "Fuqua Tarkenton", "fuqua@tarkenton.org"),
+                TableUser(3, "Kim Yee", "kim@yee.org"),
+            ),
+        )
+
+    @Path("/examples/delete-row/reset")
     private fun restoreRows() {}
-
-    @Path("/examples/delete_row/0")
-    private fun deleteRow0() {}
-
-    @Path("/examples/delete_row/1")
-    private fun deleteRow1() {}
-
-    @Path("/examples/delete_row/2")
-    private fun deleteRow2() {}
-
-    @Path("/examples/delete_row/3")
-    private fun deleteRow3() {}
 
     private val expectedDatastarRx =
         $$"""
@@ -157,7 +134,7 @@ class DeleteRowTest {
                 </script>
             </head>
             <body>
-                <div>
+                <div id="users-table">
                     <table>
                         <thead>
                             <tr>
@@ -173,7 +150,7 @@ class DeleteRowTest {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr id="row-0">
                                 <td>
                                     Joe Smith
                                 </td>
@@ -181,12 +158,12 @@ class DeleteRowTest {
                                     joe@smith.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="row-1">
                                 <td>
                                     Angie MacDowell
                                 </td>
@@ -194,12 +171,12 @@ class DeleteRowTest {
                                     angie@macdowell.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/1')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/1')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="row-2">
                                 <td>
                                     Fuqua Tarkenton
                                 </td>
@@ -207,12 +184,12 @@ class DeleteRowTest {
                                     fuqua@tarkenton.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/2')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/2')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="row-3">
                                 <td>
                                     Kim Yee
                                 </td>
@@ -220,7 +197,7 @@ class DeleteRowTest {
                                     kim@yee.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete_row/3')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/3')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
@@ -228,9 +205,7 @@ class DeleteRowTest {
                         </tbody>
                     </table>
                     <div>
-                        <button class="success" data-on:click="@patch('/examples/delete_row/reset')">
-                            <i class="pixelarticons:user-plus">
-                            </i>
+                        <button data-on:click="@patch('/examples/delete-row/reset')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
                             Reset
                         </button>
                     </div>

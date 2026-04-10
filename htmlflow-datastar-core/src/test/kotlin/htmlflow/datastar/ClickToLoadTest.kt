@@ -39,7 +39,7 @@ class ClickToLoadTest {
                             button {
                                 attrClass("info wide")
                                 val fetching = dataIndicator("fetching")
-                                dataAttr("aria-disabled") { +$$"`${$$fetching}`" }
+                                dataAttr("aria-disabled") { +fetching }
                                 dataOn(Click) {
                                     +(!fetching and get(::loadMore))
                                 }
@@ -61,7 +61,7 @@ class ClickToLoadTest {
         </script>
     </head>
 <body>
-    <button class="info wide" data-indicator:fetching="" data-attr:aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/click_to_load/more')">
+    <button class="info wide" data-indicator:fetching="" data-attr:aria-disabled="$fetching" data-on:click="!$fetching && @get('/examples/click_to_load/more')">
         Load More
     </button>
 </body>

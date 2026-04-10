@@ -36,21 +36,27 @@ class FileUploadTest {
                             }
                         }
                         body {
+                            val files = dataSignal("files")
                             label {
                                 p { text("Pick anything less than 1MB") }
                                 input {
                                     attrType(EnumTypeInputType.FILE)
-                                    dataBind("files multiple")
+                                    dataBind(files)
+                                    attrMultiple(true)
                                 }
                             }
                             button {
                                 attrClass("warning")
-                                val files = dataSignal("files")
                                 dataOn(Click) {
-                                    +"$files.length && ${post(::uploadFiles)}"
+                                    +"$files.length"
+                                    +post(::uploadFiles)
                                 }
                                 dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                                 text("Submit")
+                            }
+                            div {
+                                attrId("file-upload")
+                                attrHidden(true)
                             }
                         }
                     }
@@ -67,16 +73,18 @@ class FileUploadTest {
         <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
         </script>
     </head>
-<body>
+<body data-signals:files="">
     <label>
         <p>
             Pick anything less than 1MB
         </p>
-        <input type="file" data-bind:files multiple="">
+        <input type="file" data-bind:files="" multiple="multiple">
     </label>
-    <button class="warning" data-signals:files="" data-on:click="$files.length && @post('/examples/file_upload')" data-attr:aria-disabled="`${!$files.length}`">
+    <button class="warning" data-on:click="$files.length; @post('/examples/file_upload')" data-attr:aria-disabled="`${!$files.length}`">        
         Submit
     </button>
+    <div id="file-upload" hidden="hidden">
+    </div>
 </body>
 </html>
     """

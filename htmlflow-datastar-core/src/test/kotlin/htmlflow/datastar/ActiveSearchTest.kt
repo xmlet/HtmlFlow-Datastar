@@ -1,24 +1,27 @@
 package htmlflow.datastar
 
 import htmlflow.div
-import htmlflow.doc
+import htmlflow.dyn
 import htmlflow.html
-import htmlflow.tbody
-import htmlflow.tr
+import htmlflow.view
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
+import org.xmlet.htmlapifaster.Tbody
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.table
+import org.xmlet.htmlapifaster.tbody
 import org.xmlet.htmlapifaster.td
 import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
+import org.xmlet.htmlapifaster.tr
 import org.xmlet.htmlflow.datastar.attributes.dataBind
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.events.Input
+import kotlin.collections.forEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
@@ -26,7 +29,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class ActiveSearchTest {
     @Test
     fun `Active Search of the Datastar Frontend Reactivity`() {
-        val out = demoDastarRx
+        val out = demoDastarRx.render(initialContacts)
         val expected = expectedDatastarRx.trimIndent().lines().iterator()
         out.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
@@ -34,84 +37,72 @@ class ActiveSearchTest {
     }
 
     private val demoDastarRx =
-        StringBuilder()
-            .apply {
-                doc {
-                    html {
-                        head {
-                            script {
-                                attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+        view<List<Contact>> {
+            html {
+                head {
+                    script {
+                        attrType(EnumTypeScriptType.MODULE)
+                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                    }
+                }
+                body {
+                    div {
+                        attrId("demo")
+                        input {
+                            attrType(EnumTypeInputType.TEXT)
+                            attrPlaceholder("Search...")
+                            dataBind("search")
+                            dataOn(Input) {
+                                +get(::search)
+                                modifiers { debounce(200.milliseconds) }
                             }
                         }
-                        body {
-
-                            div {
-                                attrId("demo")
-                                input {
-                                    attrType(EnumTypeInputType.TEXT)
-                                    attrPlaceholder("Search...")
-                                    dataBind("search")
-                                    dataOn(Input) {
-                                        +get(::search)
-                                        modifiers { debounce(200.milliseconds) }
-                                    }
+                        table {
+                            thead {
+                                tr {
+                                    th { text("First Name") }
+                                    th { text("Last Name") }
                                 }
-                                table {
-                                    thead {
-                                        tr {
-                                            th { text("First Name") }
-                                            th { text("Last Name") }
-                                        }
-                                    }
-                                    tbody {
-                                        tr {
-                                            td { text("Abraham") }
-                                            td { text("Altenwerth") }
-                                        }
-                                        tr {
-                                            td { text("Adan") }
-                                            td { text("Padberg") }
-                                        }
-                                        tr {
-                                            td { text("Aiden") }
-                                            td { text("Haley") }
-                                        }
-                                        tr {
-                                            td { text("Alec") }
-                                            td { text("Kris") }
-                                        }
-                                        tr {
-                                            td { text("Alfredo") }
-                                            td { text("Nitzsche") }
-                                        }
-                                        tr {
-                                            td { text("Alisha") }
-                                            td { text("Rogahn") }
-                                        }
-                                        tr {
-                                            td { text("Alvah") }
-                                            td { text("Bins") }
-                                        }
-                                        tr {
-                                            td { text("Anabel") }
-                                            td { text("Lehner") }
-                                        }
-                                        tr {
-                                            td { text("Angela") }
-                                            td { text("Swift") }
-                                        }
-                                        tr {
-                                            td { text("Annamarie") }
-                                            td { text("Rippin") }
-                                        }
-                                    }
-                                }
+                            }
+                            tbody {
+                                attrId("contacts")
+                                hfContactRows()
                             }
                         }
                     }
                 }
             }
+        }
+
+    fun Tbody<*>.hfContactRows() {
+        dyn { contacts: List<Contact> ->
+            contacts.forEach { cnt ->
+                tr {
+                    td { text(cnt.firstName) }
+                    td { text(cnt.lastName) }
+                }
+            }
+        }
+    }
+
+    private data class Contact(
+        val firstName: String,
+        val lastName: String,
+    )
+
+    private val initialContacts =
+        listOf(
+            Contact("Abraham", "Altenwerth"),
+            Contact("Adan", "Padberg"),
+            Contact("Aiden", "Haley"),
+            Contact("Alec", "Kris"),
+            Contact("Alfredo", "Nitzsche"),
+            Contact("Alisha", "Rogahn"),
+            Contact("Alvah", "Bins"),
+            Contact("Anabel", "Lehner"),
+            Contact("Angela", "Swift"),
+            Contact("Annamarie", "Rippin"),
+        )
 
     @Path("/active-search/search")
     private fun search() {}
@@ -137,7 +128,7 @@ class ActiveSearchTest {
                     </th>
                 </tr>
             </thead> 
-            <tbody>
+            <tbody id="contacts">
                 <tr>
                     <td>
                         Abraham
