@@ -34,7 +34,7 @@ class LazyLoadTest {
                         body {
                             div {
                                 attrId("graph")
-                                dataInit { +get(::loadGraph) }
+                                dataInit { get(::loadGraph) }
                                 text("Loading...")
                             }
                         }

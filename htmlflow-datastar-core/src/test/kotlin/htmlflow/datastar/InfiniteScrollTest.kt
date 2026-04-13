@@ -68,7 +68,7 @@ class InfiniteScrollTest {
                                 }
                             }
                             div {
-                                dataOnIntersect { +get(::getMore) }
+                                dataOnIntersect { get(::getMore) }
                                 text("Loading...")
                             }
                         }

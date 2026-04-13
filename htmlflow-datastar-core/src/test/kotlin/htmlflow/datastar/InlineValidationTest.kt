@@ -55,7 +55,7 @@ class InlineValidationTest {
                                         addAttr("aria-describedby", "email-info")
                                         dataBind("email")
                                         dataOn(Keydown) {
-                                            +post(::validateInline)
+                                            post(::validateInline)
                                             modifiers { debounce(500.milliseconds) }
                                         }
                                     }
@@ -73,7 +73,7 @@ class InlineValidationTest {
                                         addAttr("aria-live", "polite")
                                         dataBind("first-name")
                                         dataOn(Keydown) {
-                                            +post(::validateInline)
+                                            post(::validateInline)
                                             modifiers { debounce(500.milliseconds) }
                                         }
                                     }
@@ -86,7 +86,7 @@ class InlineValidationTest {
                                         addAttr("aria-live", "polite")
                                         dataBind("last-name")
                                         dataOn(Keydown) {
-                                            +post(::validateInline)
+                                            post(::validateInline)
                                             modifiers { debounce(500.milliseconds) }
                                         }
                                     }
@@ -94,7 +94,7 @@ class InlineValidationTest {
                                 button {
                                     attrClass("success")
                                     dataOn(Click) {
-                                        +post(::submitForm)
+                                        post(::submitForm)
                                     }
                                     i {
                                         attrClass("material-symbols:person-add")

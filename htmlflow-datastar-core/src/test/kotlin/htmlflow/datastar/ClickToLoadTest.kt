@@ -11,7 +11,6 @@ import org.xmlet.htmlflow.datastar.attributes.dataIndicator
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -42,7 +41,7 @@ class ClickToLoadTest {
                                 val fetching = dataIndicator("_fetching")
                                 dataAttr("disabled") { +fetching }
                                 dataOn(Click) {
-                                    +(!fetching and get(::loadMore))
+                                    !fetching and get(::loadMore)
                                 }
                                 dataText { +"$fetching ? 'Loading...' : 'Load More'" }
                                 text("Load More")

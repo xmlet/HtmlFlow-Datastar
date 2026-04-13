@@ -53,7 +53,7 @@ class ActiveSearchTest {
                             attrPlaceholder("Search...")
                             dataBind("search")
                             dataOn(Input) {
-                                +get(::search)
+                                get(::search)
                                 modifiers { debounce(200.milliseconds) }
                             }
                         }

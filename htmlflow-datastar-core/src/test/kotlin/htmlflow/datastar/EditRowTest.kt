@@ -78,11 +78,11 @@ class EditRowTest {
                                 button {
                                     attrId("edit-row-${user.idx}")
                                     dataOn(Click) {
-                                        +editing.setValue(true)
-                                        +get("/examples/edit-row/${user.idx}")
+                                        editing.setValue(true)
+                                        get("/examples/edit-row/${user.idx}")
                                     }
                                     val fetching = dataIndicator("_fetching")
-                                    dataAttr("disabled") { +fetching.or(editing) }
+                                    dataAttr("disabled") { fetching or editing }
                                     text("Edit")
                                 }
                             }
@@ -95,8 +95,8 @@ class EditRowTest {
             button {
                 attrId("reset")
                 dataOn(Click) {
-                    +editing.setValue(false)
-                    +put(::resetTable)
+                    editing.setValue(false)
+                    put(::resetTable)
                 }
                 val fetching = dataIndicator("_fetching")
                 dataAttr("disabled") { +fetching }
