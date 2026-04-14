@@ -59,4 +59,16 @@ class ExpressionBuilderTests {
         }
         assertEquals("$fetching = !$fetching && @get('/some/url') || $other = $fetching; !$fetching", builder.getExpression())
     }
+
+    @Test
+    fun `Expression builder test where both parameters of js operator are js operators`() {
+        val count1 = Signal("count1", 1)
+        val count2 = Signal("count2", 2)
+        val count3 = Signal("count3", 3)
+        val builder = ExpressionBuilder()
+        with(builder) {
+            "(${(count1 eq 1) or (count2 eq 2)})" and (count3 eq 3)
+        }
+        assertEquals("$count1 == 1 || $count2 == 2 && $count3 == 3", builder.getExpression())
+    }
 }
