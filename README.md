@@ -52,7 +52,7 @@ div {
     attrPlaceholder("Search...")
     dataBind("search")
     dataOn(Input) {
-      +get(::search)
+      get(::search)
       modifiers { debounce(200.milliseconds) }
     }
   }
@@ -90,7 +90,7 @@ button {
   val fetching = dataIndicator("_fetching")
   dataAttr("disabled") { +fetching }
   dataOn(Click) {
-      +(!fetching and get(::clickToLoadMore))
+      !fetching and get(::clickToLoadMore)
   }
   text("Load More")
 }
