@@ -55,20 +55,20 @@ class FormDataTest {
                                 }
                                 button {
                                     dataOn(Click) {
-                                        +get(::endpoint, "{contentType: 'form'}")
+                                        get(::endpoint, "{contentType: 'form'}")
                                     }
                                     text("Submit GET request")
                                 }
                                 button {
                                     dataOn(Click) {
-                                        +post(::endpoint, "{contentType: 'form'}")
+                                        post(::endpoint, "{contentType: 'form'}")
                                     }
                                     text("Submit POST request")
                                 }
                             }
                             button {
                                 dataOn(Click) {
-                                    +get(::endpoint, "{contentType: 'form', selector: '#myform'}")
+                                    get(::endpoint, "{contentType: 'form', selector: '#myform'}")
                                 }
                                 text("Submit GET request from outside the form")
                             }

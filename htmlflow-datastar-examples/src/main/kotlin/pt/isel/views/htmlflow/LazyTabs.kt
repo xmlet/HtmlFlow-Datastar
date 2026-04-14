@@ -5,6 +5,7 @@ import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
 import htmlflow.view
+import org.xmlet.htmlapifaster.Div
 import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -49,22 +50,13 @@ val hfLazyTabs: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getLazyTabsDescription) }
+                            dataInit { get(::getLazyTabsDescription) }
                         }
                         div {
                             attrId("lazy-tabs")
                             div {
                                 addAttr("role", "tablist")
-                                (0..7).forEach { i ->
-                                    button {
-                                        addAttr("role", "tab")
-                                        addAttr("aria-selected", if (i == 0) "true" else "false")
-                                        dataOn(Click) {
-                                            +get("/lazy-tabs/$i")
-                                        }
-                                        text("Tab $i")
-                                    }
-                                }
+                                buildButtons()
                             }
                             div {
                                 attrId("tabpanel")
@@ -76,6 +68,19 @@ val hfLazyTabs: String =
                 }
             }
         }.toString()
+
+private fun Div<*>.buildButtons() {
+    (0..7).forEach { i ->
+        button {
+            addAttr("role", "tab")
+            addAttr("aria-selected", if (i == 0) "true" else "false")
+            dataOn(Click) {
+                get("/lazy-tabs/$i")
+            }
+            text("Tab $i")
+        }
+    }
+}
 
 val hfTabPanelView =
     view<String> {

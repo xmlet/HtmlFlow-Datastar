@@ -48,7 +48,7 @@ private suspend fun RoutingContext.getCounterEvents() {
         val generator = ServerSentEventGenerator(response)
 
         counter.collect { event ->
-            generator.patchElements(hfCounterEventView.render(event))
+            generator.patchElements(hfCounterEventView(event))
 
             if (event == 3) {
                 generator.executeScript("""alert('Thanks for trying Datastar!')""")

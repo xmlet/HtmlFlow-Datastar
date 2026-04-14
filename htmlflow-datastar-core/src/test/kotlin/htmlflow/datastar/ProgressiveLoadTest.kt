@@ -43,8 +43,8 @@ class ProgressiveLoadTest {
                                         attrId("load-button")
                                         val loadDisabled = dataSignal("load-disabled", false)
                                         dataOn(Click) {
-                                            +loadDisabled.setValue(true)
-                                            +get(::progressiveLoadUpdates)
+                                            loadDisabled.setValue(true)
+                                            get(::progressiveLoadUpdates)
                                         }
                                         dataAttr("disabled") { +loadDisabled }
                                         dataIndicator("progressive-Load")
@@ -60,32 +60,8 @@ class ProgressiveLoadTest {
                                     attrId("header")
                                     text("Welcome to my blog")
                                 }
-                                section {
-                                    attrId("article")
-                                    h4 { text("This is my article") }
-                                    section {
-                                        attrId("articleBody")
-                                        p { text("Lorem ipsum dolor sit amet...") }
-                                    }
-                                }
-                                section {
-                                    attrId("comments")
-                                    h5 { text("Comments") }
-                                    p { text("This is the comments section. It will also be progressively loaded as you scroll down.") }
-                                    ul {
-                                        attrId("comments-list")
-                                        li {
-                                            attrId("1")
-                                            img {
-                                                attrSrc("https://avatar.iran.liara.run/username?username=example")
-                                                attrAlt("Avatar")
-                                                attrClass("avatar")
-                                            }
-                                            text("This is a comment...")
-                                        }
-                                        comment("More comments loaded progressively")
-                                    }
-                                }
+                                buildArticleSection()
+                                buildCommentsSection()
                                 div {
                                     attrId("footer")
                                     text("Hope you like it")
@@ -95,6 +71,38 @@ class ProgressiveLoadTest {
                     }
                 }
             }
+
+    fun Div<*>.buildArticleSection() {
+        section {
+            attrId("article")
+            h4 { text("This is my article") }
+            section {
+                attrId("articleBody")
+                p { text("Lorem ipsum dolor sit amet...") }
+            }
+        }
+    }
+
+    fun Div<*>.buildCommentsSection() {
+        section {
+            attrId("comments")
+            h5 { text("Comments") }
+            p { text("This is the comments section. It will also be progressively loaded as you scroll down.") }
+            ul {
+                attrId("comments-list")
+                li {
+                    attrId("1")
+                    img {
+                        attrSrc("https://avatar.iran.liara.run/username?username=example")
+                        attrAlt("Avatar")
+                        attrClass("avatar")
+                    }
+                    text("This is a comment...")
+                }
+                comment("More comments loaded progressively")
+            }
+        }
+    }
 
     @Path("/examples/progressive_load/updates")
     private fun progressiveLoadUpdates() {}

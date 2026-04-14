@@ -45,7 +45,7 @@ val hfProgressiveLoad =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getProgressiveLoadDescription) }
+                            dataInit { get(::getProgressiveLoadDescription) }
                         }
                         div {
                             attrClass("actions")
@@ -54,8 +54,8 @@ val hfProgressiveLoad =
                                 attrId("load-button")
                                 val loadDisabled = dataSignal("load-disabled", false)
                                 dataOn(Click) {
-                                    +loadDisabled.setValue(true)
-                                    +get(::getProgressiveLoadUpdates)
+                                    loadDisabled.setValue(true)
+                                    get(::getProgressiveLoadUpdates)
                                 }
                                 dataAttr("disabled") { +loadDisabled }
                                 progressiveLoad = dataIndicator("progressive-load")

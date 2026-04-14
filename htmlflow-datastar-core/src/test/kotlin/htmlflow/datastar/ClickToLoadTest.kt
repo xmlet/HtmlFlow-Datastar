@@ -9,8 +9,8 @@ import org.xmlet.htmlapifaster.*
 import org.xmlet.htmlflow.datastar.attributes.dataAttr
 import org.xmlet.htmlflow.datastar.attributes.dataIndicator
 import org.xmlet.htmlflow.datastar.attributes.dataOn
+import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,11 +38,12 @@ class ClickToLoadTest {
                         body {
                             button {
                                 attrClass("info wide")
-                                val fetching = dataIndicator("fetching")
-                                dataAttr("aria-disabled") { +$$"`${$$fetching}`" }
+                                val fetching = dataIndicator("_fetching")
+                                dataAttr("disabled") { +fetching }
                                 dataOn(Click) {
-                                    +(!fetching and get(::loadMore))
+                                    !fetching and get(::loadMore)
                                 }
+                                dataText { +"$fetching ? 'Loading...' : 'Load More'" }
                                 text("Load More")
                             }
                         }
@@ -61,7 +62,7 @@ class ClickToLoadTest {
         </script>
     </head>
 <body>
-    <button class="info wide" data-indicator:fetching="" data-attr:aria-disabled="`${$fetching}`" data-on:click="!$fetching && @get('/examples/click_to_load/more')">
+    <button class="info wide" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="!$_fetching && @get('/examples/click_to_load/more')" data-text="$_fetching ? 'Loading...' : 'Load More'">
         Load More
     </button>
 </body>

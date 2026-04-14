@@ -46,7 +46,7 @@ class ClickToEditTest {
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
-                                            +get(::edit)
+                                            get(::edit)
                                         }
                                         text("Edit")
                                     }
@@ -55,7 +55,7 @@ class ClickToEditTest {
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
-                                            +patch(::reset)
+                                            patch(::reset)
                                         }
                                         text("Reset")
                                     }

@@ -15,6 +15,7 @@ import org.xmlet.htmlapifaster.th
 import org.xmlet.htmlapifaster.thead
 import org.xmlet.htmlapifaster.tr
 import org.xmlet.htmlflow.datastar.attributes.dataOnIntersect
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -41,6 +42,10 @@ class InfiniteScrollTest {
                         }
                         body {
                             div {
+                                dataSignals(
+                                    "offset" to 10,
+                                    "limit" to 5,
+                                )
                                 text("Agents")
                             }
                             table {
@@ -63,7 +68,7 @@ class InfiniteScrollTest {
                                 }
                             }
                             div {
-                                dataOnIntersect { +get(::getMore) }
+                                dataOnIntersect { get(::getMore) }
                                 text("Loading...")
                             }
                         }
@@ -100,7 +105,7 @@ class InfiniteScrollTest {
                 </script>
             </head>
             <body>
-               <div>
+               <div data-signals="{offset: 10, limit: 5}">
                    Agents
                </div>
                <table>

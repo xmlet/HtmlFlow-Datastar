@@ -44,11 +44,9 @@ class SortableTest {
                                 dataOn(reorderedEvent) {
                                     +$$"$orderInfo = event.detail.orderInfo"
                                 }
-                                button { text("Item 1") }
-                                button { text("Item 2") }
-                                button { text("Item 3") }
-                                button { text("Item 4") }
-                                button { text("Item 5") }
+                                for (i in 1 until 6) {
+                                    button { text("Item $i") }
+                                }
                             }
                             script {
                                 attrType(EnumTypeScriptType.MODULE)

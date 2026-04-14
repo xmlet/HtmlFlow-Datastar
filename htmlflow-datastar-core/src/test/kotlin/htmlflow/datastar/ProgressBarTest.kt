@@ -17,7 +17,6 @@ import org.xmlet.htmlflow.datastar.attributes.dataIndicator
 import org.xmlet.htmlflow.datastar.attributes.dataInit
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -45,7 +44,7 @@ class ProgressBarTest {
                         body {
                             div {
                                 attrId("progress-bar")
-                                dataInit { +get(::progressBarUpdates, "{openWhenHidden: true}") }
+                                dataInit { get(::progressBarUpdates, "{openWhenHidden: true}") }
                                 comment("When progress is less than 100%")
                                 svg {
                                     attrWidth(200)
@@ -91,7 +90,7 @@ class ProgressBarTest {
                                     val fetching = dataIndicator("fetching")
                                     dataAttr("aria-disabled") { +fetching }
                                     dataOn(Click) {
-                                        +(!fetching and get(::progressBarUpdates, "{openWhenHidden: true}"))
+                                        !fetching and get(::progressBarUpdates, "{openWhenHidden: true}")
                                     }
                                     i { attrClass("material-symbols:check-circle") }
                                     text("Completed! Try again?")

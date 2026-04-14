@@ -39,12 +39,12 @@ val hfCounterViaSignals: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getCounterSignalsDescription) }
+                            dataInit { get(::getCounterSignalsDescription) }
                         }
                         div {
                             val count = dataSignal("count", 0)
                             div {
-                                dataInit { +get(::getCounterEventsSignals) }
+                                dataInit { get(::getCounterEventsSignals) }
                                 span {
                                     attrId("counter")
                                     dataText { +count }
@@ -54,14 +54,14 @@ val hfCounterViaSignals: String =
                                 button {
                                     attrId("decrement")
                                     dataOn(Click) {
-                                        +post(::decrementCounterViaSignals)
+                                        post(::decrementCounterViaSignals)
                                     }
                                     text("−")
                                 }
                                 button {
                                     attrId("increment")
                                     dataOn(Click) {
-                                        +post(::incrementCounterViaSignals)
+                                        post(::incrementCounterViaSignals)
                                     }
                                     text("+")
                                 }

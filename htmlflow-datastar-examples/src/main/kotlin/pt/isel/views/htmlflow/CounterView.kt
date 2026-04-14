@@ -1,6 +1,5 @@
 package pt.isel.views.htmlflow
 
-import htmlflow.HtmlView
 import htmlflow.doc
 import htmlflow.dyn
 import htmlflow.html
@@ -45,10 +44,10 @@ val hfCounter: String =
                             val count = dataSignal("count", 0)
                             div {
                                 attrId("description")
-                                dataInit { +get(::getCounterDescription) }
+                                dataInit { get(::getCounterDescription) }
                             }
                             div {
-                                dataInit { +get(::counterEvents) }
+                                dataInit { get(::counterEvents) }
                                 span {
                                     attrId("counter")
                                     dataText { +count }
@@ -58,14 +57,14 @@ val hfCounter: String =
                                 button {
                                     attrId("decrement")
                                     dataOn(Click) {
-                                        +post(::decrementCounter)
+                                        post(::decrementCounter)
                                     }
                                     text("−")
                                 }
                                 button {
                                     attrId("increment")
                                     dataOn(Click) {
-                                        +post(::incrementCounter)
+                                        post(::incrementCounter)
                                     }
                                     text("+")
                                 }
@@ -76,12 +75,10 @@ val hfCounter: String =
             }
         }.toString()
 
-val hfCounterEventView: HtmlView<Int> =
-    view {
+fun hfCounterEventView(count: Int): String =
+    view<Int> {
         span {
             attrId("counter")
-            dyn { count: Int ->
-                text(count.toString())
-            }
+            dyn { count: Int -> text(count.toString()) }
         }
-    }
+    }.render(count)

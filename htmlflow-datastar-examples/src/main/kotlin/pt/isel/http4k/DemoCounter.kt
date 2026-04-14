@@ -47,7 +47,7 @@ fun counterEvents(req: Request): SseResponse {
         while (true) {
             try {
                 val event = queue.take()
-                sse.sendPatchElements(Element.of(hfCounterEventView.render(event)))
+                sse.sendPatchElements(Element.of(hfCounterEventView(event)))
 
                 if (event == 3) {
                     sse.sendPatchElements(

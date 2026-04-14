@@ -24,7 +24,6 @@ import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.not
 import pt.isel.http4k.clickToEditSignalsCancel
 import pt.isel.http4k.clickToEditSignalsReset
 import pt.isel.http4k.clickToEditSignalsSave
@@ -49,7 +48,7 @@ val hfClickToEditSignals =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getClickToEditSignalsDescription) }
+                            dataInit { get(::getClickToEditSignalsDescription) }
                         }
                         div {
                             val (firstName, lastName, email, editing) =
@@ -59,7 +58,7 @@ val hfClickToEditSignals =
                                     "email" to "joe@blow.com",
                                     "_editing" to false,
                                 )
-                            dataInit { +get(::getClickToEditEvents) }
+                            dataInit { get(::getClickToEditEvents) }
                             div {
                                 attrId("Info")
                                 dataClass("hidden") { +editing }
@@ -81,7 +80,7 @@ val hfClickToEditSignals =
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
-                                            +editing.setValue(true)
+                                            editing.setValue(true)
                                         }
                                         text("Edit")
                                     }
@@ -90,7 +89,7 @@ val hfClickToEditSignals =
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
-                                            +patch(::clickToEditSignalsReset)
+                                            patch(::clickToEditSignalsReset)
                                         }
                                         text("Reset")
                                     }
@@ -98,7 +97,7 @@ val hfClickToEditSignals =
                             }
                             div {
                                 attrId("edit-form")
-                                dataClass("hidden") { +!editing }
+                                dataClass("hidden") { !editing }
                                 label {
                                     text("First Name")
                                     input {
@@ -133,8 +132,8 @@ val hfClickToEditSignals =
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
-                                            +editing.setValue(false)
-                                            +put(::clickToEditSignalsSave)
+                                            editing.setValue(false)
+                                            put(::clickToEditSignalsSave)
                                         }
                                         text("Save")
                                     }
@@ -143,8 +142,8 @@ val hfClickToEditSignals =
                                         val fetching = dataIndicator("_fetching")
                                         dataAttr("disabled") { +fetching }
                                         dataOn(Click) {
-                                            +editing.setValue(false)
-                                            +get(::clickToEditSignalsCancel)
+                                            editing.setValue(false)
+                                            get(::clickToEditSignalsCancel)
                                         }
                                         text("Cancel")
                                     }

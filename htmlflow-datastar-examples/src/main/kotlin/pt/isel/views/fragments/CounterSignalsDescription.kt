@@ -3,6 +3,7 @@ package pt.isel.views.fragments
 import htmlflow.div
 import htmlflow.doc
 import org.xmlet.htmlapifaster.a
+import org.xmlet.htmlapifaster.code
 import org.xmlet.htmlapifaster.h2
 import org.xmlet.htmlapifaster.li
 import org.xmlet.htmlapifaster.p
@@ -50,6 +51,12 @@ val hfCounterSignalsDescription =
                                     "Response: 204 No Content. The /events SSE stream picks up the change and patches the count signal.",
                             )
                         }
+                    }
+                    p { text("For Http4k limitations use the following curl command:") }
+                    code {
+                        text(
+                            "curl -N -H \"Accept: text/event-stream\" \"http://localhost:8070/counter-signals/events\"",
+                        )
                     }
                 }
             }

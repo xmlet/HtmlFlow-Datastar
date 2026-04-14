@@ -47,7 +47,7 @@ val hfActiveSearch: HtmlView<List<Contact>> =
             body {
                 div {
                     attrId("description")
-                    dataInit { +get(::getActiveSearchDescription) }
+                    dataInit { get(::getActiveSearchDescription) }
                 }
                 div {
                     hfActiveSearchTable()
@@ -63,7 +63,7 @@ fun Div<*>.hfActiveSearchTable() {
         attrPlaceholder("Search...")
         dataBind("search")
         dataOn(Input) {
-            +get(::getSearchContacts)
+            get(::getSearchContacts)
             modifiers { debounce(200.milliseconds) }
         }
     }

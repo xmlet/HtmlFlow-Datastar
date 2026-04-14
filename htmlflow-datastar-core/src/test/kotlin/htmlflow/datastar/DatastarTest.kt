@@ -39,7 +39,6 @@ import org.xmlet.htmlflow.datastar.attributes.dataShow
 import org.xmlet.htmlflow.datastar.attributes.dataSignal
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.not
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -101,7 +100,7 @@ class DatastarTest {
                                     }
                                     span {
                                         dataShow {
-                                            +!correct
+                                            !correct
                                         }
                                         raw("The correct answer is \"")
                                         span { dataText { +answer } }
