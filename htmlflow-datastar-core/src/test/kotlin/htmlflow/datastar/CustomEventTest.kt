@@ -42,7 +42,7 @@ class CustomEventTest {
                                 val eventDetails = dataSignal("eventDetails")
                                 val myEvent = CustomEvent(eventName)
                                 dataOn(myEvent) {
-                                    +eventDetails.setValue(evt.detail)
+                                    eventDetails.setValue(evt.detail)
                                 }
                                 dataText { +$$"`Last Event Details: ${$$eventDetails}`" }
                             }

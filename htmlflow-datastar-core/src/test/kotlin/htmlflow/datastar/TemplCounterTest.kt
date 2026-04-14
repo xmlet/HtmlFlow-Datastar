@@ -38,13 +38,13 @@ class TemplCounterTest {
                         }
                         body {
                             div {
-                                dataInit { +get(::getCounterUpdates) }
+                                dataInit { get(::getCounterUpdates) }
                                 comment("Global Counter")
                                 button {
                                     attrId("global")
                                     attrClass("info")
                                     dataOn(Click) {
-                                        +patch(::globalCounter)
+                                        patch(::globalCounter)
                                     }
                                     text("Global Clicks: 0")
                                 }
@@ -53,7 +53,7 @@ class TemplCounterTest {
                                     attrId("user")
                                     attrClass("success")
                                     dataOn(Click) {
-                                        +patch(::userCounter)
+                                        patch(::userCounter)
                                     }
                                     text("User Clicks: 0")
                                 }

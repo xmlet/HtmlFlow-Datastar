@@ -49,7 +49,7 @@ class FileUploadTest {
                                 attrClass("warning")
                                 dataOn(Click) {
                                     +"$files.length"
-                                    +post(::uploadFiles)
+                                    post(::uploadFiles)
                                 }
                                 dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                                 text("Submit")

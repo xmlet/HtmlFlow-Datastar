@@ -73,7 +73,7 @@ class DeleteRowTest {
         div {
             button {
                 dataOn(Click) {
-                    +patch(::restoreRows)
+                    patch(::restoreRows)
                 }
                 val fetching = dataIndicator("_fetching")
                 dataAttr("disabled") { +fetching }
@@ -93,7 +93,7 @@ class DeleteRowTest {
             button {
                 attrClass("error")
                 dataOn(Click) {
-                    +("confirm('Are you sure?')" and delete("/examples/delete-row/$index"))
+                    "confirm('Are you sure?')" and delete("/examples/delete-row/$index")
                 }
                 val fetching = dataIndicator("_fetching")
                 dataAttr("disabled") { +fetching }

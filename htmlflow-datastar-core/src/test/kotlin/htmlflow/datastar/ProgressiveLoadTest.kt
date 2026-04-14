@@ -43,8 +43,8 @@ class ProgressiveLoadTest {
                                         attrId("load-button")
                                         val loadDisabled = dataSignal("load-disabled", false)
                                         dataOn(Click) {
-                                            +loadDisabled.setValue(true)
-                                            +get(::progressiveLoadUpdates)
+                                            loadDisabled.setValue(true)
+                                            get(::progressiveLoadUpdates)
                                         }
                                         dataAttr("disabled") { +loadDisabled }
                                         dataIndicator("progressive-Load")

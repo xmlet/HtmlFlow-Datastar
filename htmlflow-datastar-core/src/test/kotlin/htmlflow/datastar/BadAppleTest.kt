@@ -39,7 +39,7 @@ class BadAppleTest {
                                 val percentage = dataSignal("percentage", 0)
                                 val contents = dataSignal("contents", "bad apple frames go here")
                                 label {
-                                    dataInit { +get(::badAppleUpdate) }
+                                    dataInit { get(::badAppleUpdate) }
                                     span {
                                         dataText { +$$"`Percentage: ${$$percentage.toFixed(2)}%`" }
                                     }

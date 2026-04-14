@@ -56,7 +56,7 @@ class LazyTabsTest {
                 addAttr("role", "tab")
                 addAttr("aria-selected", if (i == 0) "true" else "false")
                 dataOn(Click) {
-                    +get("/examples/lazy_tabs/$i")
+                    get("/examples/lazy_tabs/$i")
                 }
                 text("Tab $i")
             }

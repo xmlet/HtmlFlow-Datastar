@@ -26,105 +26,223 @@ import kotlin.reflect.KFunction
  * ```
  */
 open class ExpressionBuilder {
-    private val builderExpression = StringBuilder()
+    private val builderExpression = mutableListOf<DataStarExpression>()
 
-    private fun appendExpression(value: String) {
-        if (builderExpression.isNotEmpty()) {
-            builderExpression.append("; ")
-        }
-        builderExpression.append(value)
+    private fun appendExpression(expression: DataStarExpression) {
+        builderExpression.addLast(expression)
     }
 
-    operator fun DataStarExpression.unaryPlus() {
-        appendExpression(this.toString())
+    private fun removeIfPresent(vararg expressions: DataStarExpression) {
+        expressions.forEach { expression ->
+            if (expression !is Signal<*>) {
+                val lastIndex = builderExpression.lastIndexOf(expression)
+                if (lastIndex != -1) {
+                    builderExpression.removeAt(lastIndex)
+                }
+            }
+        }
+    }
+
+    operator fun Signal<*>.unaryPlus() {
+        appendExpression(this)
     }
 
     operator fun String.unaryPlus() {
-        appendExpression(this)
+        appendExpression(DataStarExpression(this))
     }
 
     // gets substituted by a String.unaryPlus call by the plugin with the transpiled JS string
     operator fun Function<*>.unaryPlus() {
-        appendExpression(this.toString())
+        appendExpression(DataStarExpression(this.toString()))
     }
 
-    fun getExpression() = builderExpression.toString()
+    fun getExpression() = builderExpression.joinToString("; ")
 
     fun get(
         func: KFunction<*>,
         options: String? = null,
-    ) = DataStarAction(ActionType.GET, convertFuncToPath(func), options)
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.GET, convertFuncToPath(func), options)
+        appendExpression(action)
+        return action
+    }
 
     fun get(
         path: String,
         options: String? = null,
-    ) = DataStarAction(ActionType.GET, addApostrophe(path), options)
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.GET, addApostrophe(path), options)
+        appendExpression(action)
+        return action
+    }
 
-    fun peek(callable: () -> String) = DataStarAction(ActionType.PEEK, callable)
+    fun peek(callable: () -> String): DataStarAction {
+        val action = DataStarAction(ActionType.PEEK, callable)
+        appendExpression(action)
+        return action
+    }
 
-    fun peek(js: String) = DataStarAction(ActionType.PEEK, js)
+    fun peek(js: String): DataStarAction {
+        val action = DataStarAction(ActionType.PEEK, js)
+        appendExpression(action)
+        return action
+    }
 
     fun setAll(
         value: Any,
         filter: String? = null,
-    ) = DataStarAction(ActionType.SET_ALL, value, filter ?: "")
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.SET_ALL, value, filter ?: "")
+        appendExpression(action)
+        return action
+    }
 
-    fun toggleAll(filter: String? = null) = DataStarAction(ActionType.TOGGLE_ALL, filter ?: "")
+    fun toggleAll(filter: String? = null): DataStarAction {
+        val action = DataStarAction(ActionType.TOGGLE_ALL, filter ?: "")
+        appendExpression(action)
+        return action
+    }
 
     fun post(
         func: KFunction<*>,
         options: String? = null,
-    ) = DataStarAction(ActionType.POST, convertFuncToPath(func), options)
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.POST, convertFuncToPath(func), options)
+        appendExpression(action)
+        return action
+    }
 
     fun post(
         path: String,
         options: String? = null,
-    ) = DataStarAction(ActionType.POST, addApostrophe(path), options)
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.POST, addApostrophe(path), options)
+        appendExpression(action)
+        return action
+    }
 
-    fun put(func: KFunction<*>) = DataStarAction(ActionType.PUT, convertFuncToPath(func))
+    fun put(func: KFunction<*>): DataStarAction {
+        val action = DataStarAction(ActionType.PUT, convertFuncToPath(func))
+        appendExpression(action)
+        return action
+    }
 
-    fun put(path: String) = DataStarAction(ActionType.PUT, addApostrophe(path))
+    fun put(path: String): DataStarAction {
+        val action = DataStarAction(ActionType.PUT, addApostrophe(path))
+        appendExpression(action)
+        return action
+    }
 
-    fun delete(func: KFunction<*>) = DataStarAction(ActionType.DELETE, convertFuncToPath(func))
+    fun delete(func: KFunction<*>): DataStarAction {
+        val action = DataStarAction(ActionType.DELETE, convertFuncToPath(func))
+        appendExpression(action)
+        return action
+    }
 
-    fun delete(path: String) = DataStarAction(ActionType.DELETE, addApostrophe(path))
+    fun delete(path: String): DataStarAction {
+        val action = DataStarAction(ActionType.DELETE, addApostrophe(path))
+        appendExpression(action)
+        return action
+    }
 
-    fun patch(func: KFunction<*>) = DataStarAction(ActionType.PATCH, convertFuncToPath(func))
+    fun patch(func: KFunction<*>): DataStarAction {
+        val action = DataStarAction(ActionType.PATCH, convertFuncToPath(func))
+        appendExpression(action)
+        return action
+    }
 
-    fun patch(path: String) = DataStarAction(ActionType.PATCH, addApostrophe(path))
+    fun patch(path: String): DataStarAction {
+        val action = DataStarAction(ActionType.PATCH, addApostrophe(path))
+        appendExpression(action)
+        return action
+    }
+
+    /**
+     * Equal to the JavaScript ! operator, used to negate an expression.
+     */
+    operator fun DataStarExpression.not(): DataStarExpression {
+        val result = DataStarExpression("!$this")
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this && $expression")
+    infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpression {
+        val result = DataStarExpression("$this && $expression")
+        removeIfPresent(this, expression)
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun String.and(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this && $expression")
+    infix fun String.and(expression: DataStarExpression): DataStarExpression {
+        removeIfPresent(expression)
+        val result = DataStarExpression("$this && $expression")
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
+    infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression {
+        val result = DataStarExpression("$this || $expression")
+        removeIfPresent(this, expression)
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
-    infix fun String.or(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this || $expression")
+    infix fun String.or(expression: DataStarExpression): DataStarExpression {
+        val result = DataStarExpression("$this || $expression")
+        removeIfPresent(expression)
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
-    infix fun DataStarExpression.equals(expression: DataStarExpression) = DataStarExpression("$this == $expression")
+    infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpression {
+        val result = DataStarExpression("$this == $expression")
+        removeIfPresent(this, expression)
+        appendExpression(result)
+        return result
+    }
+
+    /**
+     * Equal to the JavaScript == operator, used to compare two expressions.
+     */
+    infix fun <T> Signal<T>.eq(value: T): DataStarExpression {
+        val valueExpression = DataStarExpression(value.toString())
+        val result = DataStarExpression("$this == $valueExpression")
+        removeIfPresent(this, valueExpression)
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the assignment operator in JavaScript, used to assign the signal value to the new value.
      */
-    fun <T> Signal<T>.setValue(value: T): DataStarExpression = DataStarExpression("$this = $value")
+    fun <T> Signal<T>.setValue(value: T): DataStarExpression {
+        val result = DataStarExpression("$this = $value")
+        appendExpression(result)
+        return result
+    }
 
     /**
      * Equal to the assignment operator in JavaScript, used to assign the passed expression to another expression.
      */
-    fun DataStarExpression.setValue(expression: DataStarExpression): DataStarExpression = DataStarExpression("$this = $expression")
+    fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpression {
+        removeIfPresent(expression)
+        val result = DataStarExpression("$this = $expression")
+        appendExpression(result)
+        return result
+    }
 }

@@ -52,7 +52,7 @@ class BulkUpdateTest {
                                     button {
                                         attrClass("success")
                                         dataOn(Click) {
-                                            +put(::activate)
+                                            put(::activate)
                                         }
                                         dataIndicator(fetching.name)
                                         dataAttr("disabled") { +fetching }
@@ -62,7 +62,7 @@ class BulkUpdateTest {
                                     button {
                                         attrClass("error")
                                         dataOn(Click) {
-                                            +put(::deactivate)
+                                            put(::deactivate)
                                         }
                                         dataIndicator(fetching.name)
                                         dataAttr("disabled") { +fetching }
@@ -87,7 +87,7 @@ class BulkUpdateTest {
                         input {
                             attrType(EnumTypeInputType.CHECKBOX)
                             dataOn(Change) {
-                                +setAll("el.checked", "{include: /^selections/}")
+                                setAll("el.checked", "{include: /^selections/}")
                             }
                             dataEffect { +$$"el.checked = $selections.every(Boolean)" }
                             dataAttr("disabled") { +fetching }
