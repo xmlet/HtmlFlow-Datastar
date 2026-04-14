@@ -44,10 +44,10 @@ val hfCounter: String =
                             val count = dataSignal("count", 0)
                             div {
                                 attrId("description")
-                                dataInit { +get(::getCounterDescription) }
+                                dataInit { get(::getCounterDescription) }
                             }
                             div {
-                                dataInit { +get(::counterEvents) }
+                                dataInit { get(::counterEvents) }
                                 span {
                                     attrId("counter")
                                     dataText { +count }
@@ -57,14 +57,14 @@ val hfCounter: String =
                                 button {
                                     attrId("decrement")
                                     dataOn(Click) {
-                                        +post(::decrementCounter)
+                                        post(::decrementCounter)
                                     }
                                     text("−")
                                 }
                                 button {
                                     attrId("increment")
                                     dataOn(Click) {
-                                        +post(::incrementCounter)
+                                        post(::incrementCounter)
                                     }
                                     text("+")
                                 }

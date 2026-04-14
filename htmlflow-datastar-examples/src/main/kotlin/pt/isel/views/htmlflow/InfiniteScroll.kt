@@ -39,7 +39,7 @@ val hfInfiniteScroll =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getInfiniteScrollDescription) }
+                            dataInit { get(::getInfiniteScrollDescription) }
                         }
                         div {
                             dataSignals(
@@ -69,7 +69,7 @@ val hfInfiniteScroll =
                             }
                         }
                         div {
-                            dataOnIntersect { +get(::getMoreAgents) }
+                            dataOnIntersect { get(::getMoreAgents) }
                             text("Loading...")
                         }
                     }

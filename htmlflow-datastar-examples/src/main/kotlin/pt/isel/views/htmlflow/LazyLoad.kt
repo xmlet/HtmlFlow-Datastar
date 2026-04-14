@@ -37,11 +37,11 @@ val hfLazyLoadDoc: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getLazyLoadDescription) }
+                            dataInit { get(::getLazyLoadDescription) }
                         }
                         div {
                             attrId("graph")
-                            dataInit { +get(::loadGraph) }
+                            dataInit { get(::loadGraph) }
                             text("Loading...")
                         }
                     }

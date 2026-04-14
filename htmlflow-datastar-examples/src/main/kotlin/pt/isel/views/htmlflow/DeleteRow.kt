@@ -47,7 +47,7 @@ val hfDeleteRow: HtmlView<DeleteRowsState> =
             body {
                 div {
                     attrId("description")
-                    dataInit { +get(::getDeleteRowDescription) }
+                    dataInit { get(::getDeleteRowDescription) }
                 }
                 div {
                     attrId("users-table")
@@ -78,7 +78,7 @@ fun Div<*>.hfDeleteRowTable() {
         button {
             attrClass("warning")
             dataOn(Click) {
-                +patch(::restoreRows)
+                patch(::restoreRows)
             }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled") { +fetching }
@@ -99,7 +99,7 @@ fun Tbody<*>.hfTableRow(
         button {
             attrClass("error")
             dataOn(Click) {
-                +("confirm('Are you sure?')" and delete("/delete-row/$index"))
+                "confirm('Are you sure?')" and delete("/delete-row/$index")
             }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled") { +fetching }

@@ -53,7 +53,7 @@ val hfFileUpload: String =
                         val files = dataSignal("files")
                         div {
                             attrId("description")
-                            dataInit { +get(::getFileUploadDescription) }
+                            dataInit { get(::getFileUploadDescription) }
                         }
                         label {
                             p { text("Pick anything less than 1MB") }
@@ -67,7 +67,7 @@ val hfFileUpload: String =
                             attrClass("warning")
                             dataOn(Click) {
                                 +"$files.length"
-                                +post(::uploadFile)
+                                post(::uploadFile)
                             }
                             dataAttr("aria-disabled") { +$$"`${!$$files.length}`" }
                             text("Submit")

@@ -26,7 +26,6 @@ import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.not
 import pt.isel.http4k.getClickToLoadDescription
 import pt.isel.http4k.getMore
 import pt.isel.ktor.Agent
@@ -49,7 +48,7 @@ val hfClickToLoad: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getClickToLoadDescription) }
+                            dataInit { get(::getClickToLoadDescription) }
                         }
                         div {
                             attrId("demo")
@@ -72,7 +71,7 @@ val hfClickToLoad: String =
                             val fetching = dataIndicator("_fetching")
                             dataAttr("disabled") { +fetching }
                             dataOn(Click) {
-                                +(!fetching and get(::getMore))
+                                !fetching and get(::getMore)
                             }
                             dataText { +"$fetching ? 'Loading...' : 'Load More'" }
                             text("Load More")

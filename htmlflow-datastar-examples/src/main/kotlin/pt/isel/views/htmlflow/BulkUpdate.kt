@@ -84,7 +84,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
             body {
                 div {
                     attrId("description")
-                    dataInit { +get(::getBulkUpdateDescription) }
+                    dataInit { get(::getBulkUpdateDescription) }
                 }
                 div {
                     attrId("demo")
@@ -100,7 +100,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                                     input {
                                         attrType(EnumTypeInputType.CHECKBOX)
                                         dataOn(Change) {
-                                            +setAll("el.checked", "{include: /^selections/}")
+                                            setAll("el.checked", "{include: /^selections/}")
                                         }
                                         dataEffect { +$$"el.checked = $selections.every(Boolean)" }
                                         dataAttr("disabled") { +fetching }
@@ -121,7 +121,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                             attrClass("success")
                             attrType(EnumTypeButtonType.BUTTON)
                             dataOn(Click) {
-                                +put(::activateUsers)
+                                put(::activateUsers)
                             }
                             dataIndicator(fetching.name)
                             dataAttr("disabled") { +fetching }
@@ -132,7 +132,7 @@ val hfBulkUpdate: HtmlView<List<User>> =
                             attrClass("error")
                             attrType(EnumTypeButtonType.BUTTON)
                             dataOn(Click) {
-                                +put(::deactivateUsers)
+                                put(::deactivateUsers)
                             }
                             dataIndicator(fetching.name)
                             dataAttr("disabled") { +fetching }

@@ -45,7 +45,7 @@ val hfDisplayFragment: HtmlView<Profile> =
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled") { +fetching }
                     dataOn(Click) {
-                        +get(::editProfile)
+                        get(::editProfile)
                     }
                     text("Edit")
                 }
@@ -54,7 +54,7 @@ val hfDisplayFragment: HtmlView<Profile> =
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled") { +fetching }
                     dataOn(Click) {
-                        +patch(::clickToEditReset)
+                        patch(::clickToEditReset)
                     }
                     text("Reset")
                 }
@@ -108,7 +108,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled") { +fetching }
                     dataOn(Click) {
-                        +put(::clickToEditSave)
+                        put(::clickToEditSave)
                     }
                     text("Save")
                 }
@@ -117,7 +117,7 @@ val hfEditModeFragment: HtmlView<Profile> =
                     val fetching = dataIndicator("_fetching")
                     dataAttr("disabled") { +fetching }
                     dataOn(Click) {
-                        +get(::clickToEditCancel)
+                        get(::clickToEditCancel)
                     }
                     text("Cancel")
                 }
@@ -141,7 +141,7 @@ val hfClickToEdit: HtmlView<Profile> =
             body {
                 div {
                     attrId("description")
-                    dataInit { +get(::getClickToEditDescription) }
+                    dataInit { get(::getClickToEditDescription) }
                 }
                 dyn { profile: Profile ->
                     raw(hfDisplayFragment.render(profile))

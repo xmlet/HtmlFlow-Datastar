@@ -49,7 +49,7 @@ val hfInlineValidation =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getInlineValidationDescription) }
+                            dataInit { get(::getInlineValidationDescription) }
                         }
                         div {
                             attrId("demo")
@@ -77,7 +77,7 @@ val hfInlineValidation =
                             button {
                                 attrClass("success")
                                 dataOn(Click) {
-                                    +post(::submitForm)
+                                    post(::submitForm)
                                 }
                                 dataAttr("disabled") { +error }
                                 text("Sign Up")
@@ -98,7 +98,7 @@ private fun Div<*>.buildEmailLabel() {
             addAttr("aria-describedby", "email-info")
             dataBind("email")
             dataOn(Keydown) {
-                +post(::validateFields)
+                post(::validateFields)
                 modifiers { debounce(500.milliseconds) }
             }
         }
@@ -114,7 +114,7 @@ private fun Div<*>.buildFirstNameLabel() {
             addAttr("aria-live", "polite")
             dataBind("first-name")
             dataOn(Keydown) {
-                +post(::validateFields)
+                post(::validateFields)
                 modifiers { debounce(200.milliseconds) }
             }
         }
@@ -130,7 +130,7 @@ private fun Div<*>.buildLastNameLabel() {
             addAttr("aria-live", "polite")
             dataBind("last-name")
             dataOn(Keydown) {
-                +post(::validateFields)
+                post(::validateFields)
                 modifiers { debounce(500.milliseconds) }
             }
         }

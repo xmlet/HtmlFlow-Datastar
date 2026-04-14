@@ -57,7 +57,7 @@ val hfEditRow: HtmlView<TableState> =
             body {
                 div {
                     attrId("description")
-                    dataInit { +get(::getEditRowDescription) }
+                    dataInit { get(::getEditRowDescription) }
                 }
                 div {
                     hfEditRowTable()
@@ -88,11 +88,11 @@ fun Div<*>.hfEditRowTable() {
                             button {
                                 attrId("edit-row-${user.idx}")
                                 dataOn(Click) {
-                                    +editing.setValue(true)
-                                    +get("/edit-row/${user.idx}")
+                                    editing.setValue(true)
+                                    get("/edit-row/${user.idx}")
                                 }
                                 val fetching = dataIndicator("_fetching")
-                                dataAttr("disabled") { +fetching.or(editing) }
+                                dataAttr("disabled") { fetching or editing }
                                 text("Edit")
                             }
                         }
@@ -105,8 +105,8 @@ fun Div<*>.hfEditRowTable() {
         button {
             attrId("reset")
             dataOn(Click) {
-                +editing.setValue(false)
-                +put(::resetTable)
+                editing.setValue(false)
+                put(::resetTable)
             }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled") { +fetching }
@@ -127,11 +127,11 @@ val defaultRowView: HtmlView<TableUser> =
                     button {
                         attrId("edit-row-${user.idx}")
                         dataOn(Click) {
-                            +editing.setValue(true)
-                            +get("/edit-row/${user.idx}")
+                            editing.setValue(true)
+                            get("/edit-row/${user.idx}")
                         }
                         val fetching = dataIndicator("_fetching")
-                        dataAttr("disabled") { +fetching.or(editing) }
+                        dataAttr("disabled") { fetching or editing }
                         text("Edit")
                     }
                 }
@@ -160,8 +160,8 @@ fun Tr<*>.editRow(index: Int) {
         button {
             attrId("save-row-$index")
             dataOn(Click) {
-                +editing.setValue(false)
-                +patch("/edit-row/$index")
+                editing.setValue(false)
+                patch("/edit-row/$index")
             }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled") { +fetching }
@@ -171,8 +171,8 @@ fun Tr<*>.editRow(index: Int) {
         button {
             attrId("cancel-row-$index")
             dataOn(Click) {
-                +editing.setValue(false)
-                +get(::cancelEditRow)
+                editing.setValue(false)
+                get(::cancelEditRow)
             }
             val fetching = dataIndicator("_fetching")
             dataAttr("disabled") { +fetching }

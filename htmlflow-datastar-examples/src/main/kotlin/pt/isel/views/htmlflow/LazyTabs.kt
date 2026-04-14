@@ -50,7 +50,7 @@ val hfLazyTabs: String =
                     body {
                         div {
                             attrId("description")
-                            dataInit { +get(::getLazyTabsDescription) }
+                            dataInit { get(::getLazyTabsDescription) }
                         }
                         div {
                             attrId("lazy-tabs")
@@ -75,7 +75,7 @@ private fun Div<*>.buildButtons() {
             addAttr("role", "tab")
             addAttr("aria-selected", if (i == 0) "true" else "false")
             dataOn(Click) {
-                +get("/lazy-tabs/$i")
+                get("/lazy-tabs/$i")
             }
             text("Tab $i")
         }

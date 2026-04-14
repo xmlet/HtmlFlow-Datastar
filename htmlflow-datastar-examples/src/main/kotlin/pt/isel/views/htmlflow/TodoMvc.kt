@@ -58,11 +58,11 @@ val hfTodoMvcView: HtmlView<TodoUiState> =
             body {
                 div {
                     attrId("description")
-                    dataInit { +get(::getTodoMvcDescription) }
+                    dataInit { get(::getTodoMvcDescription) }
                 }
                 div {
                     attrId("app")
-                    dataInit { +get(::getUpdates) }
+                    dataInit { get(::getUpdates) }
                     div {
                         attrId("todo-app")
                         tasksView()
@@ -83,7 +83,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                     input {
                         attrType(EnumTypeInputType.CHECKBOX)
                         dataOn(Click) {
-                            +post(::toggleAllCheck)
+                            post(::toggleAllCheck)
                             modifiers { prevent() }
                         }
                         dataInit { +(if (todoUiState.pendingCount == 0) "el.checked = true" else "el.checked = false") }
@@ -96,8 +96,8 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                             val input = dataBind("input")
                             dataOn(Keydown) {
                                 +$$"if (evt.key !== 'Enter' || !$input.trim()) return"
-                                +patch("/todo-mvc/-1")
-                                +input.setValue("''")
+                                patch("/todo-mvc/-1")
+                                input.setValue("''")
                             }
                         }
                     }
@@ -110,7 +110,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                             attrTabIndex(0)
                             dataOn(DblClick) {
                                 +"evt.target === el"
-                                +get("/todo-mvc/${task.id}")
+                                get("/todo-mvc/${task.id}")
                             }
                             if (!task.editing) {
                                 input {
@@ -118,7 +118,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     attrType(EnumTypeInputType.CHECKBOX)
                                     dataInit { +if (task.status == Status.DONE) "el.checked = true" else "el.checked = false" }
                                     dataOn(Click) {
-                                        +post("/todo-mvc/${task.id}/toggle")
+                                        post("/todo-mvc/${task.id}/toggle")
                                         modifiers { prevent() }
                                     }
                                 }
@@ -129,7 +129,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                 button {
                                     attrClass("error small")
                                     dataOn(Click) {
-                                        +delete("/todo-mvc/${task.id}")
+                                        delete("/todo-mvc/${task.id}")
                                     }
                                 }
                             } else {
@@ -140,7 +140,7 @@ fun Div<*>.tasksView(): HtmlView<TodoUiState> =
                                     dataBind(input)
                                     dataInit { +"el.focus()" }
                                     dataOn(Blur) {
-                                        +put(::cancelEditMode)
+                                        put(::cancelEditMode)
                                     }
                                     dataOn(Keydown) {
                                         val js =
@@ -172,35 +172,35 @@ fun Div<*>.buttonsView() =
         button {
             attrClass("small info")
             dataOn(Click) {
-                +put(::mode0)
+                put(::mode0)
             }
             text("All")
         }
         button {
             attrClass("small")
             dataOn(Click) {
-                +put(::mode1)
+                put(::mode1)
             }
             text("Pending")
         }
         button {
             attrClass("small")
             dataOn(Click) {
-                +put(::mode2)
+                put(::mode2)
             }
             text("Completed")
         }
         button {
             attrClass("error small")
             dataOn(Click) {
-                +delete(::deleteToggledTasks)
+                delete(::deleteToggledTasks)
             }
             text("Delete")
         }
         button {
             attrClass("warning small")
             dataOn(Click) {
-                +put(::resetTasks)
+                put(::resetTasks)
             }
             text("Reset")
         }
