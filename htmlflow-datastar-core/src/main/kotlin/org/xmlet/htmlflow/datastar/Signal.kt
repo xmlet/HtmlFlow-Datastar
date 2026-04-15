@@ -45,7 +45,7 @@ import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
  * @property value the optional value associated with the signal (immutable after initialization)
  * @param case the case style that defines how the signal name is formatted in the string representation
  */
-class Signal<T>(
+class Signal<T> internal constructor(
     val name: String,
     val value: T? = null,
     case: CaseStyle = CaseStyle.CAMEL,
@@ -55,6 +55,8 @@ class Signal<T>(
             !name.contains("__"),
         ) { "Signal names cannot begin with nor contain a double underscore, due to its use as a modifier delimiter." }
     }
+
+    override fun toString() = this.syntax
 }
 
 private fun makeExpression(

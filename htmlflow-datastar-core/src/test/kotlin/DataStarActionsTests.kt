@@ -18,32 +18,32 @@ class DataStarActionsTests {
                         div {
                             val bar = dataSignal("bar", "initialValue")
                             val peekDataStarAction = handler.peek("() => $bar")
-                            assertEquals("@peek(() => $bar)", peekDataStarAction.toString())
+                            assertEquals("@peek(() => $bar)", peekDataStarAction.syntax)
                         }
                     }
                 }
             }
 
         val setAllActions = handler.setAll(true, "{include: /^foo$/}")
-        assertEquals("@setAll(true, {include: /^foo$/})", setAllActions.toString())
+        assertEquals("@setAll(true, {include: /^foo$/})", setAllActions.syntax)
 
         val toggleAllDataStarAction = handler.toggleAll("{include: /^foo$/}")
-        assertEquals("@toggleAll({include: /^foo$/})", toggleAllDataStarAction.toString())
+        assertEquals("@toggleAll({include: /^foo$/})", toggleAllDataStarAction.syntax)
 
         val getDataStarAction = handler.get(::getUsers)
-        assertEquals("@get('/users')", getDataStarAction.toString())
+        assertEquals("@get('/users')", getDataStarAction.syntax)
 
         val patchDataStarAction = handler.patch(::patchUsers)
-        assertEquals("@patch('/users')", patchDataStarAction.toString())
+        assertEquals("@patch('/users')", patchDataStarAction.syntax)
 
         val postDataStarAction = handler.post(::createUser)
-        assertEquals("@post('/users')", postDataStarAction.toString())
+        assertEquals("@post('/users')", postDataStarAction.syntax)
 
         val putDataStarAction = handler.put(::editUser)
-        assertEquals("@put('/users')", putDataStarAction.toString())
+        assertEquals("@put('/users')", putDataStarAction.syntax)
 
         val deleteDataStarAction = handler.delete(::deleteUser)
-        assertEquals("@delete('/users')", deleteDataStarAction.toString())
+        assertEquals("@delete('/users')", deleteDataStarAction.syntax)
     }
 
     @Path("/users")
