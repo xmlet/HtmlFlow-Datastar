@@ -31,7 +31,7 @@ with a strongly typed signal and another one from Active Search using events and
 div {
   val count: Signal = dataSignal("count", 0)
   div {
-    dataInit { +get(::getCounterEvents) }
+    dataInit { get(::getCounterEvents) }
     span {
       attrId("counter")
       dataText{ +count }
