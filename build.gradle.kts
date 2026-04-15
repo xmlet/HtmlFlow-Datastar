@@ -1,6 +1,6 @@
 plugins {
     // Apply SonarQube plugin for code quality analysis
-    id("org.sonarqube") version "7.2.2.6593"
+    id("org.sonarqube") version "7.2.3.7755"
     // Apply Kover plugin for code coverage analysis
     id("org.jetbrains.kotlinx.kover") version "0.9.7"
 }
@@ -31,6 +31,7 @@ subprojects {
         properties {
             property("sonar.coverage.jacoco.xmlReportPaths", "${projectDir.parentFile.path}/build/reports/kover/report.xml")
             property("sonar.junit.reportPaths", "${projectDir.parentFile.path}/build/test-results/test")
+            property("sonar.cpd.exclusions", "**/views/fragments/**")
         }
     }
 }
