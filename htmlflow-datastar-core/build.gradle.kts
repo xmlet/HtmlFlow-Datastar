@@ -7,13 +7,13 @@ plugins {
     // Apply ktlint plugin for code linting
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
 
-    id("org.jetbrains.dokka") version "2.1.0"
+    id("org.jetbrains.dokka") version "2.2.0"
 
     id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 group = "com.github.xmlet"
-version = "1.1.0-alpha"
+version = "1.1.0-alpha.1"
 
 repositories {
     mavenCentral()
@@ -39,24 +39,12 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.register<Jar>("javadocJar") {
-    archiveClassifier.set("javadoc")
-    // dokkaGenerate is the master task that generates all Dokka formats (including HTML)
-    dependsOn(tasks.named("dokkaGenerate"))
-    from(layout.buildDirectory.dir("dokka/html"))
-}
-
-tasks.build {
-    dependsOn(tasks.named("javadocJar"))
-}
-
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
     signAllPublications()
     configure(
         KotlinJvm(
-            // Reference the custom javadocJar task that contains all Dokka documentation
-            javadocJar = JavadocJar.Dokka("javadocJar"),
+            javadocJar = JavadocJar.Dokka(tasks.dokkaGeneratePublicationHtml),
         ),
     )
     coordinates(groupId = project.group.toString(), artifactId = project.name, version = project.version.toString())
