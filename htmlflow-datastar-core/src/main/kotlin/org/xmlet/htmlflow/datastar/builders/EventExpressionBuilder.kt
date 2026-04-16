@@ -4,29 +4,23 @@ import org.xmlet.htmlflow.datastar.events.Event
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnModifiers
 
 /**
- * An event-aware builder that extends [ExpressionModifierBuilder] with access to a specific [Event].
+ * An event-aware builder extending [ExpressionModifierBuilder] with access to a triggering [Event].
  *
- * [EventExpressionBuilder] is a specialized builder used within `data-on` event handler lambdas.
- * It provides:
- * - All expression-building capabilities from [ExpressionBuilder] (signals, actions, operators)
- * - All modifier-accumulation capabilities through [DataOnModifiers] (event-specific modifiers)
- * - Direct access to the triggering event via the [evt] property
- *
- * This allows you to build event-driven expressions that can reference and react to the specific
- * event that triggered the handler, while also configuring how the event should be processed.
+ * Used within `data-on` event handler lambdas to build expressions and modifiers while accessing
+ * event-specific data through the [evt] property.
  *
  * **Example usage:**
  * ```kotlin
  * dataOn(click) {
- *     +(signal1.setValue(evt.detail) and action1)  // Access event data and chain actions
+ *     signal1.setValue(evt.detail) and action1
  *     modifiers {
- *         debounce(300.milisenconds) // Configure event modifiers
+ *         debounce(300.milliseconds)
  *     }
  * }
  * ```
  *
  * @param EVT the type of [Event] available in this builder context
- * @property evt the event instance that triggered this builder's lambda, providing access to event data and properties
+ * @property evt the triggering event, providing access to event data and properties
  */
 class EventExpressionBuilder<EVT : Event>(
     val evt: EVT,

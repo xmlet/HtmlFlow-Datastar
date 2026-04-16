@@ -15,6 +15,18 @@ import org.xmlet.htmlflow.datastar.modifiers.attributes.DataJsonSignalsModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalsModifiers
 
+private fun List<Pair<String, Any?>>.toJson(): String =
+    this.joinToString(prefix = "{", postfix = "}", separator = ", ") { (name, value) ->
+        val res =
+            when (value) {
+                is String -> "'$value'"
+                is Function0<*> -> value()
+                null -> ""
+                else -> "$value"
+            }
+        "$name: $res"
+    }
+
 /**
  *
  * Initializes one or more signals with their initial values and modifiers.

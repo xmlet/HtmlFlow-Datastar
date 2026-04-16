@@ -31,18 +31,6 @@ import org.xmlet.htmlflow.datastar.Signal
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import kotlin.collections.joinToString
 
-fun List<Pair<String, Any?>>.toJson(): String =
-    this.joinToString(prefix = "{", postfix = "}", separator = ", ") { (name, value) ->
-        val res =
-            when (value) {
-                is String -> "'$value'"
-                is Function0<*> -> value()
-                null -> ""
-                else -> "$value"
-            }
-        "$name: $res"
-    }
-
 /**
  * Creates a signal and sets up two-way data binding between it and a text-based element’s value.
  *

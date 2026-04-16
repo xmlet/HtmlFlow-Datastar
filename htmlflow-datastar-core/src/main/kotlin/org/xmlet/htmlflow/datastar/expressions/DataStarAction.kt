@@ -3,6 +3,14 @@ package org.xmlet.htmlflow.datastar.expressions
 import jakarta.ws.rs.Path
 import kotlin.reflect.KFunction
 
+/**
+ * Represents a DataStar action that can be triggered on HTML elements.
+ *
+ * A [DataStarAction] encapsulates a specific action type and its parameters,
+ * generating the appropriate DataStar expression syntax for execution.
+ *
+ * @property type The [ActionType] that defines the action to be performed.
+ */
 class DataStarAction internal constructor(
     val type: ActionType,
     vararg params: Any?,
