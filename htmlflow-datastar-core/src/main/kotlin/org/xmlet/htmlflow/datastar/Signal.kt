@@ -34,11 +34,6 @@ import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
  * processing environment. **Note: This class does not behave as a reactive signal.**
  * It is only a representation that provides metadata about the signal.
  *
- * In HtmlFlow, a signal holds:
- * - A static name that identifies the signal and is used for referencing and management
- *   by the data star processor
- * - An optional value that is set at initialization
- *
  * The value is **not reactive** and will not be updated after initialization.
  *
  * @property name the name that identifies the signal

@@ -9,20 +9,17 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import kotlin.reflect.KFunction
 
 /**
- * A DSL builder for constructing DataStar expressions within lambda blocks passed to data attributes.
+ * A DSL builder for constructing DataStar expressions by combining signals, actions,
+ * and operators.
  *
- * [ExpressionBuilder] provides a fluent API for building complex DataStar expressions by combining:
- * - **Expressions**: DataStar expressions (signals, conditions, etc.) added with the unary plus operator (`+`)
- * - **Actions**: HTTP actions (GET, POST, PUT, DELETE, PATCH) and data manipulation actions (PEEK, SET_ALL, TOGGLE_ALL)
- * - **Operators**: Infix operators for chaining expressions (`and`, `or`, `equals`) and assignment (`setValue`)
- *
- * Multiple expressions are accumulated and separated by semicolons in the final string representation.
+ * Multiple expressions are accumulated and separated by semicolons in the final output.
  *
  * **Example usage:**
  * ```kotlin
- * +(signal1 and action1)
- * +(expression1 or expression2)
- * +(signal.setValue(newValue))
+ * +signal1
+ * "confirm(\"Are you sure\")" and delete(::someRow)
+ * signal2 and action2
+ * signal.setValue(newValue)
  * ```
  */
 open class ExpressionBuilder {

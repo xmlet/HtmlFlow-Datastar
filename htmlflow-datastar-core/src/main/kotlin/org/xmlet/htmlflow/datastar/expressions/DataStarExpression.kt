@@ -1,11 +1,12 @@
 package org.xmlet.htmlflow.datastar.expressions
 
 /**
- * A [DataStarExpression] is evaluated by a data attribute. It can contain JavaScript, signals and DataStar actions,
- * this means that changes to signals are propagated through other expressions.
+ * Represents a DataStar expression containing JavaScript code, signals, and DataStar actions
+ * to be evaluated within data-* attributes.
  *
- * @property syntax the string expression to be passed to the data-x attribute
+ * @property syntax The raw string representation of the expression to be evaluated
+ *                  and processed by the DataStar framework.
  */
 open class DataStarExpression internal constructor(
-    internal val syntax: String,
+    val syntax: String,
 )
