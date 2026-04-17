@@ -42,7 +42,7 @@ import kotlin.collections.joinToString
  */
 fun TextGroup<*, *>.dataBind(name: String): Signal<Any> {
     this.visitor.visitAttribute("data-bind:$name", "")
-    return Signal(name, null)
+    return Signal(name)
 }
 
 /**
@@ -54,7 +54,7 @@ fun TextGroup<*, *>.dataBind(name: String): Signal<Any> {
  */
 fun SelectAll<*, *>.dataBind(name: String): Signal<Any> {
     this.visitor.visitAttribute("data-bind:$name", "")
-    return Signal(name, null)
+    return Signal(name)
 }
 
 /**
@@ -145,7 +145,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(block: Expre
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal<Boolean> {
     this.visitor.visitAttribute("data-indicator:$name", "")
-    return Signal(name, true)
+    return Signal(name)
 }
 
 /**

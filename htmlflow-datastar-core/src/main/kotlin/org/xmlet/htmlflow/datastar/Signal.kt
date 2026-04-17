@@ -37,12 +37,10 @@ import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
  * The value is **not reactive** and will not be updated after initialization.
  *
  * @property name the name that identifies the signal
- * @property value the optional value associated with the signal (immutable after initialization)
  * @param case the case style that defines how the signal name is formatted in the string representation
  */
 class Signal<T> internal constructor(
     val name: String,
-    val value: T? = null,
     case: CaseStyle = CaseStyle.CAMEL,
 ) : DataStarExpression(makeExpression(name, case)) {
     init {

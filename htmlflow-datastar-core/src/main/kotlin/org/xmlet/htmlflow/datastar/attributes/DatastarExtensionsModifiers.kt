@@ -48,8 +48,8 @@ fun <E : Element<*, *>, P : Element<*, *>, Any> Element<E, P>.dataSignals(
             this.visitor.visitAttribute("data-signals$mods", it)
         }
     }
-    return signals.map { (name, value) ->
-        Signal(name, value)
+    return signals.map { (name, _) ->
+        Signal(name)
     }
 }
 
@@ -83,7 +83,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 
     val caseStyle = mods.extractCaseStyle() ?: CaseStyle.CAMEL
 
-    return Signal(name, value, caseStyle)
+    return Signal(name, caseStyle)
 }
 
 /**
@@ -153,7 +153,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
 
     val caseStyle = modifiers.extractCaseStyle() ?: CaseStyle.CAMEL
 
-    return Signal(name, expression, caseStyle)
+    return Signal(name, caseStyle)
 }
 
 /**

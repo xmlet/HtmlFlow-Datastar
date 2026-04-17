@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class ExpressionBuilderTests {
     @Test
     fun `Expression builder testing referencing a signal two times to see if its not removed from the expression`() {
-        val fetching = Signal("fetching", true)
+        val fetching = Signal<Boolean>("fetching")
         val builder = ExpressionBuilder()
         with(builder) {
             +fetching
@@ -22,8 +22,8 @@ class ExpressionBuilderTests {
 
     @Test
     fun `Expression builder testing referencing a signal two times to see if its removed from the expression`() {
-        val fetching = Signal("fetching", true)
-        val other = Signal("other", true)
+        val fetching = Signal<Boolean>("fetching")
+        val other = Signal<Boolean>("other")
         val builder = ExpressionBuilder()
         with(builder) {
             +fetching
@@ -36,8 +36,8 @@ class ExpressionBuilderTests {
 
     @Test
     fun `Expression builder testing referencing a DataStarCompoundExprElem two times to see if its removed from the expression`() {
-        val fetching = Signal("fetching", true)
-        val other = Signal("other", true)
+        val fetching = Signal<Boolean>("fetching")
+        val other = Signal<Boolean>("other")
         val builder = ExpressionBuilder()
         with(builder) {
             !fetching
@@ -50,8 +50,8 @@ class ExpressionBuilderTests {
 
     @Test
     fun `Expression builder test with multiple js operators`() {
-        val fetching = Signal("fetching", true)
-        val other = Signal("other", true)
+        val fetching = Signal<Boolean>("fetching")
+        val other = Signal<Boolean>("other")
         val builder = ExpressionBuilder()
         with(builder) {
             fetching.setValue(!fetching) and get(::someHandler) or other.setValue(fetching)
@@ -62,9 +62,9 @@ class ExpressionBuilderTests {
 
     @Test
     fun `Expression builder test where both parameters of js operator are js operators`() {
-        val count1 = Signal("count1", 1)
-        val count2 = Signal("count2", 2)
-        val count3 = Signal("count3", 3)
+        val count1 = Signal<Int>("count1")
+        val count2 = Signal<Int>("count2")
+        val count3 = Signal<Int>("count3")
         val builder = ExpressionBuilder()
         with(builder) {
             (count1 eq 1) or (count2 eq 2) and (count3 eq 3)
