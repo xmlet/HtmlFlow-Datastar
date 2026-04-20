@@ -6,12 +6,17 @@ import org.xmlet.htmlflow.datastar.builders.DefaultModifierBuilder
 import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
 import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder
 import org.xmlet.htmlflow.datastar.events.Event
+import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle.Companion.extractCaseStyle
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataClassModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataComputedModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIgnoreModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataInitModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataJsonSignalsModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntersectModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntervalModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnSignalPatchModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalsModifiers
 import kotlin.reflect.full.memberProperties
@@ -154,11 +159,11 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
  * @param modifiersBuilder configuration lambda for JSON signals modifiers
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
-    jsObj: String = "",
+    jsObj: SignalPatchFilter,
     modifiersBuilder: DefaultModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
 ) {
     val modifiers = DefaultModifierBuilder(::DataJsonSignalsModifiers).apply(modifiersBuilder).getModifiers()
-    this.visitor.visitAttribute("data-json-signals$modifiers", jsObj)
+    this.visitor.visitAttribute("data-json-signals$modifiers", jsObj.render())
 }
 
 /**
@@ -180,6 +185,76 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
     val modifiers = builder.getModifiers()
 
     this.visitor.visitAttribute("data-class:$className$modifiers", expression)
+}
+
+/**
+ *
+ * Runs an expression at a regular interval.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on-Interval attribute will be added
+ * @param block configuration lambda for initialization modifiers and create expressions
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnInterval(
+    block: ExpressionModifierBuilder<DataOnIntervalModifiers>.() -> Unit,
+) {
+    val builder = ExpressionModifierBuilder(::DataOnIntervalModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-on-interval$modifiers", expression)
+}
+
+/**
+ *
+ * Runs an expression when the element intersects with the viewport.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on-intersect attribute will be added
+ * @param block configuration lambda for initialization modifiers and create expressions
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(
+    block: ExpressionModifierBuilder<DataOnIntersectModifiers>.() -> Unit,
+) {
+    val builder = ExpressionModifierBuilder(::DataOnIntersectModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-on-intersect$modifiers", expression)
+}
+
+/**
+ *
+ * Tells Datastar to ignore this element and its descendants.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on-intersect attribute will be added
+ * @param block configuration lambda for initialization modifiers and create expressions
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnore(block: ExpressionModifierBuilder<DataIgnoreModifiers>.() -> Unit) {
+    val builder = ExpressionModifierBuilder(::DataIgnoreModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-ignore$modifiers", expression)
+}
+
+/**
+ *
+ * Runs an expression whenever any Signal is patched.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on-signal-patch attribute will be added
+ * @param block configuration lambda for initialization modifiers and create expressions
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(
+    block: ExpressionModifierBuilder<DataOnSignalPatchModifiers>.() -> Unit,
+) {
+    val builder = ExpressionModifierBuilder(::DataOnSignalPatchModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-on-signal-patch$modifiers", expression)
 }
 
 // Helper Functions

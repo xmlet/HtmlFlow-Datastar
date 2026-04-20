@@ -29,6 +29,7 @@ import org.xmlet.htmlapifaster.SelectAll
 import org.xmlet.htmlapifaster.TextGroup
 import org.xmlet.htmlflow.datastar.Signal
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
+import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.collections.joinToString
 
 /**
@@ -178,34 +179,6 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(block: Express
 
 /**
  *
- * Runs an expression when the element intersects with the viewport.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on-intersect attribute will be added
- * @param block Block with tha lambda containing the expression to be ran
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(block: ExpressionBuilder.() -> Unit) {
-    val expression = ExpressionBuilder().apply(block).getExpression()
-    this.visitor.visitAttribute("data-on-intersect", expression)
-}
-
-/**
- *
- * Runs an expression whenever any Signal is patched.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on-signal-patch attribute will be added
- * @param block Block with tha lambda containing the expression
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(block: ExpressionBuilder.() -> Unit) {
-    val expression = ExpressionBuilder().apply(block).getExpression()
-    this.visitor.visitAttribute("data-on-signal-patch", expression)
-}
-
-/**
- *
  * Filters which signals to watch when using the data-on-signal-patch attribute.
  *
  * @param E type of the Element receiver
@@ -213,6 +186,19 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(block
  * @receiver the Element to which the data-on-signal-patch-filter attribute will be added
  * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter(jsObj: String) {
-    this.visitor.visitAttribute("data-on-signal-patch-filter", jsObj)
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter(jsObj: SignalPatchFilter) {
+    this.visitor.visitAttribute("data-on-signal-patch-filter", jsObj.render())
+}
+
+/**
+ *
+ * Tells the PatchElements watcher to skip processing an element
+ * and its children when morphing elements.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on-signal-patch-filter attribute will be added
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnoreMorph() {
+    this.visitor.visitAttribute("data-ignore-morph", "")
 }
