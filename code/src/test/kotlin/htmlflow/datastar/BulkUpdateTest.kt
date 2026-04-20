@@ -77,8 +77,8 @@ class BulkUpdateTest {
             }
 
     fun Div<*>.buildTable(
-        fetching: Signal<Any?>,
-        selections: Signal<Any?>,
+        fetching: Signal<*>,
+        selections: Signal<*>,
     ) {
         table {
             thead {

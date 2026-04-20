@@ -7,6 +7,7 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.addApost
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.convertFuncToPath
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty1
 
 /**
  * A DSL builder for constructing DataStar expressions by combining signals, actions,
@@ -241,5 +242,10 @@ open class ExpressionBuilder {
         val result = DataStarExpression("${this.syntax} = ${expression.syntax}")
         appendExpression(result)
         return result
+    }
+
+    fun <T, V> Signal<T>.on(prop: KProperty1<T, V>): Signal<V> {
+        val expr = "${this.name}.${prop.name}"
+        return Signal(expr)
     }
 }

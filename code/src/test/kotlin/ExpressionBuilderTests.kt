@@ -1,6 +1,10 @@
+import htmlflow.div
+import htmlflow.doc
+import htmlflow.html
 import jakarta.ws.rs.Path
 import org.junit.jupiter.api.Test
 import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import kotlin.test.assertEquals
 
@@ -70,5 +74,39 @@ class ExpressionBuilderTests {
             (count1 eq 1) or (count2 eq 2) and (count3 eq 3)
         }
         assertEquals("$count1 == 1 || $count2 == 2 && $count3 == 3", builder.getExpression())
+    }
+
+    data class User(
+        val name: String,
+        val age: Int,
+    )
+
+    @Test
+    fun `Expression with Signal on call`() {
+        val builder = ExpressionBuilder()
+        StringBuilder()
+            .apply {
+                doc {
+                    html {
+                        div {
+                            val (user1) =
+                                dataSignals(
+                                    "user1" to User("John Doe", 30),
+                                    "user2" to User("Chuck Norris", 50),
+                                )
+                            with(builder) {
+                                assertEquals(
+                                    $$"$user1.name",
+                                    user1.on(User::name).syntax,
+                                )
+                                assertEquals(
+                                    $$"$user1.age",
+                                    user1.on(User::age).syntax,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
     }
 }
