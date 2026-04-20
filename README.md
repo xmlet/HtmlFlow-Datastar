@@ -113,20 +113,3 @@ button {
 </td>
 </tr>
 </table>
-
-Run with: `./gradlew run` and open `http://localhost:8080` for the ktor server and `http://localhost:8070` for http4k in your browser.
-
-Check all examples from the index page and corresponding HtmlFlow view definitions:
-* Active Search - [ActiveSearch.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/ActiveSearch.kt)
-* Bulk Update - [BulkUpdate.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/BulkUpdate.kt)
-* Click To Edit - [ClickToEdit.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/ClickToEdit.kt)
-* Click To Load - [BulkUpdate.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/BulkUpdate.kt)
-* Counter Via Signals - [CounterViaSignals.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/CounterViaSignals.kt)
-* Delete Row - [DeleteRow.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/DeleteRow.kt)
-* File Upload - [FileUpload.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/FileUpload.kt)
-* Infinite Scroll - [InfiniteScroll.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/InfiniteScroll.kt)
-* Inline Validation - [InlineValidation.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/InlineValidation.kt)
-
-
-
-

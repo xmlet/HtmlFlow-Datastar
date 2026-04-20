@@ -7,8 +7,7 @@ plugins {
 
 dependencies {
     // Add Kover plugin as a dependency for code coverage analysis
-    kover(project(":htmlflow-datastar-core"))
-    kover(project(":htmlflow-datastar-examples"))
+    kover(project(":code"))
 }
 
 repositories {
@@ -31,7 +30,6 @@ subprojects {
         properties {
             property("sonar.coverage.jacoco.xmlReportPaths", "${projectDir.parentFile.path}/build/reports/kover/report.xml")
             property("sonar.junit.reportPaths", "${projectDir.parentFile.path}/build/test-results/test")
-            property("sonar.cpd.exclusions", "**/views/fragments/**")
         }
     }
 }
