@@ -109,4 +109,15 @@ class ExpressionBuilderTests {
                 }
             }
     }
+
+    @Test
+    fun `Expression builder test where both parameters are equal`() {
+        val count1 = Signal<Int>("count1")
+        val count2 = Signal<Int>("count2")
+        val builder = ExpressionBuilder()
+        with(builder) {
+            (count1 eq 1) eq (count2 eq 1)
+        }
+        assertEquals("$count1 == 1 == $count2 == 1", builder.getExpression())
+    }
 }

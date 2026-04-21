@@ -12,6 +12,7 @@ import org.xmlet.htmlflow.datastar.modifiers.CaseStyle.Companion.extractCaseStyl
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataClassModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataComputedModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIgnoreModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIndicatorModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataInitModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataJsonSignalsModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntersectModifiers
@@ -255,6 +256,28 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(
     val expression = builder.getExpression()
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-on-signal-patch$modifiers", expression)
+}
+
+/**
+ *
+ * Creates a signal and sets its value to true while a fetch request is in flight, otherwise false.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-indicator attribute will be added
+ * @param name the name of the indicator signal
+ * @param block configuration lambda for initialization modifiers and create expressions
+ * @return a Signal instance with the given name
+ */
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(
+    name: String,
+    block: ExpressionModifierBuilder<DataIndicatorModifiers>.() -> Unit,
+): Signal<Boolean> {
+    val builder = ExpressionModifierBuilder(::DataIndicatorModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-indicator:$name$modifiers", expression)
+    return Signal(name)
 }
 
 // Helper Functions

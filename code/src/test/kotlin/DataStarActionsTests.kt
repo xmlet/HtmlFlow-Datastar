@@ -44,6 +44,12 @@ class DataStarActionsTests {
 
         val deleteDataStarAction = handler.delete(::deleteUser)
         assertEquals("@delete('/users')", deleteDataStarAction.syntax)
+
+        val postPathDataStarAction = handler.post("/users")
+        assertEquals("@post('/users')", postPathDataStarAction.syntax)
+
+        val putPathDataStarAction = handler.put("/users")
+        assertEquals("@put('/users')", putPathDataStarAction.syntax)
     }
 
     @Path("/users")

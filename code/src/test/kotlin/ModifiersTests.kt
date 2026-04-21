@@ -11,12 +11,18 @@ import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlflow.datastar.attributes.dataIgnore
+import org.xmlet.htmlflow.datastar.attributes.dataIndicator
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.attributes.dataOnIntersect
 import org.xmlet.htmlflow.datastar.attributes.dataOnInterval
 import org.xmlet.htmlflow.datastar.attributes.dataSignal
 import org.xmlet.htmlflow.datastar.attributes.dataText
+import org.xmlet.htmlflow.datastar.events.Blur
 import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.events.DblClick
+import org.xmlet.htmlflow.datastar.events.Focus
+import org.xmlet.htmlflow.datastar.events.FocusIn
+import org.xmlet.htmlflow.datastar.events.FocusOut
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -86,6 +92,30 @@ class ModifiersTests {
             assertEquals(expected.next().trim(), actual.trim())
         }
     }
+
+    @Test
+    fun `EventModifiers should add all event modifier attributes`() {
+        val expected = expectedHtmlEventModifiers.trimIndent().lines().iterator()
+        expectedEventModifiers.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
+
+    @Test
+    fun `OnceModifier should add __once modifier`() {
+        val expected = expectedHtmlOnceModifier.trimIndent().lines().iterator()
+        expectedOnceModifier.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
+
+    @Test
+    fun `dataIndicator should add data-indicator attribute and dataOn with remain untested events`() {
+        val expected = expectedHtmlDataIndicator.trimIndent().lines().iterator()
+        expectedDataIndicator.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
 }
 
 private val expectedCaseModifier =
@@ -108,7 +138,10 @@ private val expectedCaseModifier =
                             attrId("demoCaseModifier")
                             val userName =
                                 dataSignal("Name", "John Doe") {
-                                    modifiers { case(CaseStyle.CAMEL) }
+                                    modifiers {
+                                        case(CaseStyle.CAMEL)
+                                        ifMissing()
+                                    }
                                 }
                             p { dataText { +userName } }
                         }
@@ -116,24 +149,6 @@ private val expectedCaseModifier =
                 }
             }
         }
-
-private val expectedHtmlCaseModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoCaseModifier" data-signals:Name__case.camel="'John Doe'">
-                    <p data-text="$name">
-                    </p>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
 
 private val expectedDelayModifier =
     StringBuilder()
@@ -166,28 +181,6 @@ private val expectedDelayModifier =
             }
         }
 
-@Path("/delay-modifier/fetch")
-private fun fetchData() {}
-
-private val expectedHtmlDelayModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoDelayModifier">
-                    <button data-on:click__delay.500ms="@get('/delay-modifier/fetch')">
-                        Fetch
-                    </button>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
-
 private val expectedDurationModifier =
     StringBuilder()
         .apply {
@@ -211,6 +204,13 @@ private val expectedDurationModifier =
                                     get(::fetchData)
                                     modifiers { duration(500.milliseconds, leading = true) }
                                 }
+                                text("Fetch w/leading")
+                            }
+                            button {
+                                dataOnInterval {
+                                    get(::fetchData)
+                                    modifiers { duration(500.milliseconds, leading = false) }
+                                }
                                 text("Fetch")
                             }
                         }
@@ -218,25 +218,6 @@ private val expectedDurationModifier =
                 }
             }
         }
-
-private val expectedHtmlDurationModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoDurationModifier">
-                    <button data-on-interval__duration.500ms.leading="@get('/delay-modifier/fetch')">
-                        Fetch
-                    </button>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
 
 private val expectedViewTransitionModifier =
     StringBuilder()
@@ -268,28 +249,6 @@ private val expectedViewTransitionModifier =
                 }
             }
         }
-
-@Path("/view-transition/navigate")
-private fun navigatePage() {}
-
-private val expectedHtmlViewTransitionModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoViewTransitionModifier">
-                    <button data-on:click__viewtransition="@get('/view-transition/navigate')">
-                        Navigate
-                    </button>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
 
 private val expectedThrottleModifier =
     StringBuilder()
@@ -323,25 +282,6 @@ private val expectedThrottleModifier =
                 }
             }
         }
-
-private val expectedHtmlThrottleModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoThrottleModifier">
-                    <button data-on:click__throttle.500ms="@get('/delay-modifier/fetch')">
-                        Fetch
-                    </button>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
 
 private val expectedTimingEdgeModifier =
     StringBuilder()
@@ -381,34 +321,6 @@ private val expectedTimingEdgeModifier =
             }
         }
 
-@Path("/timing-edge/leading")
-private fun fetchLeading() {}
-
-@Path("/timing-edge/no-trailing")
-private fun fetchNoTrailing() {}
-
-private val expectedHtmlTimingEdgeModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoTimingEdgeModifier">
-                    <button data-on:click__debounce.500ms.leading="@get('/timing-edge/leading')">
-                        Leading
-                    </button>
-                    <button data-on:click__debounce.500ms.notrailing="@get('/timing-edge/no-trailing')">
-                        No Trailing
-                    </button>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
-
 private val expectedIntersectModifier =
     StringBuilder()
         .apply {
@@ -445,32 +357,6 @@ private val expectedIntersectModifier =
             }
         }
 
-@Path("/intersect/half")
-private fun fetchHalf() {}
-
-@Path("/intersect/full")
-private fun fetchFull() {}
-
-private val expectedHtmlIntersectModifier =
-    $$"""
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="module" src="/js/datastar.js">
-                </script>
-                <link rel="stylesheet" href="/css/styles.css">
-            </head>
-            <body>
-                <div id="demoIntersectModifier">
-                    <div data-on-intersect__half="@get('/intersect/half')">
-                    </div>
-                    <div data-on-intersect__full="@get('/intersect/full')">
-                    </div>
-                </div>
-            </body>
-        </html>
-    """.trimMargin()
-
 private val expectedIgnoreModifier =
     StringBuilder()
         .apply {
@@ -504,6 +390,255 @@ private val expectedIgnoreModifier =
             }
         }
 
+private val expectedEventModifiers =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        div {
+                            attrId("demoEventModifiers")
+                            div {
+                                dataOn(Click) {
+                                    get(::fetchData)
+                                    modifiers {
+                                        passive()
+                                        capture()
+                                        window()
+                                        outside()
+                                        prevent()
+                                        stop()
+                                    }
+                                }
+                                text("Click")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+private val expectedOnceModifier =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        button {
+                            dataOn(Click) {
+                                get(::fetchData)
+                                modifiers { once() }
+                            }
+                            text("Click")
+                        }
+                    }
+                }
+            }
+        }
+
+private val expectedDataIndicator =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        button {
+                            dataOn(DblClick) {
+                                get(::fetchData)
+                            }
+                            dataIndicator("isFetching") {
+                                modifiers { case(CaseStyle.CAMEL) }
+                            }
+                            text("Fetch")
+                        }
+                        div {
+                            dataOn(Blur) {
+                                get(::fetchData)
+                            }
+                            dataOn(Focus) {
+                                get(::fetchData)
+                            }
+                            dataOn(FocusIn) {
+                                get(::fetchData)
+                            }
+                            dataOn(FocusOut) {
+                                get(::fetchData)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+private val expectedHtmlCaseModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoCaseModifier" data-signals:Name__case.camel__ifmissing="'John Doe'">
+                    <p data-text="$name">
+                    </p>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlDelayModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoDelayModifier">
+                    <button data-on:click__delay.500ms="@get('/delay-modifier/fetch')">
+                        Fetch
+                    </button>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlDurationModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoDurationModifier">
+                    <button data-on-interval__duration.500ms.leading="@get('/delay-modifier/fetch')">
+                        Fetch w/leading
+                    </button>
+                    <button data-on-interval__duration.500ms="@get('/delay-modifier/fetch')">
+                        Fetch
+                    </button>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlTimingEdgeModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoTimingEdgeModifier">
+                    <button data-on:click__debounce.500ms.leading="@get('/timing-edge/leading')">
+                        Leading
+                    </button>
+                    <button data-on:click__debounce.500ms.notrailing="@get('/timing-edge/no-trailing')">
+                        No Trailing
+                    </button>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlViewTransitionModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoViewTransitionModifier">
+                    <button data-on:click__viewtransition="@get('/view-transition/navigate')">
+                        Navigate
+                    </button>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlThrottleModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoThrottleModifier">
+                    <button data-on:click__throttle.500ms="@get('/delay-modifier/fetch')">
+                        Fetch
+                    </button>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlIntersectModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoIntersectModifier">
+                    <div data-on-intersect__half="@get('/intersect/half')">
+                    </div>
+                    <div data-on-intersect__full="@get('/intersect/full')">
+                    </div>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
 private val expectedHtmlIgnoreModifier =
     $$"""
         <!DOCTYPE html>
@@ -529,3 +664,76 @@ private val expectedHtmlIgnoreModifier =
             </body>
         </html>
     """.trimMargin()
+
+private val expectedHtmlEventModifiers =
+    $$"""        
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoEventModifiers">
+                    <div data-on:click__passive__capture__window__outside__prevent__stop="@get('/delay-modifier/fetch')">
+                        Click
+                    </div>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlOnceModifier =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <button data-on:click__once="@get('/delay-modifier/fetch')">
+                    Click
+                </button>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlDataIndicator =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <button data-on:dblclick="@get('/delay-modifier/fetch')" data-indicator:isFetching__case.camel="">
+                    Fetch
+                </button>
+                <div data-on:blur="@get('/delay-modifier/fetch')" data-on:focus="@get('/delay-modifier/fetch')" data-on:focusin="@get('/delay-modifier/fetch')" data-on:focusout="@get('/delay-modifier/fetch')">
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+@Path("/delay-modifier/fetch")
+private fun fetchData() {}
+
+@Path("/view-transition/navigate")
+private fun navigatePage() {}
+
+@Path("/timing-edge/leading")
+private fun fetchLeading() {}
+
+@Path("/timing-edge/no-trailing")
+private fun fetchNoTrailing() {}
+
+@Path("/intersect/half")
+private fun fetchHalf() {}
+
+@Path("/intersect/full")
+private fun fetchFull() {}
