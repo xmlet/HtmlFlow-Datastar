@@ -50,6 +50,9 @@ class DataStarActionsTests {
 
         val putPathDataStarAction = handler.put("/users")
         assertEquals("@put('/users')", putPathDataStarAction.syntax)
+
+        val patchPathDataStarAction = handler.patch("/users")
+        assertEquals("@patch('/users')", patchPathDataStarAction.syntax)
     }
 
     @Path("/users")

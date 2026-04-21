@@ -8,9 +8,14 @@ import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.link
+import org.xmlet.htmlapifaster.option
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
+import org.xmlet.htmlapifaster.select
+import org.xmlet.htmlflow.datastar.attributes.dataBind
+import org.xmlet.htmlflow.datastar.attributes.dataClass
 import org.xmlet.htmlflow.datastar.attributes.dataIgnore
+import org.xmlet.htmlflow.datastar.attributes.dataIgnoreMorph
 import org.xmlet.htmlflow.datastar.attributes.dataIndicator
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.attributes.dataOnIntersect
@@ -110,9 +115,9 @@ class ModifiersTests {
     }
 
     @Test
-    fun `dataIndicator should add data-indicator attribute and dataOn with remain untested events`() {
-        val expected = expectedHtmlDataIndicator.trimIndent().lines().iterator()
-        expectedDataIndicator.toString().split("\n").forEach { actual ->
+    fun `Datastar extensions should render correct attributes`() {
+        val expected = expectedHtmlExtensionsOutput.trimIndent().lines().iterator()
+        expectedExtensionsOutput.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
         }
     }
@@ -456,7 +461,7 @@ private val expectedOnceModifier =
             }
         }
 
-private val expectedDataIndicator =
+private val expectedExtensionsOutput =
     StringBuilder()
         .apply {
             doc {
@@ -472,27 +477,69 @@ private val expectedDataIndicator =
                         }
                     }
                     body {
-                        button {
-                            dataOn(DblClick) {
-                                get(::fetchData)
-                            }
-                            dataIndicator("isFetching") {
+                        div {
+                            attrId("demoDataClass")
+                            dataClass("myClass") {
+                                +"\$isVisible"
                                 modifiers { case(CaseStyle.CAMEL) }
                             }
-                            text("Fetch")
                         }
                         div {
-                            dataOn(Blur) {
-                                get(::fetchData)
+                            attrId("demoIgnoreMorph")
+                            dataIgnoreMorph()
+                            text("This element is skipped during morphing")
+                        }
+                        div {
+                            attrId("demoDataBind")
+                            val selectedColor = dataSignal("selectedColor", "red")
+                            select {
+                                dataBind(selectedColor)
+                                option {
+                                    attrValue("red")
+                                    text("Red")
+                                }
+                                option {
+                                    attrValue("blue")
+                                    text("Blue")
+                                }
                             }
-                            dataOn(Focus) {
-                                get(::fetchData)
+                            select {
+                                dataBind("size")
+                                option {
+                                    attrValue("sm")
+                                    text("Small")
+                                }
+                                option {
+                                    attrValue("lg")
+                                    text("Large")
+                                }
                             }
-                            dataOn(FocusIn) {
-                                get(::fetchData)
+                        }
+                        div {
+                            attrId("demoDataIndicator")
+                            button {
+                                dataOn(DblClick) {
+                                    get(::fetchData)
+                                }
+                                dataIndicator("isFetching") {
+                                    modifiers { case(CaseStyle.CAMEL) }
+                                }
+                                text("Fetch")
                             }
-                            dataOn(FocusOut) {
-                                get(::fetchData)
+                            div {
+                                attrId("demoDataOn")
+                                dataOn(Blur) {
+                                    get(::fetchData)
+                                }
+                                dataOn(Focus) {
+                                    get(::fetchData)
+                                }
+                                dataOn(FocusIn) {
+                                    get(::fetchData)
+                                }
+                                dataOn(FocusOut) {
+                                    get(::fetchData)
+                                }
                             }
                         }
                     }
@@ -701,7 +748,7 @@ private val expectedHtmlOnceModifier =
         </html>
     """.trimMargin()
 
-private val expectedHtmlDataIndicator =
+private val expectedHtmlExtensionsOutput =
     $$"""
         <!DOCTYPE html>
         <html>
@@ -711,10 +758,35 @@ private val expectedHtmlDataIndicator =
                 <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
-                <button data-on:dblclick="@get('/delay-modifier/fetch')" data-indicator:isFetching__case.camel="">
-                    Fetch
-                </button>
-                <div data-on:blur="@get('/delay-modifier/fetch')" data-on:focus="@get('/delay-modifier/fetch')" data-on:focusin="@get('/delay-modifier/fetch')" data-on:focusout="@get('/delay-modifier/fetch')">
+                <div id="demoDataClass" data-class:myClass__case.camel="$isVisible">
+                </div>
+                <div id="demoIgnoreMorph" data-ignore-morph="">
+                    This element is skipped during morphing
+                </div>
+                <div id="demoDataBind" data-signals:selectedColor="'red'">
+                    <select data-bind:selectedColor="">
+                        <option value="red">
+                            Red
+                        </option>
+                        <option value="blue">
+                            Blue
+                        </option>
+                    </select>
+                    <select data-bind:size="">
+                        <option value="sm">
+                            Small
+                        </option>
+                        <option value="lg">
+                            Large
+                        </option>
+                    </select>
+                </div>
+                <div id="demoDataIndicator">
+                    <button data-on:dblclick="@get('/delay-modifier/fetch')" data-indicator:isFetching__case.camel="">
+                        Fetch
+                    </button>   
+                    <div id="demoDataOn" data-on:blur="@get('/delay-modifier/fetch')" data-on:focus="@get('/delay-modifier/fetch')" data-on:focusin="@get('/delay-modifier/fetch')" data-on:focusout="@get('/delay-modifier/fetch')">
+                    </div>
                 </div>
             </body>
         </html>
