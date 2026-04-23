@@ -103,7 +103,7 @@ button {
 ```html
 <button
   data-indicator:_fetching
-  data-attr:aria-disabled="$_fetching"
+  data-attr:disabled="$_fetching"
   data-on:click="!$_fetching && @get('/examples/click_to_load/more')"
 >
     Load More
