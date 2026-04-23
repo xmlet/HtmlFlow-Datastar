@@ -1,36 +1,55 @@
-import org.xmlet.htmlflow.datastar.expressions.RegexSignalPatchFilter
+import htmlflow.div
+import htmlflow.doc
+import htmlflow.html
+import org.xmlet.htmlflow.datastar.attributes.dataOnSignalPatchFilter
+import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.assertContains
 
 class SignalPatchFilterTest {
     @Test
-    fun `renders include filter only`() {
+    fun `Checks include filter only`() {
         val filter =
-            RegexSignalPatchFilter(
-                include = Regex("^counter$"),
-            )
+            object : SignalPatchFilter {
+                override val include = Regex("^counter$")
+                override val exclude = null
+            }
 
-        val result = filter.render()
+        val html =
+            StringBuilder()
+                .apply {
+                    doc {
+                        html {
+                            div {
+                                dataOnSignalPatchFilter(filter)
+                            }
+                        }
+                    }
+                }.toString()
 
-        assertEquals(
-            "{include: /^counter$/}",
-            result,
-        )
+        assertContains(html, """data-on-signal-patch-filter="{include: /^counter$/}"""")
     }
 
     @Test
     fun `renders include and exclude filters`() {
         val filter =
-            RegexSignalPatchFilter(
-                include = Regex("user"),
-                exclude = Regex("password"),
-            )
+            object : SignalPatchFilter {
+                override val include = Regex("user")
+                override val exclude = Regex("password")
+            }
 
-        val result = filter.render()
+        val html =
+            StringBuilder()
+                .apply {
+                    doc {
+                        html {
+                            div {
+                                dataOnSignalPatchFilter(filter)
+                            }
+                        }
+                    }
+                }.toString()
 
-        assertEquals(
-            "{include: /user/, exclude: /password/}",
-            result,
-        )
+        assertContains(html, """data-on-signal-patch-filter="{include: /user/, exclude: /password/}"""")
     }
 }
