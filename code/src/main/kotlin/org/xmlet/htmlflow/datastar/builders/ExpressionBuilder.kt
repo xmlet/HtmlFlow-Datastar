@@ -158,7 +158,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript ! operator, used to negate an expression.
      */
-    operator fun DataStarExpression.not(): DataStarExpression {
+    operator fun <T> Signal<T>.not(): DataStarExpression {
         val result = DataStarExpression("!${this.syntax}")
         appendExpression(result)
         return result
