@@ -4,6 +4,8 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=xmlet_HtmlFlow-Datastar&metric=coverage)](https://sonarcloud.io/summary/new_code?id=xmlet_HtmlFlow-Datastar)
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.github.xmlet/htmlflow-datastar-core)](https://central.sonatype.com/artifact/com.github.xmlet/htmlflow-datastar-core)
 [![javadoc](https://javadoc.io/badge2/com.github.xmlet/htmlflow-datastar-core/javadoc.svg)](https://javadoc.io/doc/com.github.xmlet/htmlflow-datastar-core)
+[![examples](https://img.shields.io/badge/examples-htmlflow--datastar--examples-blue?logo=github)](https://github.com/xmlet/HtmlFlow-Datastar-Examples)
+
 
 Type-Safe Hypermedia-First DSL for Reactive Backend-Driven Web Applications
 
@@ -113,20 +115,3 @@ button {
 </td>
 </tr>
 </table>
-
-Run with: `./gradlew run` and open `http://localhost:8080` for the ktor server and `http://localhost:8070` for http4k in your browser.
-
-Check all examples from the index page and corresponding HtmlFlow view definitions:
-* Active Search - [ActiveSearch.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/ActiveSearch.kt)
-* Bulk Update - [BulkUpdate.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/BulkUpdate.kt)
-* Click To Edit - [ClickToEdit.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/ClickToEdit.kt)
-* Click To Load - [BulkUpdate.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/BulkUpdate.kt)
-* Counter Via Signals - [CounterViaSignals.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/CounterViaSignals.kt)
-* Delete Row - [DeleteRow.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/DeleteRow.kt)
-* File Upload - [FileUpload.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/FileUpload.kt)
-* Infinite Scroll - [InfiniteScroll.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/InfiniteScroll.kt)
-* Inline Validation - [InlineValidation.kt](htmlflow-datastar-examples/src/main/kotlin/pt/isel/views/htmlflow/InlineValidation.kt)
-
-
-
-
