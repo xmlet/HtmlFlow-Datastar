@@ -10,6 +10,11 @@ plugins {
     id("org.jetbrains.dokka") version "2.2.0"
 
     id("com.vanniktech.maven.publish") version "0.36.0"
+
+    // Apply SonarQube plugin for code quality analysis
+    id("org.sonarqube") version "7.2.3.7755"
+    // Apply Kover plugin for code coverage analysis
+    id("org.jetbrains.kotlinx.kover") version "0.9.7"
 }
 
 group = "com.github.xmlet"
@@ -87,4 +92,28 @@ mavenPublishing {
             developerConnection.set("scm:git:https://github.com/xmlet/HtmlFlow-Datastar.git")
         }
     }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "xmlet_HtmlFlow-Datastar")
+        property("sonar.organization", "fmcarvalho-xmlet")
+        property("sonar.coverage.jacoco.xmlReportPaths", "$projectDir/build/reports/kover/report.xml")
+        property("sonar.junit.reportPaths", "$projectDir/build/test-results/test")
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            bound {
+                minValue.set(80)
+                maxValue.set(100)
+            }
+        }
+    }
+}
+
+tasks.named("sonar") {
+    dependsOn(tasks.named("koverXmlReport"))
 }

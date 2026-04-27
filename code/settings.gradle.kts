@@ -11,4 +11,3 @@ plugins {
 }
 
 rootProject.name = "htmlflow-datastar"
-include("code")
