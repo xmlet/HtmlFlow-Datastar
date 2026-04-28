@@ -213,9 +213,8 @@ open class ExpressionBuilder {
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
     infix fun <T> Signal<T>.eq(value: T): DataStarExpression {
-        val valueExpression = DataStarExpression(value.toString())
-        val result = DataStarExpression("${this.syntax} == ${valueExpression.syntax}")
-        removeIfPresent(this, valueExpression)
+        val result = DataStarExpression("${this.syntax} == $value")
+        removeIfPresent(this)
         appendExpression(result)
         return result
     }

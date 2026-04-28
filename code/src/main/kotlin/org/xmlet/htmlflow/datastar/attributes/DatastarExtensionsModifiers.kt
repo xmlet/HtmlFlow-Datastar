@@ -20,7 +20,6 @@ import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntervalModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnSignalPatchModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalsModifiers
-import kotlin.reflect.full.memberProperties
 
 /**
  *
@@ -279,48 +278,3 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(
     this.visitor.visitAttribute("data-indicator:$name$modifiers", expression)
     return Signal(name)
 }
-
-// Helper Functions
-private fun List<Pair<String, Any?>>.toJson(): String =
-    this.joinToString(prefix = "{", postfix = "}", separator = ", ") { (name, value) ->
-        val res = serializeValue(value)
-        "$name: $res"
-    }
-
-private fun serializeValue(
-    value: Any?,
-    isTopLevel: Boolean = true,
-): String =
-    when (value) {
-        is String -> {
-            "'${value.replace("'", "\\'")}'"
-        }
-
-        is Function0<*> -> {
-            value().toString()
-        }
-
-        null -> {
-            if (isTopLevel) "" else "null"
-        }
-
-        is Number, is Boolean -> {
-            "$value"
-        }
-
-        else -> {
-            if (!value::class.isData) {
-                "$value"
-            } else {
-                val properties = value::class.memberProperties
-                if (properties.isEmpty()) {
-                    "$value"
-                } else {
-                    properties.joinToString(separator = ", ", prefix = "{", postfix = "}") { prop ->
-                        val propValue = runCatching { prop.getter.call(value) }.getOrNull()
-                        "${prop.name}: ${serializeValue(propValue, isTopLevel = false)}"
-                    }
-                }
-            }
-        }
-    }
