@@ -49,11 +49,6 @@ open class ExpressionBuilder {
         appendExpression(DataStarExpression(this))
     }
 
-    // gets substituted by a String.unaryPlus call by the plugin with the transpiled JS string
-    operator fun Function<*>.unaryPlus() {
-        appendExpression(DataStarExpression(this.toString()))
-    }
-
     fun getExpression() = builderExpression.joinToString("; ") { it.syntax }
 
     fun get(
