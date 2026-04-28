@@ -1,4 +1,4 @@
-import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import kotlin.test.Test
 import kotlin.test.assertEquals

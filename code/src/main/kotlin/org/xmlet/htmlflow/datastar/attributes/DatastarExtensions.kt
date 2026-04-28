@@ -27,7 +27,7 @@ package org.xmlet.htmlflow.datastar.attributes
 import org.xmlet.htmlapifaster.Element
 import org.xmlet.htmlapifaster.SelectAll
 import org.xmlet.htmlapifaster.TextGroup
-import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.collections.joinToString

@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package org.xmlet.htmlflow.datastar
+package org.xmlet.htmlflow.datastar.expressions
 
-import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 
 /**
