@@ -1,7 +1,7 @@
 package org.xmlet.htmlflow.datastar.attributes
 
 import org.xmlet.htmlapifaster.Element
-import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.builders.DefaultModifierBuilder
 import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
 import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder

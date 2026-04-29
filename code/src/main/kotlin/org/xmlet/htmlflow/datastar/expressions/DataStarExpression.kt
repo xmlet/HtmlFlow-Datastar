@@ -7,6 +7,6 @@ package org.xmlet.htmlflow.datastar.expressions
  * @property syntax The raw string representation of the expression to be evaluated
  *                  and processed by the DataStar framework.
  */
-open class DataStarExpression internal constructor(
+sealed class DataStarExpression(
     val syntax: String,
 )

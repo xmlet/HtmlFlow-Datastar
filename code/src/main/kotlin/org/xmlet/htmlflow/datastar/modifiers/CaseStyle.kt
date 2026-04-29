@@ -1,7 +1,7 @@
 package org.xmlet.htmlflow.datastar.modifiers
 
 /**
- * Supported case conversion styles for [org.xmlet.htmlflow.datastar.Signal] representation of a signal
+ * Supported case conversion styles for [org.xmlet.htmlflow.datastar.expressions.Signal] representation of a signal
  *
  * Provides methods to convert strings between different naming conventions
  * and extract case styles from formatted strings.

@@ -1,11 +1,12 @@
 package org.xmlet.htmlflow.datastar.builders
 
-import org.xmlet.htmlflow.datastar.Signal
 import org.xmlet.htmlflow.datastar.expressions.ActionType
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.addApostrophe
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.convertFuncToPath
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
+import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
@@ -46,7 +47,7 @@ open class ExpressionBuilder {
     }
 
     operator fun String.unaryPlus() {
-        appendExpression(DataStarExpression(this))
+        appendExpression(DataStarExpressionOp(this))
     }
 
     fun getExpression() = builderExpression.joinToString("; ") { it.syntax }
@@ -153,8 +154,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript ! operator, used to negate an expression.
      */
-    operator fun <T> Signal<T>.not(): DataStarExpression {
-        val result = DataStarExpression("!${this.syntax}")
+    operator fun <T> Signal<T>.not(): DataStarExpressionOp {
+        val result = DataStarExpressionOp("!${this.syntax}")
         appendExpression(result)
         return result
     }
@@ -162,8 +163,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpression {
-        val result = DataStarExpression("${this.syntax} && ${expression.syntax}")
+    infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp {
+        val result = DataStarExpressionOp("${this.syntax} && ${expression.syntax}")
         removeIfPresent(this, expression)
         appendExpression(result)
         return result
@@ -172,9 +173,9 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun String.and(expression: DataStarExpression): DataStarExpression {
+    infix fun String.and(expression: DataStarExpression): DataStarExpressionOp {
         removeIfPresent(expression)
-        val result = DataStarExpression("$this && ${expression.syntax}")
+        val result = DataStarExpressionOp("$this && ${expression.syntax}")
         appendExpression(result)
         return result
     }
@@ -182,8 +183,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpression {
-        val result = DataStarExpression("${this.syntax} || ${expression.syntax}")
+    infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpressionOp {
+        val result = DataStarExpressionOp("${this.syntax} || ${expression.syntax}")
         removeIfPresent(this, expression)
         appendExpression(result)
         return result
@@ -192,8 +193,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
-    infix fun String.or(expression: DataStarExpression): DataStarExpression {
-        val result = DataStarExpression("$this || ${expression.syntax}")
+    infix fun String.or(expression: DataStarExpression): DataStarExpressionOp {
+        val result = DataStarExpressionOp("$this || ${expression.syntax}")
         removeIfPresent(expression)
         appendExpression(result)
         return result
@@ -202,8 +203,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
-    infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpression {
-        val result = DataStarExpression("${this.syntax} == ${expression.syntax}")
+    infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpressionOp {
+        val result = DataStarExpressionOp("${this.syntax} == ${expression.syntax}")
         removeIfPresent(this, expression)
         appendExpression(result)
         return result
@@ -212,8 +213,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
-    infix fun <T> Signal<T>.eq(value: T): DataStarExpression {
-        val result = DataStarExpression("${this.syntax} == $value")
+    infix fun <T> Signal<T>.eq(value: T): DataStarExpressionOp {
+        val result = DataStarExpressionOp("${this.syntax} == $value")
         removeIfPresent(this)
         appendExpression(result)
         return result
@@ -222,8 +223,8 @@ open class ExpressionBuilder {
     /**
      * Equal to the assignment operator in JavaScript, used to assign the signal value to the new value.
      */
-    fun <T> Signal<T>.setValue(value: T): DataStarExpression {
-        val result = DataStarExpression("${this.syntax} = $value")
+    fun <T> Signal<T>.setValue(value: T): DataStarExpressionOp {
+        val result = DataStarExpressionOp("${this.syntax} = $value")
         appendExpression(result)
         return result
     }
@@ -231,9 +232,9 @@ open class ExpressionBuilder {
     /**
      * Equal to the assignment operator in JavaScript, used to assign the passed expression to another expression.
      */
-    fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpression {
+    fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpressionOp {
         removeIfPresent(expression)
-        val result = DataStarExpression("${this.syntax} = ${expression.syntax}")
+        val result = DataStarExpressionOp("${this.syntax} = ${expression.syntax}")
         appendExpression(result)
         return result
     }

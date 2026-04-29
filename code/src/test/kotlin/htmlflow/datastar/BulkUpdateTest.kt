@@ -6,7 +6,7 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
-import org.xmlet.htmlflow.datastar.Signal
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.attributes.dataAttr
 import org.xmlet.htmlflow.datastar.attributes.dataBind
 import org.xmlet.htmlflow.datastar.attributes.dataEffect
