@@ -3,9 +3,9 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.junit.jupiter.api.Test
-import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import kotlin.test.assertEquals
 
 class ExpressionBuilderTests {

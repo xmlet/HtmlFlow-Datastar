@@ -1,11 +1,11 @@
 package org.xmlet.htmlflow.datastar.attributes
 
 import org.xmlet.htmlapifaster.Element
-import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.builders.DefaultModifierBuilder
 import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
 import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder
 import org.xmlet.htmlflow.datastar.events.Event
+import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle.Companion.extractCaseStyle
