@@ -183,11 +183,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(block: Express
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-on-signal-patch-filter attribute will be added
- * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
+ * @receiver the Element to which the `data-on-signal-patch-filter` attribute will be added
+ * @param filterBuilder a builder lambda that configures a [SignalPatchFilter]
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter(jsObj: SignalPatchFilter) {
-    this.visitor.visitAttribute("data-on-signal-patch-filter", jsObj.render())
+fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatchFilter(filterBuilder: SignalPatchFilter.() -> Unit) {
+    val filter = SignalPatchFilter().apply(filterBuilder)
+    this.visitor.visitAttribute("data-on-signal-patch-filter", "$filter")
 }
 
 /**

@@ -19,7 +19,6 @@ import org.xmlet.htmlflow.datastar.attributes.dataOnSignalPatchFilter
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Click
-import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -89,20 +88,10 @@ class OnSignalPatchTest {
                                 }
                                 div {
                                     dataOnSignalPatch { +"$counterChanges.push(patch)" }
-                                    dataOnSignalPatchFilter(
-                                        object : SignalPatchFilter {
-                                            override val include = Regex("^counter$")
-                                            override val exclude = null
-                                        },
-                                    )
+                                    dataOnSignalPatchFilter { include = Regex("^counter$") }
                                     h3 { text("Counter Changes Only") }
                                     pre {
-                                        dataJsonSignals(
-                                            object : SignalPatchFilter {
-                                                override val include = Regex("^counterChanges")
-                                                override val exclude = null
-                                            },
-                                        ) {
+                                        dataJsonSignals({ include = Regex("^counterChanges") }) {
                                             modifiers { terse() }
                                         }
                                     }
@@ -110,20 +99,13 @@ class OnSignalPatchTest {
                                 div {
                                     dataOnSignalPatch { +"$allChanges.push(patch)" }
 
-                                    dataOnSignalPatchFilter(
-                                        object : SignalPatchFilter {
-                                            override val include = null
-                                            override val exclude = Regex("allChanges|counterChanges")
-                                        },
-                                    )
+                                    dataOnSignalPatchFilter {
+                                        exclude = Regex("allChanges|counterChanges")
+                                    }
+
                                     h3 { text("All Signal Changes") }
                                     pre {
-                                        dataJsonSignals(
-                                            object : SignalPatchFilter {
-                                                override val include = Regex("^allChanges")
-                                                override val exclude = null
-                                            },
-                                        ) {
+                                        dataJsonSignals({ include = Regex("^allChanges") }) {
                                             modifiers { terse() }
                                         }
                                     }
