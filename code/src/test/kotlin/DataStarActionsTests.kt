@@ -24,10 +24,10 @@ class DataStarActionsTests {
                 }
             }
 
-        val setAllActions = handler.setAll(true, "{include: /^foo$/}")
+        val setAllActions = handler.setAll(true) { include = Regex("^foo$") }
         assertEquals("@setAll(true, {include: /^foo$/})", setAllActions.syntax)
 
-        val toggleAllDataStarAction = handler.toggleAll("{include: /^foo$/}")
+        val toggleAllDataStarAction = handler.toggleAll { include = Regex("^foo$") }
         assertEquals("@toggleAll({include: /^foo$/})", toggleAllDataStarAction.syntax)
 
         val getDataStarAction = handler.get(::getUsers)

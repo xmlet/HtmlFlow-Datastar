@@ -1,5 +1,6 @@
 package org.xmlet.htmlflow.datastar.builders
 
+import org.xmlet.htmlflow.datastar.expressions.ActionOptions
 import org.xmlet.htmlflow.datastar.expressions.ActionType
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.addApostrophe
@@ -7,6 +8,7 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.convertF
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
 import org.xmlet.htmlflow.datastar.expressions.Signal
+import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
@@ -42,6 +44,13 @@ open class ExpressionBuilder {
         }
     }
 
+    private fun buildSignalPatchFilter(filterBuilder: SignalPatchFilter.() -> Unit): String =
+        SignalPatchFilter()
+            .apply(filterBuilder)
+            .toString()
+            .takeUnless { it == "{}" }
+            .orEmpty()
+
     operator fun Signal<*>.unaryPlus() {
         appendExpression(this)
     }
@@ -54,8 +63,9 @@ open class ExpressionBuilder {
 
     fun get(
         func: KFunction<*>,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.GET, convertFuncToPath(func), options)
         appendExpression(action)
         return action
@@ -63,8 +73,9 @@ open class ExpressionBuilder {
 
     fun get(
         path: String,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.GET, addApostrophe(path), options)
         appendExpression(action)
         return action
@@ -84,23 +95,24 @@ open class ExpressionBuilder {
 
     fun setAll(
         value: Any,
-        filter: String? = null,
+        filterBuilder: SignalPatchFilter.() -> Unit,
     ): DataStarAction {
-        val action = DataStarAction(ActionType.SET_ALL, value, filter ?: "")
+        val action = DataStarAction(ActionType.SET_ALL, value, buildSignalPatchFilter(filterBuilder))
         appendExpression(action)
         return action
     }
 
-    fun toggleAll(filter: String? = null): DataStarAction {
-        val action = DataStarAction(ActionType.TOGGLE_ALL, filter ?: "")
+    fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit = {}): DataStarAction {
+        val action = DataStarAction(ActionType.TOGGLE_ALL, buildSignalPatchFilter(filterBuilder))
         appendExpression(action)
         return action
     }
 
     fun post(
         func: KFunction<*>,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.POST, convertFuncToPath(func), options)
         appendExpression(action)
         return action
@@ -108,45 +120,70 @@ open class ExpressionBuilder {
 
     fun post(
         path: String,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.POST, addApostrophe(path), options)
         appendExpression(action)
         return action
     }
 
-    fun put(func: KFunction<*>): DataStarAction {
-        val action = DataStarAction(ActionType.PUT, convertFuncToPath(func))
+    fun put(
+        func: KFunction<*>,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
+        val action = DataStarAction(ActionType.PUT, convertFuncToPath(func), options)
         appendExpression(action)
         return action
     }
 
-    fun put(path: String): DataStarAction {
-        val action = DataStarAction(ActionType.PUT, addApostrophe(path))
+    fun put(
+        path: String,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
+        val action = DataStarAction(ActionType.PUT, addApostrophe(path), options)
         appendExpression(action)
         return action
     }
 
-    fun delete(func: KFunction<*>): DataStarAction {
-        val action = DataStarAction(ActionType.DELETE, convertFuncToPath(func))
+    fun delete(
+        func: KFunction<*>,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
+        val action = DataStarAction(ActionType.DELETE, convertFuncToPath(func), options)
         appendExpression(action)
         return action
     }
 
-    fun delete(path: String): DataStarAction {
-        val action = DataStarAction(ActionType.DELETE, addApostrophe(path))
+    fun delete(
+        path: String,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
+        val action = DataStarAction(ActionType.DELETE, addApostrophe(path), options)
         appendExpression(action)
         return action
     }
 
-    fun patch(func: KFunction<*>): DataStarAction {
-        val action = DataStarAction(ActionType.PATCH, convertFuncToPath(func))
+    fun patch(
+        func: KFunction<*>,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
+        val action = DataStarAction(ActionType.PATCH, convertFuncToPath(func), options)
         appendExpression(action)
         return action
     }
 
-    fun patch(path: String): DataStarAction {
-        val action = DataStarAction(ActionType.PATCH, addApostrophe(path))
+    fun patch(
+        path: String,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction {
+        val options = ActionOptions().apply(optionsBuilder).toString()
+        val action = DataStarAction(ActionType.PATCH, addApostrophe(path), options)
         appendExpression(action)
         return action
     }
