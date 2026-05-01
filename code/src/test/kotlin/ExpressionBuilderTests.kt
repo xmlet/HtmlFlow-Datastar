@@ -18,7 +18,7 @@ class ExpressionBuilderTests {
             fetching.setValue(false) and get(::someHandler)
         }
 
-        assertEquals("$fetching; $fetching = false && @get('/some/url')", builder.getExpression())
+        assertEquals("$fetching; $fetching = false && @get('/some/url')", builder.build())
     }
 
     @Path("/some/url")
@@ -35,7 +35,7 @@ class ExpressionBuilderTests {
             other.setValue(fetching)
         }
 
-        assertEquals("$fetching; @get('/some/url') && @post('/some/url'); $other = $fetching", builder.getExpression())
+        assertEquals("$fetching; @get('/some/url') && @post('/some/url'); $other = $fetching", builder.build())
     }
 
     @Test
@@ -49,7 +49,7 @@ class ExpressionBuilderTests {
             other.setValue(!fetching)
         }
 
-        assertEquals("!$fetching; @get('/some/url'); $other = !$fetching", builder.getExpression())
+        assertEquals("!$fetching; @get('/some/url'); $other = !$fetching", builder.build())
     }
 
     @Test
@@ -61,7 +61,7 @@ class ExpressionBuilderTests {
             fetching.setValue(!fetching) and get(::someHandler) or other.setValue(fetching)
             !fetching
         }
-        assertEquals("$fetching = !$fetching && @get('/some/url') || $other = $fetching; !$fetching", builder.getExpression())
+        assertEquals("$fetching = !$fetching && @get('/some/url') || $other = $fetching; !$fetching", builder.build())
     }
 
     @Test
@@ -73,7 +73,7 @@ class ExpressionBuilderTests {
         with(builder) {
             (count1 eq 1) or (count2 eq 2) and (count3 eq 3)
         }
-        assertEquals("$count1 == 1 || $count2 == 2 && $count3 == 3", builder.getExpression())
+        assertEquals("$count1 == 1 || $count2 == 2 && $count3 == 3", builder.build())
     }
 
     data class User(
@@ -118,6 +118,6 @@ class ExpressionBuilderTests {
         with(builder) {
             (count1 eq 1) eq (count2 eq 1)
         }
-        assertEquals("$count1 == 1 == $count2 == 1", builder.getExpression())
+        assertEquals("$count1 == 1 == $count2 == 1", builder.build())
     }
 }
