@@ -1,7 +1,7 @@
 package org.xmlet.htmlflow.datastar.builders
 
 import org.xmlet.htmlflow.datastar.events.Event
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnModifiers
 
 /**
  * An event-aware builder extending [ExpressionModifierBuilder] with access to a triggering [Event].

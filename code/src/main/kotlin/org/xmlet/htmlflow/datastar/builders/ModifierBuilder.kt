@@ -1,6 +1,6 @@
 package org.xmlet.htmlflow.datastar.builders
 
-import org.xmlet.htmlflow.datastar.modifiers.base.ModifierAccumulator
+import org.xmlet.htmlflow.datastar.modifiers.core.ModifierAccumulator
 
 /**
  * A concrete implementation of [ModifierBuilder] that accumulates modifier strings

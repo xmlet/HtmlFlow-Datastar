@@ -9,17 +9,17 @@ import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle.Companion.extractCaseStyle
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataClassModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataComputedModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIgnoreModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIndicatorModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataInitModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataJsonSignalsModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntersectModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntervalModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnSignalPatchModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalsModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataClassModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataComputedModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIgnoreModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIndicatorModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataInitModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataJsonSignalsModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntersectModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntervalModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnSignalPatchModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalsModifiers
 
 /**
  *

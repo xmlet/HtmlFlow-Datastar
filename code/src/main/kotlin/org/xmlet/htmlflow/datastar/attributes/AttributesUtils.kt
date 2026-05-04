@@ -13,7 +13,7 @@ import kotlin.reflect.full.memberProperties
  * - If both are specified: `{include: /includePattern/, exclude: /excludePattern/}`
  *
  * @receiver the SignalPatchFilter to render
- * @return a string representation of the filter for HTML attributes
+ * @return a string representation of the filter for HTML attribute
  */
 
 internal fun SignalPatchFilter.render(): String {
