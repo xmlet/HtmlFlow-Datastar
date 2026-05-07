@@ -40,6 +40,15 @@ private fun makeExpression(
         }
 
         else -> {
-            type.syntax + "(" + params.filterNotNull().joinToString(", ") + ")"
+            val normalizedParams =
+                params.mapNotNull { param ->
+                    when (param) {
+                        null -> null
+                        is String -> param.takeUnless { it.isBlank() }
+                        else -> param
+                    }
+                }
+
+            "${type.syntax}(${normalizedParams.joinToString(", ")})"
         }
     }

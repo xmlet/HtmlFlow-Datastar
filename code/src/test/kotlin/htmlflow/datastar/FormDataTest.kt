@@ -8,6 +8,7 @@ import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.*
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.events.Click
+import org.xmlet.htmlflow.datastar.expressions.ContentType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -55,20 +56,23 @@ class FormDataTest {
                                 }
                                 button {
                                     dataOn(Click) {
-                                        get(::endpoint, "{contentType: 'form'}")
+                                        get(::endpoint) { contentType = ContentType.FORM }
                                     }
                                     text("Submit GET request")
                                 }
                                 button {
                                     dataOn(Click) {
-                                        post(::endpoint, "{contentType: 'form'}")
+                                        post(::endpoint) { contentType = ContentType.FORM }
                                     }
                                     text("Submit POST request")
                                 }
                             }
                             button {
                                 dataOn(Click) {
-                                    get(::endpoint, "{contentType: 'form', selector: '#myform'}")
+                                    get(::endpoint) {
+                                        contentType = ContentType.FORM
+                                        selector = "#myform"
+                                    }
                                 }
                                 text("Submit GET request from outside the form")
                             }

@@ -155,15 +155,16 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-json-signals attribute will be added
- * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
+ * @param filterBuilder a builder that allow to JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  * @param modifiersBuilder configuration lambda for JSON signals modifiers
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
-    jsObj: SignalPatchFilter,
+    filterBuilder: SignalPatchFilter.() -> Unit,
     modifiersBuilder: DefaultModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
 ) {
     val modifiers = DefaultModifierBuilder(::DataJsonSignalsModifiers).apply(modifiersBuilder).getModifiers()
-    this.visitor.visitAttribute("data-json-signals$modifiers", jsObj.render())
+    val filter = SignalPatchFilter().apply(filterBuilder)
+    this.visitor.visitAttribute("data-json-signals$modifiers", "$filter")
 }
 
 /**
