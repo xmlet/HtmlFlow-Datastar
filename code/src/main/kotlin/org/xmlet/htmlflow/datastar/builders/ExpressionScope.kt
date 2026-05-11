@@ -8,6 +8,8 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
 interface ExpressionScope {
+    fun getExpression(): String
+
     operator fun Signal<*>.unaryPlus()
 
     operator fun String.unaryPlus()

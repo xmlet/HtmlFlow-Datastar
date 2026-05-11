@@ -15,17 +15,13 @@ import org.xmlet.htmlflow.datastar.modifiers.core.ModifierAccumulator
  * ```
  * @param M the type of [ModifierAccumulator] used to accumulate modifiers
  * @param builderFactory the [ModifierBuilder] instance used to build modifiers alongside expressions
+ * @property expressionBuilder delegates [ExpressionScope] to [ExpressionBuilder]
+ * @property modifierBuilder delegates [ModifierScope] to [ModifierBuilder]
  */
 class ExpressionModifierBuilder<M : ModifierAccumulator>(
     builderFactory: () -> M,
-    private val expressionScope: DefaultExpressionScope = DefaultExpressionScope(),
-    private val modifiersScope: DefaultModifiersScope<M> = DefaultModifiersScope(builderFactory),
-) : ExpressionScope by expressionScope,
-    ModifiersScope<M> by modifiersScope {
-    data class BuildResult(
-        val expression: String,
-        val modifiers: String,
-    )
-
-    fun build() = BuildResult(expressionScope.build(), modifiersScope.build())
-}
+    private val expressionBuilder: ExpressionBuilder = ExpressionBuilder(),
+    private val modifierBuilder: ModifierBuilder<M> = ModifierBuilder(builderFactory),
+) : ExpressionModifierScope<M>,
+    ExpressionScope by expressionBuilder,
+    ModifierScope<M> by modifierBuilder

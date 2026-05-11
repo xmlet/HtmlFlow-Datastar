@@ -18,7 +18,12 @@ import org.xmlet.htmlflow.datastar.modifiers.core.ModifierAccumulator
  */
 class ModifierBuilder<M : ModifierAccumulator>(
     builderFactory: () -> M,
-    private val modifiersScope: DefaultModifiersScope<M> = DefaultModifiersScope(builderFactory),
-) : ModifiersScope<M> by modifiersScope {
-    fun build() = modifiersScope.build()
+) : ModifierScope<M> {
+    private val builder = builderFactory()
+
+    override fun modifiers(block: M.() -> Unit) {
+        builder.apply(block)
+    }
+
+    override fun getModifiers() = builder.modifiers
 }

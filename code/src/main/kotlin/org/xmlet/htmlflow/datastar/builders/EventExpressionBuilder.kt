@@ -21,16 +21,9 @@ import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnModifiers
  *
  * @param EVT the type of [Event] available in this builder context
  * @property evt the triggering event, providing access to event data and properties
+ * @property expressionModifierBuilder delegates [ExpressionModifierScope] to [ExpressionModifierBuilder]
  */
 class EventExpressionBuilder<EVT : Event>(
     val evt: EVT,
-    private val expressionScope: DefaultExpressionScope = DefaultExpressionScope(),
-    private val modifiersScope: DefaultModifiersScope<DataOnModifiers> = DefaultModifiersScope(::DataOnModifiers),
-) : ExpressionScope by expressionScope,
-    ModifiersScope<DataOnModifiers> by modifiersScope {
-    fun build() =
-        ExpressionModifierBuilder.BuildResult(
-            expression = expressionScope.build(),
-            modifiers = modifiersScope.build(),
-        )
-}
+    private val expressionModifierBuilder: ExpressionModifierBuilder<DataOnModifiers> = ExpressionModifierBuilder(::DataOnModifiers),
+) : ExpressionModifierScope<DataOnModifiers> by expressionModifierBuilder

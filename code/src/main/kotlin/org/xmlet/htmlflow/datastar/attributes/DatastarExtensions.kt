@@ -96,7 +96,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
     name: String,
     block: ExpressionBuilder.() -> Unit,
 ) {
-    val expression = ExpressionBuilder().apply(block).build()
+    val expression = ExpressionBuilder().apply(block).getExpression()
     this.visitor.visitAttribute("data-attr:$name", expression)
 }
 
@@ -130,7 +130,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: 
  * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(block: ExpressionBuilder.() -> Unit) {
-    val expression = ExpressionBuilder().apply(block).build()
+    val expression = ExpressionBuilder().apply(block).getExpression()
     this.visitor.visitAttribute("data-effect", expression)
 }
 
@@ -159,7 +159,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: Str
  * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(block: ExpressionBuilder.() -> Unit) {
-    val expression = ExpressionBuilder().apply(block).build()
+    val expression = ExpressionBuilder().apply(block).getExpression()
     this.visitor.visitAttribute("data-show", expression)
 }
 
@@ -173,7 +173,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(block: Express
  * @param block Block with tha lambda containing the expression to be used for the attribute
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(block: ExpressionBuilder.() -> Unit) {
-    val expression = ExpressionBuilder().apply(block).build()
+    val expression = ExpressionBuilder().apply(block).getExpression()
     this.visitor.visitAttribute("data-text", expression)
 }
 
