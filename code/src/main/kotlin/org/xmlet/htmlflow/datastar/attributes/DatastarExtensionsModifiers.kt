@@ -97,12 +97,13 @@ fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     event: EVT,
     block: EventExpressionBuilder<EVT>.() -> Unit,
 ) {
-    val result = EventExpressionBuilder(event).apply(block)
-    val expr = result.getExpression()
-    val mods = result.getModifiers()
+	val builder = EventExpressionBuilder(event)
 
-    this.visitor.visitAttribute("data-on:$event$mods", expr)
-}
+	builder.block()
+	val expr = builder.getExpression()
+	val mods = builder.getModifiers()
+
+	this.visitor.visitAttribute("data-on:$event$mods", expr)}
 
 /**
  *
@@ -153,15 +154,16 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-json-signals attribute will be added
- * @param jsObj a JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  * @param block configuration lambda for JSON signals modifiers
+ * @param filterBuilder a builder that allow to JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
-    jsObj: SignalPatchFilter,
+    filterBuilder: SignalPatchFilter.() -> Unit,
     block: ModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
 ) {
     val modifiers = ModifierBuilder(::DataJsonSignalsModifiers).apply(block).getModifiers()
-    this.visitor.visitAttribute("data-json-signals$modifiers", jsObj.render())
+    val filter = SignalPatchFilter().apply(filterBuilder)
+    this.visitor.visitAttribute("data-json-signals$modifiers", "$filter")
 }
 
 /**
@@ -178,9 +180,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
     className: String,
     block: ExpressionModifierBuilder<DataClassModifiers>.() -> Unit,
 ) {
-    val result = ExpressionModifierBuilder(::DataClassModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
+    val builder = ExpressionModifierBuilder(::DataClassModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
 
     this.visitor.visitAttribute("data-class:$className$modifiers", expression)
 }
@@ -197,9 +199,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnInterval(
     block: ExpressionModifierBuilder<DataOnIntervalModifiers>.() -> Unit,
 ) {
-    val result = ExpressionModifierBuilder(::DataOnIntervalModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
+    val builder = ExpressionModifierBuilder(::DataOnIntervalModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-on-interval$modifiers", expression)
 }
 
@@ -215,9 +217,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnInterval(
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(
     block: ExpressionModifierBuilder<DataOnIntersectModifiers>.() -> Unit,
 ) {
-    val result = ExpressionModifierBuilder(::DataOnIntersectModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
+    val builder = ExpressionModifierBuilder(::DataOnIntersectModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-on-intersect$modifiers", expression)
 }
 
@@ -231,9 +233,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(
  * @param block configuration lambda for initialization modifiers and create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnore(block: ExpressionModifierBuilder<DataIgnoreModifiers>.() -> Unit) {
-    val result = ExpressionModifierBuilder(::DataIgnoreModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
+    val builder = ExpressionModifierBuilder(::DataIgnoreModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-ignore$modifiers", expression)
 }
 
@@ -249,9 +251,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnore(block: Expre
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(
     block: ExpressionModifierBuilder<DataOnSignalPatchModifiers>.() -> Unit,
 ) {
-    val result = ExpressionModifierBuilder(::DataOnSignalPatchModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
+    val builder = ExpressionModifierBuilder(::DataOnSignalPatchModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-on-signal-patch$modifiers", expression)
 }
 
@@ -270,9 +272,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(
     name: String,
     block: ExpressionModifierBuilder<DataIndicatorModifiers>.() -> Unit,
 ): Signal<Boolean> {
-    val result = ExpressionModifierBuilder(::DataIndicatorModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
+    val builder = ExpressionModifierBuilder(::DataIndicatorModifiers).apply(block)
+    val expression = builder.getExpression()
+    val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-indicator:$name$modifiers", expression)
     return Signal(name)
 }

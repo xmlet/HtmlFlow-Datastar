@@ -1,9 +1,11 @@
 package org.xmlet.htmlflow.datastar.builders
 
+import org.xmlet.htmlflow.datastar.expressions.ActionOptions
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
 import org.xmlet.htmlflow.datastar.expressions.Signal
+import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
@@ -23,45 +25,63 @@ interface ExpressionScope {
 
     fun setAll(
         value: Any,
-        filter: String? = null,
+        filterBuilder: SignalPatchFilter.() -> Unit,
     ): DataStarAction
 
-    fun toggleAll(filter: String? = null): DataStarAction
+    fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction
 
     /**
      * Backend actions
      */
     fun get(
         func: KFunction<*>,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction
 
     fun get(
         path: String,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction
 
     fun post(
         func: KFunction<*>,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction
 
     fun post(
         path: String,
-        options: String? = null,
+        optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction
 
-    fun put(func: KFunction<*>): DataStarAction
+    fun put(
+        func: KFunction<*>,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction
 
-    fun put(path: String): DataStarAction
+    fun put(
+        path: String,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction
 
-    fun delete(func: KFunction<*>): DataStarAction
+    fun delete(
+        func: KFunction<*>,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction
 
-    fun delete(path: String): DataStarAction
+    fun delete(
+        path: String,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction
 
-    fun patch(func: KFunction<*>): DataStarAction
+    fun patch(
+        func: KFunction<*>,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction
 
-    fun patch(path: String): DataStarAction
+    fun patch(
+        path: String,
+        optionsBuilder: ActionOptions.() -> Unit = {},
+    ): DataStarAction
 
     /**
      * JavaScript operators
