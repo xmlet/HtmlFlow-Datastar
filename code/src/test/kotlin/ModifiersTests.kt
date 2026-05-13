@@ -3,15 +3,19 @@ import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
 import org.xmlet.htmlapifaster.EnumRelType
+import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
+import org.xmlet.htmlapifaster.details
 import org.xmlet.htmlapifaster.head
+import org.xmlet.htmlapifaster.input
 import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.option
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlapifaster.select
+import org.xmlet.htmlapifaster.span
 import org.xmlet.htmlflow.datastar.attributes.dataBind
 import org.xmlet.htmlflow.datastar.attributes.dataClass
 import org.xmlet.htmlflow.datastar.attributes.dataIgnore
@@ -20,7 +24,11 @@ import org.xmlet.htmlflow.datastar.attributes.dataIndicator
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.attributes.dataOnIntersect
 import org.xmlet.htmlflow.datastar.attributes.dataOnInterval
+import org.xmlet.htmlflow.datastar.attributes.dataPreserveAttr
+import org.xmlet.htmlflow.datastar.attributes.dataRef
 import org.xmlet.htmlflow.datastar.attributes.dataSignal
+import org.xmlet.htmlflow.datastar.attributes.dataSignals
+import org.xmlet.htmlflow.datastar.attributes.dataStyle
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Blur
 import org.xmlet.htmlflow.datastar.events.Click
@@ -28,7 +36,7 @@ import org.xmlet.htmlflow.datastar.events.DblClick
 import org.xmlet.htmlflow.datastar.events.Focus
 import org.xmlet.htmlflow.datastar.events.FocusIn
 import org.xmlet.htmlflow.datastar.events.FocusOut
-import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
+import org.xmlet.htmlflow.datastar.modifiers.DomProperty
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
@@ -121,7 +129,200 @@ class ModifiersTests {
             assertEquals(expected.next().trim(), actual.trim())
         }
     }
+
+    @Test
+    fun `DataBind prop and event modifiers`() {
+        val expected = expectedHtmlDataBindModifiers.trimIndent().lines().iterator()
+        expectedDataBindModifiers.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
+
+    @Test
+    fun `DataStyle should render correctly`() {
+        val expected = expectedHtmlDataStyle.trimIndent().lines().iterator()
+        expectedDataStyle.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
+
+    @Test
+    fun `DataPreserveAttr and DataRef should render correctly`() {
+        val expected = expectedHtmlDataAttributes.trimIndent().lines().iterator()
+        expectedDataAttributes.toString().split("\n").forEach { actual ->
+            assertEquals(expected.next().trim(), actual.trim())
+        }
+    }
 }
+
+private val expectedDataAttributes =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        div {
+                            attrId("demoDataAttributes")
+                            val element = dataRef("div")
+                            p {
+                                dataText { +"$element" }
+                            }
+                            details {
+                                attrOpen(true)
+                                dataPreserveAttr { +"open" }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+private val expectedDataStyle =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        div {
+                            attrId("demoDataStyle")
+                            span {
+                                dataStyle("color") { +"red" }
+                                dataStyle("font-size") { +"20px" }
+                                text("This text should be red and 20px in size")
+                            }
+                            div {
+                                dataStyle(
+                                    "background-color" to "lightblue",
+                                    "fontSize" to "12px",
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+private val expectedDataBindModifiers =
+    StringBuilder()
+        .apply {
+            doc {
+                html {
+                    head {
+                        script {
+                            attrType(EnumTypeScriptType.MODULE)
+                            attrSrc("/js/datastar.js")
+                        }
+                        link {
+                            attrRel(EnumRelType.STYLESHEET)
+                            attrHref("/css/styles.css")
+                        }
+                    }
+                    body {
+                        div {
+                            attrId("dataBindModifiersDemo")
+
+                            val (signalCar) =
+                                dataSignals(
+                                    "car" to Car("Tesla Model 3", 2020),
+                                )
+
+                            select {
+                                dataBind("selectedColor") {
+                                    modifiers {
+                                        prop(DomProperty.VALUE)
+                                        event("change")
+                                    }
+                                }
+
+                                option {
+                                    attrValue("red")
+                                    text("Red")
+                                }
+                                option {
+                                    attrValue("blue")
+                                    text("Blue")
+                                }
+                                option {
+                                    attrValue("green")
+                                    text("Green")
+                                }
+                            }
+
+                            p {
+                                text("Selected color: ")
+                                span {
+                                    dataText { +$$"$selectedColor" }
+                                }
+                            }
+
+                            input {
+                                attrType(EnumTypeInputType.TEXT)
+
+                                dataBind("username") {
+                                    modifiers {
+                                        prop(DomProperty.VALUE)
+                                        event("input")
+                                    }
+                                }
+                            }
+
+                            p {
+                                text("Username: ")
+                                span {
+                                    dataText { +$$"$username" }
+                                }
+                            }
+                            p {
+                                text("Favorite Car: ")
+                                span {
+                                    dataText { +signalCar.on(Car::carName) }
+                                    dataText { +signalCar.on(Car::year) }
+                                }
+                            }
+                            // Just for covering the code percentage of all modifiers in dataBind
+                            select {
+                                dataBind(signalCar) {
+                                    modifiers {
+                                        prop(DomProperty.CHECKED)
+                                        prop(DomProperty.SELECTED)
+                                        prop(DomProperty.DISABLED)
+                                        prop(DomProperty.HIDDEN)
+                                        prop(DomProperty.READ_ONLY)
+                                        prop(DomProperty.REQUIRED)
+                                        prop(DomProperty.OPEN)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+data class Car(
+    val carName: String,
+    val year: Int,
+)
 
 private val expectedCaseModifier =
     StringBuilder()
@@ -144,7 +345,6 @@ private val expectedCaseModifier =
                             val userName =
                                 dataSignal("Name", "John Doe") {
                                     modifiers {
-                                        case(CaseStyle.CAMEL)
                                         ifMissing()
                                     }
                                 }
@@ -356,6 +556,12 @@ private val expectedIntersectModifier =
                                     modifiers { full() }
                                 }
                             }
+                            div {
+                                dataOnIntersect {
+                                    get(::fetchFull)
+                                    modifiers { exit() }
+                                }
+                            }
                         }
                     }
                 }
@@ -423,6 +629,7 @@ private val expectedEventModifiers =
                                         outside()
                                         prevent()
                                         stop()
+                                        document()
                                     }
                                 }
                                 text("Click")
@@ -480,8 +687,7 @@ private val expectedExtensionsOutput =
                         div {
                             attrId("demoDataClass")
                             dataClass("myClass") {
-                                +"\$isVisible"
-                                modifiers { case(CaseStyle.CAMEL) }
+                                +$$"$isVisible"
                             }
                         }
                         div {
@@ -493,7 +699,7 @@ private val expectedExtensionsOutput =
                             attrId("demoDataBind")
                             val selectedColor = dataSignal("selectedColor", "red")
                             select {
-                                dataBind(selectedColor)
+                                dataBind(selectedColor.name)
                                 option {
                                     attrValue("red")
                                     text("Red")
@@ -521,9 +727,7 @@ private val expectedExtensionsOutput =
                                 dataOn(DblClick) {
                                     get(::fetchData)
                                 }
-                                dataIndicator("isFetching") {
-                                    modifiers { case(CaseStyle.CAMEL) }
-                                }
+                                dataIndicator("isFetching")
                                 text("Fetch")
                             }
                             div {
@@ -557,8 +761,8 @@ private val expectedHtmlCaseModifier =
                 <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
-                <div id="demoCaseModifier" data-signals:Name__case.camel__ifmissing="'John Doe'">
-                    <p data-text="$name">
+                <div id="demoCaseModifier" data-signals__ifmissing="{Name: 'John Doe'}">
+                    <p data-text="$Name">
                     </p>
                 </div>
             </body>
@@ -681,6 +885,8 @@ private val expectedHtmlIntersectModifier =
                     </div>
                     <div data-on-intersect__full="@get('/intersect/full')">
                     </div>
+                    <div data-on-intersect__exit="@get('/intersect/full')">
+                    </div>
                 </div>
             </body>
         </html>
@@ -723,7 +929,7 @@ private val expectedHtmlEventModifiers =
             </head>
             <body>
                 <div id="demoEventModifiers">
-                    <div data-on:click__passive__capture__window__outside__prevent__stop="@get('/delay-modifier/fetch')">
+                    <div data-on:click__passive__capture__window__outside__prevent__stop__document="@get('/delay-modifier/fetch')">
                         Click
                     </div>
                 </div>
@@ -758,13 +964,13 @@ private val expectedHtmlExtensionsOutput =
                 <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
-                <div id="demoDataClass" data-class:myClass__case.camel="$isVisible">
+                <div id="demoDataClass" data-class:myClass="$isVisible">
                 </div>
                 <div id="demoIgnoreMorph" data-ignore-morph="">
                     This element is skipped during morphing
                 </div>
-                <div id="demoDataBind" data-signals:selectedColor="'red'">
-                    <select data-bind:selectedColor="">
+                <div id="demoDataBind" data-signals="{selectedColor: 'red'}">
+                    <select data-bind="selectedColor">
                         <option value="red">
                             Red
                         </option>
@@ -772,7 +978,7 @@ private val expectedHtmlExtensionsOutput =
                             Blue
                         </option>
                     </select>
-                    <select data-bind:size="">
+                    <select data-bind="size">
                         <option value="sm">
                             Small
                         </option>
@@ -782,11 +988,97 @@ private val expectedHtmlExtensionsOutput =
                     </select>
                 </div>
                 <div id="demoDataIndicator">
-                    <button data-on:dblclick="@get('/delay-modifier/fetch')" data-indicator:isFetching__case.camel="">
+                    <button data-on:dblclick="@get('/delay-modifier/fetch')" data-indicator="isFetching">
                         Fetch
                     </button>   
                     <div id="demoDataOn" data-on:blur="@get('/delay-modifier/fetch')" data-on:focus="@get('/delay-modifier/fetch')" data-on:focusin="@get('/delay-modifier/fetch')" data-on:focusout="@get('/delay-modifier/fetch')">
                     </div>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlDataBindModifiers =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="dataBindModifiersDemo" data-signals="{car: {carName: 'Tesla Model 3', year: 2020}}">
+                    <select data-bind__prop.value__event.change="selectedColor">
+                        <option value="red">
+                            Red
+                        </option>
+                        <option value="blue">
+                            Blue
+                        </option>
+                        <option value="green">
+                            Green
+                        </option>
+                    </select>
+                    <p>
+                        Selected color:
+                        <span data-text="$selectedColor">
+                        </span>
+                    </p>
+                    <input type="text" data-bind__prop.value__event.input="username">
+                    <p>
+                        Username:
+                        <span data-text="$username">
+                        </span>
+                    </p>
+                    <p>
+                        Favorite Car:
+                        <span data-text="$car.carName" data-text="$car.year">
+                        </span>
+                    </p>
+                    <select data-bind__prop.checked__prop.selected__prop.disabled__prop.hidden__prop.readOnly__prop.required__prop.open="car">
+                    </select>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlDataStyle =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoDataStyle">
+                    <span data-style:color="red" data-style:font-size="20px">
+                        This text should be red and 20px in size
+                    </span>
+                    <div data-style="{'background-color': lightblue, fontSize: 12px}">
+                    </div>
+                </div>
+            </body>
+        </html>
+    """.trimMargin()
+
+private val expectedHtmlDataAttributes =
+    $$"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="module" src="/js/datastar.js">
+                </script>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <div id="demoDataAttributes" data-ref="div">
+                    <p data-text="$div">
+                    </p>
+                    <details open="open" data-preserve-attr="open">
+                    </details>
                 </div>
             </body>
         </html>

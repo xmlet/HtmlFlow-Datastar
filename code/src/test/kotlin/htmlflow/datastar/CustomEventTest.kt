@@ -32,7 +32,7 @@ class CustomEventTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -72,11 +72,11 @@ class CustomEventTest {
             <!DOCTYPE html>
         <html>    
             <head>
-                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
             </head>
             <body>    
-                <p id="foo" data-signals:eventDetails="" data-on:myevent="$eventDetails = evt.detail" data-text="`Last Event Details: ${$eventDetails}`">
+                <p id="foo" data-signals="{eventDetails: ""}" data-on:myevent="$eventDetails = evt.detail" data-text="`Last Event Details: ${$eventDetails}`">
                 </p>
                 <script>
                     const foo = document.getElementById("foo");

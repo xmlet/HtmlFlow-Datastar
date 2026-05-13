@@ -31,7 +31,7 @@ class ClickToEditTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -76,7 +76,7 @@ class ClickToEditTest {
     <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
         </script>
     </head>
 <body>
@@ -91,10 +91,10 @@ class ClickToEditTest {
             Email: joe@blow.com
         </p>
         <div>
-            <button class="info" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@get('/examples/click_to_edit/edit')">
+            <button class="info" data-indicator="_fetching" data-attr:disabled="$_fetching" data-on:click="@get('/examples/click_to_edit/edit')">
                 Edit
             </button>
-            <button class="warning" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="@patch('/examples/click_to_edit/reset')">
+            <button class="warning" data-indicator="_fetching" data-attr:disabled="$_fetching" data-on:click="@patch('/examples/click_to_edit/reset')">
                 Reset
             </button>
         </div>

@@ -40,7 +40,7 @@ class InlineValidationTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -117,25 +117,25 @@ class InlineValidationTest {
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
             </head>
             <body>
                 <div id="demo">
                     <label>
                         Email Address
-                        <input type="email" required="required" aria-live="polite" aria-describedby="email-info" data-bind:email="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
+                        <input type="email" required="required" aria-live="polite" aria-describedby="email-info" data-bind="email" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
                     </label>
                     <p id="email-info" class="info">
                         The only valid email address is "test@test.com".
                     </p>
                     <label>
                         First Name
-                        <input type="text" required="required" aria-live="polite" data-bind:first-name="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
+                        <input type="text" required="required" aria-live="polite" data-bind="first-name" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
                     </label>
                     <label>
                         Last Name
-                        <input type="text" required="required" aria-live="polite" data-bind:last-name="" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
+                        <input type="text" required="required" aria-live="polite" data-bind="last-name" data-on:keydown__debounce.500ms="@post('/examples/inline_validation/validate')">
                     </label>
                     <button class="success" data-on:click="@post('/examples/inline_validation')">
                         <i class="material-symbols:person-add">

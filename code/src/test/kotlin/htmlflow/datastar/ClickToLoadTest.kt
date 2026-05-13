@@ -32,7 +32,7 @@ class ClickToLoadTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -58,11 +58,11 @@ class ClickToLoadTest {
     <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
         </script>
     </head>
 <body>
-    <button class="info wide" data-indicator:_fetching="" data-attr:disabled="$_fetching" data-on:click="!$_fetching && @get('/examples/click_to_load/more')" data-text="$_fetching ? 'Loading...' : 'Load More'">
+    <button class="info wide" data-indicator="_fetching" data-attr:disabled="$_fetching" data-on:click="!$_fetching && @get('/examples/click_to_load/more')" data-text="$_fetching ? 'Loading...' : 'Load More'">
         Load More
     </button>
 </body>

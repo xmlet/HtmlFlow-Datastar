@@ -38,7 +38,7 @@ class ProgressBarTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -109,7 +109,7 @@ class ProgressBarTest {
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
             </head>
             <body>
@@ -125,7 +125,7 @@ class ProgressBarTest {
                         </text>
                     </svg>
                     <!-- When progress is 100% -->
-                    <button data-indicator:fetching="" data-attr:aria-disabled="$fetching" data-on:click="!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})">
+                    <button data-indicator="fetching" data-attr:aria-disabled="$fetching" data-on:click="!$fetching && @get('/examples/progress_bar/updates', {openWhenHidden: true})">
                         <i class="material-symbols:check-circle">
                         </i>
                         Completed! Try again?

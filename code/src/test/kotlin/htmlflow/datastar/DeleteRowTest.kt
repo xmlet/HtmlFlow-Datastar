@@ -41,7 +41,7 @@ class DeleteRowTest {
                 head {
                     script {
                         attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                     }
                 }
                 body {
@@ -130,7 +130,7 @@ class DeleteRowTest {
          <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
             </head>
             <body>
@@ -158,7 +158,7 @@ class DeleteRowTest {
                                     joe@smith.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/0')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
@@ -171,7 +171,7 @@ class DeleteRowTest {
                                     angie@macdowell.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/1')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/1')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
@@ -184,7 +184,7 @@ class DeleteRowTest {
                                     fuqua@tarkenton.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/2')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/2')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
@@ -197,7 +197,7 @@ class DeleteRowTest {
                                     kim@yee.org
                                 </td>
                                 <td>
-                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/3')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                                    <button class="error" data-on:click="confirm('Are you sure?') && @delete('/examples/delete-row/3')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                                         Delete
                                     </button>
                                 </td>
@@ -205,7 +205,7 @@ class DeleteRowTest {
                         </tbody>
                     </table>
                     <div>
-                        <button data-on:click="@patch('/examples/delete-row/reset')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                        <button data-on:click="@patch('/examples/delete-row/reset')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                             Reset
                         </button>
                     </div>

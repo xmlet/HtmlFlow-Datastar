@@ -45,7 +45,7 @@ class EditRowTest {
                 head {
                     script {
                         attrType(EnumTypeScriptType.MODULE)
-                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                        attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                     }
                 }
                 body {
@@ -128,11 +128,11 @@ class EditRowTest {
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
             </head>
             <body>
-                <div id="demo" data-signals:_editing="false">
+                <div id="demo" data-signals="{_editing: false}">
                     <table>
                         <thead>
                             <tr>
@@ -156,7 +156,7 @@ class EditRowTest {
                                     joe@smith.org
                                 </td>
                                 <td>
-                                    <button id="edit-row-0" data-on:click="$$editing = true; @get('/examples/edit-row/0')" data-indicator:_fetching="" data-attr:disabled="$_fetching || $_editing">
+                                    <button id="edit-row-0" data-on:click="$$editing = true; @get('/examples/edit-row/0')" data-indicator="_fetching" data-attr:disabled="$_fetching || $_editing">
                                         Edit
                                     </button>
                                 </td>
@@ -164,7 +164,7 @@ class EditRowTest {
                         </tbody>
                     </table>  
                     <div>
-                        <button id="reset" data-on:click="$_editing = false; @put('/examples/edit-row/reset')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+                        <button id="reset" data-on:click="$_editing = false; @put('/examples/edit-row/reset')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                             Reset
                         </button>
                     </div>

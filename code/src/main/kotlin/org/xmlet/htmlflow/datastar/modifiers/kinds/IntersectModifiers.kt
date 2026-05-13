@@ -8,4 +8,6 @@ interface IntersectModifiers :
     fun half() = append("__half")
 
     fun full() = append("__full")
+
+    fun exit() = append("__exit")
 }

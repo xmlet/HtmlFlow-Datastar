@@ -32,7 +32,7 @@ class ProgressiveLoadTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -111,13 +111,13 @@ class ProgressiveLoadTest {
     <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
         </script>
     </head>
 <body>
     <div>
         <div class="actions">
-            <button id="load-button" data-signals:load-disabled="false" data-on:click="$loadDisabled = true; @get('/examples/progressive_load/updates')" data-attr:disabled="$loadDisabled" data-indicator:progressive-Load="">
+            <button id="load-button" data-signals="{load-disabled: false}" data-on:click="$load-disabled = true; @get('/examples/progressive_load/updates')" data-attr:disabled="$load-disabled" data-indicator="progressive-Load">
                 Load
             </button>
             <!-- Indicator element -->

@@ -36,7 +36,7 @@ class BulkUpdateTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -103,7 +103,7 @@ class BulkUpdateTest {
                     td {
                         input {
                             attrType(EnumTypeInputType.CHECKBOX)
-                            dataBind(selections)
+                            dataBind(selections.name)
                             dataAttr("disabled") { +fetching }
                         }
                     }
@@ -127,7 +127,7 @@ class BulkUpdateTest {
     <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
         </script>
     </head>
 <body>
@@ -152,7 +152,7 @@ class BulkUpdateTest {
             <tbody>
                 <tr>
                     <td>
-                        <input type="checkbox" data-bind:selections="" data-attr:disabled="$_fetching">
+                        <input type="checkbox" data-bind="selections" data-attr:disabled="$_fetching">
                     </td>
                     <td>
                         Joe Smith
@@ -167,12 +167,12 @@ class BulkUpdateTest {
             </tbody>
         </table>
         <div>
-            <button class="success" data-on:click="@put('/bulk-update/activate')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+            <button class="success" data-on:click="@put('/bulk-update/activate')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                 <i class="pixelarticons:user-plus">
                 </i>
                 Activate
             </button>
-            <button class="error" data-on:click="@put('/bulk-update/deactivate')" data-indicator:_fetching="" data-attr:disabled="$_fetching">
+            <button class="error" data-on:click="@put('/bulk-update/deactivate')" data-indicator="_fetching" data-attr:disabled="$_fetching">
                 <i class="pixelarticons:user-x">
                 </i>
                 Deactivate

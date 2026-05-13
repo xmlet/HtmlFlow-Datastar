@@ -102,7 +102,7 @@ class SignalComplexDomainTest {
                         <p data-text="$person.age">
                         </p>
                         <div>
-                            <input type="text" data-bind:updatedUserAge="">
+                            <input type="text" data-bind="updatedUserAge">
                             <button data-on:click="@put('/complex-domain/increase-age')">
                             Update user age
                             </button>

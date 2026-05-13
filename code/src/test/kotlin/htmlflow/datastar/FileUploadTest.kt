@@ -32,7 +32,7 @@ class FileUploadTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -41,7 +41,7 @@ class FileUploadTest {
                                 p { text("Pick anything less than 1MB") }
                                 input {
                                     attrType(EnumTypeInputType.FILE)
-                                    dataBind(files)
+                                    dataBind(files.name)
                                     attrMultiple(true)
                                 }
                             }
@@ -70,15 +70,15 @@ class FileUploadTest {
     <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js">
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
         </script>
     </head>
-<body data-signals:files="">
+<body data-signals="{files: ""}">
     <label>
         <p>
             Pick anything less than 1MB
         </p>
-        <input type="file" data-bind:files="" multiple="multiple">
+        <input type="file" data-bind="files" multiple="multiple">
     </label>
     <button class="warning" data-on:click="$files.length; @post('/examples/file_upload')" data-attr:aria-disabled="`${!$files.length}`">        
         Submit
