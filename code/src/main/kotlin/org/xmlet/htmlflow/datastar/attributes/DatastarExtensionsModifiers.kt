@@ -97,13 +97,14 @@ fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     event: EVT,
     block: EventExpressionBuilder<EVT>.() -> Unit,
 ) {
-	val builder = EventExpressionBuilder(event)
+    val builder = EventExpressionBuilder(event)
 
-	builder.block()
-	val expr = builder.getExpression()
-	val mods = builder.getModifiers()
+    builder.block()
+    val expr = builder.getExpression()
+    val mods = builder.getModifiers()
 
-	this.visitor.visitAttribute("data-on:$event$mods", expr)}
+    this.visitor.visitAttribute("data-on:$event$mods", expr)
+}
 
 /**
  *
