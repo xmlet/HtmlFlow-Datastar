@@ -1,25 +1,25 @@
 package org.xmlet.htmlflow.datastar.attributes
 
 import org.xmlet.htmlapifaster.Element
-import org.xmlet.htmlflow.datastar.builders.DefaultModifierBuilder
 import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
 import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder
+import org.xmlet.htmlflow.datastar.builders.ModifierBuilder
 import org.xmlet.htmlflow.datastar.events.Event
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
 import org.xmlet.htmlflow.datastar.modifiers.CaseStyle.Companion.extractCaseStyle
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataClassModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataComputedModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIgnoreModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataIndicatorModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataInitModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataJsonSignalsModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntersectModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnIntervalModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataOnSignalPatchModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalsModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataClassModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataComputedModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIgnoreModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIndicatorModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataInitModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataJsonSignalsModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntersectModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntervalModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnSignalPatchModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalsModifiers
 
 /**
  *
@@ -29,15 +29,15 @@ import org.xmlet.htmlflow.datastar.modifiers.attributes.DataSignalsModifiers
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signals attribute will be added
  * @param signals pairs of signal names and their corresponding values
- * @param modifiersBuilder configuration lambda for signal modifiers
+ * @param block configuration lambda for signal modifiers
  * @return a list of Signal instances with the given names
  */
 fun <E : Element<*, *>, P : Element<*, *>, T> Element<E, P>.dataSignals(
     vararg signals: Pair<String, T?>,
-    modifiersBuilder: DefaultModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
+    block: ModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
 ): List<Signal<T>> {
     signals.toList().toJson().also {
-        val mods = DefaultModifierBuilder(::DataSignalsModifiers).apply(modifiersBuilder).getModifiers()
+        val mods = ModifierBuilder(::DataSignalsModifiers).apply(block).getModifiers()
         this.visitor.visitAttribute("data-signals$mods", it)
     }
     return signals.map { (name, _) ->
@@ -55,15 +55,15 @@ fun <E : Element<*, *>, P : Element<*, *>, T> Element<E, P>.dataSignals(
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
  * @param value the value of the signal
- * @param modifiersBuilder configuration lambda for signal modifiers
+ * @param block configuration lambda for signal modifiers
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R,
-    modifiersBuilder: DefaultModifierBuilder<DataSignalModifiers>.() -> Unit = {},
+    block: ModifierBuilder<DataSignalModifiers>.() -> Unit = {},
 ): Signal<R> {
-    val mods = DefaultModifierBuilder(::DataSignalModifiers).apply(modifiersBuilder).getModifiers()
+    val mods = ModifierBuilder(::DataSignalModifiers).apply(block).getModifiers()
     val res =
         when (value) {
             is String -> "'$value'"
@@ -85,13 +85,13 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
- * @param modifiersBuilder configuration lambda for signal modifiers
+ * @param block configuration lambda for signal modifiers
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     name: String,
-    modifiersBuilder: DefaultModifierBuilder<DataSignalModifiers>.() -> Unit = {},
-): Signal<Any?> = dataSignal(name, null, modifiersBuilder)
+    block: ModifierBuilder<DataSignalModifiers>.() -> Unit = {},
+): Signal<Any?> = dataSignal(name, null, block)
 
 fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     event: EVT,
@@ -116,9 +116,9 @@ fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
  * @param block configuration lambda for initialization modifiers and create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(block: ExpressionModifierBuilder<DataInitModifiers>.() -> Unit) {
-    val expressionModifiers = ExpressionModifierBuilder(::DataInitModifiers).apply(block)
-    val expression = expressionModifiers.getExpression()
-    val modifiers = expressionModifiers.getModifiers()
+    val result = ExpressionModifierBuilder(::DataInitModifiers).apply(block)
+    val expression = result.getExpression()
+    val modifiers = result.getModifiers()
     this.visitor.visitAttribute("data-init$modifiers", expression)
 }
 
@@ -137,9 +137,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     name: String,
     block: ExpressionModifierBuilder<DataComputedModifiers>.() -> Unit,
 ): Signal<Any> {
-    val builder = ExpressionModifierBuilder(::DataComputedModifiers).apply(block)
-    val expression = builder.getExpression()
-    val modifiers = builder.getModifiers()
+    val result = ExpressionModifierBuilder(::DataComputedModifiers).apply(block)
+    val expression = result.getExpression()
+    val modifiers = result.getModifiers()
 
     this.visitor.visitAttribute("data-computed-$name$modifiers", expression)
 
@@ -155,14 +155,14 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-json-signals attribute will be added
+ * @param block configuration lambda for JSON signals modifiers
  * @param filterBuilder a builder that allow to JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
- * @param modifiersBuilder configuration lambda for JSON signals modifiers
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
     filterBuilder: SignalPatchFilter.() -> Unit,
-    modifiersBuilder: DefaultModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
+    block: ModifierBuilder<DataJsonSignalsModifiers>.() -> Unit,
 ) {
-    val modifiers = DefaultModifierBuilder(::DataJsonSignalsModifiers).apply(modifiersBuilder).getModifiers()
+    val modifiers = ModifierBuilder(::DataJsonSignalsModifiers).apply(block).getModifiers()
     val filter = SignalPatchFilter().apply(filterBuilder)
     this.visitor.visitAttribute("data-json-signals$modifiers", "$filter")
 }
@@ -226,7 +226,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(
 
 /**
  *
- * Tells Datastar to ignore this element and its descendants.
+ * Tells DataStar to ignore this element and its descendants.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver

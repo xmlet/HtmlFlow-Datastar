@@ -26,7 +26,7 @@ import kotlin.reflect.KProperty1
  * signal.setValue(newValue)
  * ```
  */
-open class ExpressionBuilder {
+class ExpressionBuilder : ExpressionScope {
     private val builderExpression = mutableListOf<DataStarExpression>()
 
     private fun appendExpression(expression: DataStarExpression) {
@@ -51,19 +51,19 @@ open class ExpressionBuilder {
             .takeUnless { it == "{}" }
             .orEmpty()
 
-    operator fun Signal<*>.unaryPlus() {
+    override operator fun Signal<*>.unaryPlus() {
         appendExpression(this)
     }
 
-    operator fun String.unaryPlus() {
+    override operator fun String.unaryPlus() {
         appendExpression(DataStarExpressionOp(this))
     }
 
-    fun getExpression() = builderExpression.joinToString("; ") { it.syntax }
+    override fun getExpression() = builderExpression.joinToString("; ") { it.syntax }
 
-    fun get(
+    override fun get(
         func: KFunction<*>,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.GET, convertFuncToPath(func), options)
@@ -71,9 +71,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun get(
+    override fun get(
         path: String,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.GET, addApostrophe(path), options)
@@ -81,19 +81,19 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun peek(callable: () -> String): DataStarAction {
+    override fun peek(callable: () -> String): DataStarAction {
         val action = DataStarAction(ActionType.PEEK, callable)
         appendExpression(action)
         return action
     }
 
-    fun peek(js: String): DataStarAction {
+    override fun peek(js: String): DataStarAction {
         val action = DataStarAction(ActionType.PEEK, js)
         appendExpression(action)
         return action
     }
 
-    fun setAll(
+    override fun setAll(
         value: Any,
         filterBuilder: SignalPatchFilter.() -> Unit,
     ): DataStarAction {
@@ -102,15 +102,15 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit = {}): DataStarAction {
+    override fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction {
         val action = DataStarAction(ActionType.TOGGLE_ALL, buildSignalPatchFilter(filterBuilder))
         appendExpression(action)
         return action
     }
 
-    fun post(
+    override fun post(
         func: KFunction<*>,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.POST, convertFuncToPath(func), options)
@@ -118,9 +118,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun post(
+    override fun post(
         path: String,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.POST, addApostrophe(path), options)
@@ -128,9 +128,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun put(
+    override fun put(
         func: KFunction<*>,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.PUT, convertFuncToPath(func), options)
@@ -138,9 +138,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun put(
+    override fun put(
         path: String,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.PUT, addApostrophe(path), options)
@@ -148,9 +148,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun delete(
+    override fun delete(
         func: KFunction<*>,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.DELETE, convertFuncToPath(func), options)
@@ -158,9 +158,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun delete(
+    override fun delete(
         path: String,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.DELETE, addApostrophe(path), options)
@@ -168,9 +168,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun patch(
+    override fun patch(
         func: KFunction<*>,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.PATCH, convertFuncToPath(func), options)
@@ -178,9 +178,9 @@ open class ExpressionBuilder {
         return action
     }
 
-    fun patch(
+    override fun patch(
         path: String,
-        optionsBuilder: ActionOptions.() -> Unit = {},
+        optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
         val options = ActionOptions().apply(optionsBuilder).toString()
         val action = DataStarAction(ActionType.PATCH, addApostrophe(path), options)
@@ -191,7 +191,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript ! operator, used to negate an expression.
      */
-    operator fun <T> Signal<T>.not(): DataStarExpressionOp {
+    override operator fun <T> Signal<T>.not(): DataStarExpressionOp {
         val result = DataStarExpressionOp("!${this.syntax}")
         appendExpression(result)
         return result
@@ -200,7 +200,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp {
+    override infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp {
         val result = DataStarExpressionOp("${this.syntax} && ${expression.syntax}")
         removeIfPresent(this, expression)
         appendExpression(result)
@@ -210,7 +210,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
-    infix fun String.and(expression: DataStarExpression): DataStarExpressionOp {
+    override infix fun String.and(expression: DataStarExpression): DataStarExpressionOp {
         removeIfPresent(expression)
         val result = DataStarExpressionOp("$this && ${expression.syntax}")
         appendExpression(result)
@@ -220,7 +220,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
-    infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpressionOp {
+    override infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpressionOp {
         val result = DataStarExpressionOp("${this.syntax} || ${expression.syntax}")
         removeIfPresent(this, expression)
         appendExpression(result)
@@ -230,7 +230,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
-    infix fun String.or(expression: DataStarExpression): DataStarExpressionOp {
+    override infix fun String.or(expression: DataStarExpression): DataStarExpressionOp {
         val result = DataStarExpressionOp("$this || ${expression.syntax}")
         removeIfPresent(expression)
         appendExpression(result)
@@ -240,7 +240,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
-    infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpressionOp {
+    override infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpressionOp {
         val result = DataStarExpressionOp("${this.syntax} == ${expression.syntax}")
         removeIfPresent(this, expression)
         appendExpression(result)
@@ -250,7 +250,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
-    infix fun <T> Signal<T>.eq(value: T): DataStarExpressionOp {
+    override infix fun <T> Signal<T>.eq(value: T): DataStarExpressionOp {
         val result = DataStarExpressionOp("${this.syntax} == $value")
         removeIfPresent(this)
         appendExpression(result)
@@ -260,7 +260,7 @@ open class ExpressionBuilder {
     /**
      * Equal to the assignment operator in JavaScript, used to assign the signal value to the new value.
      */
-    fun <T> Signal<T>.setValue(value: T): DataStarExpressionOp {
+    override fun <T> Signal<T>.setValue(value: T): DataStarExpressionOp {
         val result = DataStarExpressionOp("${this.syntax} = $value")
         appendExpression(result)
         return result
@@ -269,14 +269,14 @@ open class ExpressionBuilder {
     /**
      * Equal to the assignment operator in JavaScript, used to assign the passed expression to another expression.
      */
-    fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpressionOp {
+    override fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpressionOp {
         removeIfPresent(expression)
         val result = DataStarExpressionOp("${this.syntax} = ${expression.syntax}")
         appendExpression(result)
         return result
     }
 
-    fun <T, V> Signal<T>.on(prop: KProperty1<T, V>): Signal<V> {
+    override fun <T, V> Signal<T>.on(prop: KProperty1<T, V>): Signal<V> {
         val expr = "${this.name}.${prop.name}"
         return Signal(expr)
     }

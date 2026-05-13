@@ -102,13 +102,13 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
 
 /**
  *
- * Binds multiple HTML attributes simultaneously through key-value pairs,
+ * Binds multiple HTML attribute simultaneously through key-value pairs,
  * keeping them synchronized with their expressions.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-attr attribute will be added
- * @param attrs a JavaScript expression that computes the values of multiple attributes on an element using a set of key-value pairs
+ * @param attrs a JavaScript expression that computes the values of multiple attribute on an element using a set of key-value pairs
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: Pair<String, Signal<*>>) {
