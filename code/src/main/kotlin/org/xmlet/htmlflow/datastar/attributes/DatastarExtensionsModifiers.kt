@@ -211,9 +211,9 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(
  */
 fun <R> TextGroup<*, *>.dataBind(
     signal: Signal<R>,
-    block: ExpressionModifierBuilder<DataBindModifiers>.() -> Unit,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
 ): Signal<R> {
-    val builder = ExpressionModifierBuilder(::DataBindModifiers).apply(block)
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-bind$modifiers", signal.name)
     return signal
@@ -229,9 +229,9 @@ fun <R> TextGroup<*, *>.dataBind(
  */
 fun <R> SelectAll<*, *>.dataBind(
     signal: Signal<R>,
-    block: ExpressionModifierBuilder<DataBindModifiers>.() -> Unit,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
 ): Signal<R> {
-    val builder = ExpressionModifierBuilder(::DataBindModifiers).apply(block)
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-bind$modifiers", signal.name)
     return signal
@@ -247,9 +247,9 @@ fun <R> SelectAll<*, *>.dataBind(
  */
 fun TextGroup<*, *>.dataBind(
     name: String,
-    block: ExpressionModifierBuilder<DataBindModifiers>.() -> Unit,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
 ): Signal<Any> {
-    val builder = ExpressionModifierBuilder(::DataBindModifiers).apply(block)
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-bind$modifiers", name)
     return Signal(name)
@@ -265,9 +265,9 @@ fun TextGroup<*, *>.dataBind(
  */
 fun SelectAll<*, *>.dataBind(
     name: String,
-    block: ExpressionModifierBuilder<DataBindModifiers>.() -> Unit,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
 ): Signal<Any> {
-    val builder = ExpressionModifierBuilder(::DataBindModifiers).apply(block)
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-bind$modifiers", name)
     return Signal(name)

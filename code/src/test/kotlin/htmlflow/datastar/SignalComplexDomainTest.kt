@@ -4,14 +4,12 @@ import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
-import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
 import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.input
-import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
 import org.xmlet.htmlflow.datastar.attributes.dataBind
@@ -40,11 +38,7 @@ class SignalComplexDomainTest {
                         head {
                             script {
                                 attrType(EnumTypeScriptType.MODULE)
-                                attrSrc("/js/datastar.js")
-                            }
-                            link {
-                                attrRel(EnumRelType.STYLESHEET)
-                                attrHref("/css/styles.css")
+                                attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                             }
                         }
                         body {
@@ -91,9 +85,8 @@ class SignalComplexDomainTest {
             <!DOCTYPE html>
             <html>
                 <head>
-                    <script type="module" src="/js/datastar.js">
+                    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                     </script>
-                    <link rel="stylesheet" href="/css/styles.css">
                 </head>
                 <body>
                     <div id="person-info" data-signals="{person: {age: 30, name: 'John Doe'}}">

@@ -2,7 +2,6 @@ import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
-import org.xmlet.htmlapifaster.EnumRelType
 import org.xmlet.htmlapifaster.EnumTypeInputType
 import org.xmlet.htmlapifaster.EnumTypeScriptType
 import org.xmlet.htmlapifaster.body
@@ -10,7 +9,6 @@ import org.xmlet.htmlapifaster.button
 import org.xmlet.htmlapifaster.details
 import org.xmlet.htmlapifaster.head
 import org.xmlet.htmlapifaster.input
-import org.xmlet.htmlapifaster.link
 import org.xmlet.htmlapifaster.option
 import org.xmlet.htmlapifaster.p
 import org.xmlet.htmlapifaster.script
@@ -31,11 +29,13 @@ import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.attributes.dataStyle
 import org.xmlet.htmlflow.datastar.attributes.dataText
 import org.xmlet.htmlflow.datastar.events.Blur
+import org.xmlet.htmlflow.datastar.events.Change
 import org.xmlet.htmlflow.datastar.events.Click
 import org.xmlet.htmlflow.datastar.events.DblClick
 import org.xmlet.htmlflow.datastar.events.Focus
 import org.xmlet.htmlflow.datastar.events.FocusIn
 import org.xmlet.htmlflow.datastar.events.FocusOut
+import org.xmlet.htmlflow.datastar.events.Input
 import org.xmlet.htmlflow.datastar.modifiers.DomProperty
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -163,11 +163,7 @@ private val expectedDataAttributes =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -195,11 +191,7 @@ private val expectedDataStyle =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -230,11 +222,7 @@ private val expectedDataBindModifiers =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -250,7 +238,7 @@ private val expectedDataBindModifiers =
                                 dataBind("selectedColor") {
                                     modifiers {
                                         prop(DomProperty.VALUE)
-                                        event("change")
+                                        event(Change)
                                     }
                                 }
 
@@ -281,7 +269,7 @@ private val expectedDataBindModifiers =
                                 dataBind("username") {
                                     modifiers {
                                         prop(DomProperty.VALUE)
-                                        event("input")
+                                        event(Input)
                                     }
                                 }
                             }
@@ -332,11 +320,7 @@ private val expectedCaseModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -363,11 +347,7 @@ private val expectedDelayModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -394,11 +374,7 @@ private val expectedDurationModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -432,11 +408,7 @@ private val expectedViewTransitionModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -463,11 +435,7 @@ private val expectedThrottleModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -496,11 +464,7 @@ private val expectedTimingEdgeModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -534,11 +498,7 @@ private val expectedIntersectModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -576,11 +536,7 @@ private val expectedIgnoreModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -609,11 +565,7 @@ private val expectedEventModifiers =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -648,11 +600,7 @@ private val expectedOnceModifier =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -676,11 +624,7 @@ private val expectedExtensionsOutput =
                     head {
                         script {
                             attrType(EnumTypeScriptType.MODULE)
-                            attrSrc("/js/datastar.js")
-                        }
-                        link {
-                            attrRel(EnumRelType.STYLESHEET)
-                            attrHref("/css/styles.css")
+                            attrSrc("https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js")
                         }
                     }
                     body {
@@ -756,9 +700,8 @@ private val expectedHtmlCaseModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoCaseModifier" data-signals__ifmissing="{Name: 'John Doe'}">
@@ -774,9 +717,8 @@ private val expectedHtmlDelayModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoDelayModifier">
@@ -793,9 +735,8 @@ private val expectedHtmlDurationModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoDurationModifier">
@@ -815,9 +756,8 @@ private val expectedHtmlTimingEdgeModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoTimingEdgeModifier">
@@ -837,9 +777,8 @@ private val expectedHtmlViewTransitionModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoViewTransitionModifier">
@@ -856,9 +795,8 @@ private val expectedHtmlThrottleModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoThrottleModifier">
@@ -875,9 +813,8 @@ private val expectedHtmlIntersectModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoIntersectModifier">
@@ -897,9 +834,8 @@ private val expectedHtmlIgnoreModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoIgnoreModifier">
@@ -923,9 +859,8 @@ private val expectedHtmlEventModifiers =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoEventModifiers">
@@ -942,9 +877,8 @@ private val expectedHtmlOnceModifier =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <button data-on:click__once="@get('/delay-modifier/fetch')">
@@ -959,9 +893,8 @@ private val expectedHtmlExtensionsOutput =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoDataClass" data-class:myClass="$isVisible">
@@ -1003,9 +936,8 @@ private val expectedHtmlDataBindModifiers =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="dataBindModifiersDemo" data-signals="{car: {carName: 'Tesla Model 3', year: 2020}}">
@@ -1048,9 +980,8 @@ private val expectedHtmlDataStyle =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoDataStyle">
@@ -1069,9 +1000,8 @@ private val expectedHtmlDataAttributes =
         <!DOCTYPE html>
         <html>
             <head>
-                <script type="module" src="/js/datastar.js">
+                <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.1/bundles/datastar.js">
                 </script>
-                <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
                 <div id="demoDataAttributes" data-ref="div">

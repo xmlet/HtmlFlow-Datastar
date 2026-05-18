@@ -25,36 +25,10 @@
 package org.xmlet.htmlflow.datastar.attributes
 
 import org.xmlet.htmlapifaster.Element
-import org.xmlet.htmlapifaster.SelectAll
-import org.xmlet.htmlapifaster.TextGroup
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.collections.joinToString
-
-/**
- * Creates a signal and sets up two-way data binding between it and a text-based element’s value.
- *
- * @receiver the TextGroup element (Input/Textarea) to which the data-bind attribute will be added
- * @param name the name of the signal to create and bind
- * @return a Signal instance with the given name
- */
-fun TextGroup<*, *>.dataBind(name: String): Signal<Any> {
-    this.visitor.visitAttribute("data-bind", name)
-    return Signal(name)
-}
-
-/**
- * Creates a signal and sets up two-way data binding between it and a select element’s value.
- *
- * @receiver the Select element to which the data-bind attribute will be added
- * @param name the name of the signal to create and bind
- * @return a Signal instance with the given name
- */
-fun SelectAll<*, *>.dataBind(name: String): Signal<Any> {
-    this.visitor.visitAttribute("data-bind", name)
-    return Signal(name)
-}
 
 /**
  * Binds any HTML attribute to an expression, keeping it synchronized.
