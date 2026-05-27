@@ -38,7 +38,7 @@ internal fun serializeValue(
         }
 
         null -> {
-            if (isTopLevel) "" else "null"
+            if (isTopLevel) "\"\"" else "null"
         }
 
         is Number, is Boolean -> {
@@ -61,3 +61,15 @@ internal fun serializeValue(
             }
         }
     }
+
+/**
+ * Serializes a computed signal into a JavaScript object containing a lambda expression associated with the given signal name.
+ *
+ * @param name the name of the signal
+ * @param expression The expression evaluated by the lambda.
+ * @return A JavaScript object representation for the `data-computed` attribute.
+ */
+internal fun serializeComputed(
+    name: String,
+    expression: String,
+): String = "{$name: () => $expression}"

@@ -22,4 +22,6 @@ interface EventModifiers :
     fun prevent() = append("__prevent")
 
     fun stop() = append("__stop")
+
+    fun document() = append("__document")
 }

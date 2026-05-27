@@ -1,35 +1,31 @@
 package org.xmlet.htmlflow.datastar.attributes
 
 import org.xmlet.htmlapifaster.Element
+import org.xmlet.htmlapifaster.SelectAll
+import org.xmlet.htmlapifaster.TextGroup
 import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
 import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder
 import org.xmlet.htmlflow.datastar.builders.ModifierBuilder
 import org.xmlet.htmlflow.datastar.events.Event
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
-import org.xmlet.htmlflow.datastar.modifiers.CaseStyle
-import org.xmlet.htmlflow.datastar.modifiers.CaseStyle.Companion.extractCaseStyle
-import org.xmlet.htmlflow.datastar.modifiers.attribute.DataClassModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attribute.DataComputedModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataBindModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIgnoreModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIndicatorModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataInitModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataJsonSignalsModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntersectModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntervalModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnSignalPatchModifiers
-import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalsModifiers
 
 /**
- *
  * Initializes one or more signals with their initial values and modifiers.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signals attribute will be added
  * @param signals pairs of signal names and their corresponding values
- * @param block configuration lambda for signal modifiers
+ * @param block configuration lambda for (signal) modifiers
  * @return a list of Signal instances with the given names
  */
 fun <E : Element<*, *>, P : Element<*, *>, T> Element<E, P>.dataSignals(
@@ -46,7 +42,6 @@ fun <E : Element<*, *>, P : Element<*, *>, T> Element<E, P>.dataSignals(
 }
 
 /**
- *
  * Initializes a single signal with its initial value and modifiers.
  *
  * @param E type of the Element receiver
@@ -55,27 +50,19 @@ fun <E : Element<*, *>, P : Element<*, *>, T> Element<E, P>.dataSignals(
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
  * @param value the value of the signal
- * @param block configuration lambda for signal modifiers
+ * @param block configuration lambda for (signal) modifiers
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
     name: String,
     value: R,
-    block: ModifierBuilder<DataSignalModifiers>.() -> Unit = {},
+    block: ModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
 ): Signal<R> {
-    val mods = ModifierBuilder(::DataSignalModifiers).apply(block).getModifiers()
-    val res =
-        when (value) {
-            is String -> "'$value'"
-            null -> ""
-            else -> "$value"
-        }
+    val mods = ModifierBuilder(::DataSignalsModifiers).apply(block).getModifiers()
+    val serialized = serializeValue(value)
+    this.visitor.visitAttribute("data-signals$mods", "{$name: $serialized}")
 
-    this.visitor.visitAttribute("data-signals:$name$mods", res)
-
-    val caseStyle = mods.extractCaseStyle() ?: CaseStyle.CAMEL
-
-    return Signal(name, caseStyle)
+    return Signal(name)
 }
 
 /**
@@ -85,14 +72,23 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-signal attribute will be added
  * @param name the name of the signal
- * @param block configuration lambda for signal modifiers
+ * @param block configuration lambda for (signal) modifiers
  * @return a Signal instance with the given name
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataSignal(
     name: String,
-    block: ModifierBuilder<DataSignalModifiers>.() -> Unit = {},
+    block: ModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
 ): Signal<Any?> = dataSignal(name, null, block)
 
+/**
+ * Attaches an event listener to an element, executing an expression whenever the event is triggered.
+ *
+ * @param E type of the Element receiver
+ * @param P type of the parent Element of the receiver
+ * @receiver the Element to which the data-on attribute will be added
+ * @param event the event to listen for
+ * @param block configuration lambda for (event) modifiers and create expressions
+ */
 fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
     event: EVT,
     block: EventExpressionBuilder<EVT>.() -> Unit,
@@ -107,13 +103,12 @@ fun <E : Element<*, *>, P : Element<*, *>, EVT : Event> Element<E, P>.dataOn(
 }
 
 /**
- *
  * Runs an expression once when an element is initialized, with modifiers.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-init attribute will be added
- * @param block configuration lambda for initialization modifiers and create expressions
+ * @param block configuration lambda for (initialization) modifiers amd create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(block: ExpressionModifierBuilder<DataInitModifiers>.() -> Unit) {
     val result = ExpressionModifierBuilder(::DataInitModifiers).apply(block)
@@ -123,39 +118,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataInit(block: Express
 }
 
 /**
- *
- * Creates a computed signal whose value is derived from an expression, with modifiers.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-computed attribute will be added
- * @param name the name of the signal
- * @param block configuration lambda for initialization modifiers and create expressions
- * @return a Signal instance with the given name
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
-    name: String,
-    block: ExpressionModifierBuilder<DataComputedModifiers>.() -> Unit,
-): Signal<Any> {
-    val result = ExpressionModifierBuilder(::DataComputedModifiers).apply(block)
-    val expression = result.getExpression()
-    val modifiers = result.getModifiers()
-
-    this.visitor.visitAttribute("data-computed-$name$modifiers", expression)
-
-    val caseStyle = modifiers.extractCaseStyle() ?: CaseStyle.CAMEL
-
-    return Signal(name, caseStyle)
-}
-
-/**
- *
  * Initializes multiple signals from a JSON object, with modifiers.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-json-signals attribute will be added
- * @param block configuration lambda for JSON signals modifiers
+ * @param block configuration lambda for (JSON signals) modifiers
  * @param filterBuilder a builder that allow to JavaScript object with include and/or exclude properties that are regular expressions, that filter which signals to watch.
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
@@ -168,34 +136,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataJsonSignals(
 }
 
 /**
- *
- * Adds or removes a class from an element based on an expression.
- *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-class attribute will be added
- * @param className the name of the class from the element
- * @param block configuration lambda for initialization modifiers and create expressions
- */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
-    className: String,
-    block: ExpressionModifierBuilder<DataClassModifiers>.() -> Unit,
-) {
-    val builder = ExpressionModifierBuilder(::DataClassModifiers).apply(block)
-    val expression = builder.getExpression()
-    val modifiers = builder.getModifiers()
-
-    this.visitor.visitAttribute("data-class:$className$modifiers", expression)
-}
-
-/**
- *
  * Runs an expression at a regular interval.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-Interval attribute will be added
- * @param block configuration lambda for initialization modifiers and create expressions
+ * @param block configuration lambda for (duration/transition) modifiers and create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnInterval(
     block: ExpressionModifierBuilder<DataOnIntervalModifiers>.() -> Unit,
@@ -207,13 +153,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnInterval(
 }
 
 /**
- *
  * Runs an expression when the element intersects with the viewport.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-intersect attribute will be added
- * @param block configuration lambda for initialization modifiers and create expressions
+ * @param block configuration lambda for (intersect) modifiers and create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(
     block: ExpressionModifierBuilder<DataOnIntersectModifiers>.() -> Unit,
@@ -225,13 +170,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnIntersect(
 }
 
 /**
- *
  * Tells DataStar to ignore this element and its descendants.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-intersect attribute will be added
- * @param block configuration lambda for initialization modifiers and create expressions
+ * @param block configuration lambda for (ignore) modifiers and create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnore(block: ExpressionModifierBuilder<DataIgnoreModifiers>.() -> Unit) {
     val builder = ExpressionModifierBuilder(::DataIgnoreModifiers).apply(block)
@@ -241,13 +185,12 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnore(block: Expre
 }
 
 /**
- *
  * Runs an expression whenever any Signal is patched.
  *
  * @param E type of the Element receiver
  * @param P type of the parent Element of the receiver
  * @receiver the Element to which the data-on-signal-patch attribute will be added
- * @param block configuration lambda for initialization modifiers and create expressions
+ * @param block configuration lambda for (delay/debounce/throttle) modifiers and create expressions
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(
     block: ExpressionModifierBuilder<DataOnSignalPatchModifiers>.() -> Unit,
@@ -259,23 +202,73 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataOnSignalPatch(
 }
 
 /**
+ * Binds an existing signal to a text-based element.
  *
- * Creates a signal and sets its value to true while a fetch request is in flight, otherwise false.
+ * @receiver the TextGroup element to bind
+ * @param signal the Signal to bind to (its value takes precedence)
+ * @param block configuration lambda for (binding) modifiers and create expressions
+ * @return the same Signal instance
+ */
+fun <R> TextGroup<*, *>.dataBind(
+    signal: Signal<R>,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
+): Signal<R> {
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-bind$modifiers", signal.name)
+    return signal
+}
+
+/**
+ * Binds an existing signal to a select element.
  *
- * @param E type of the Element receiver
- * @param P type of the parent Element of the receiver
- * @receiver the Element to which the data-indicator attribute will be added
- * @param name the name of the indicator signal
- * @param block configuration lambda for initialization modifiers and create expressions
+ * @receiver the Select element to bind
+ * @param signal the Signal to bind to (its value takes precedence)
+ * @param block configuration lambda for (binding) modifiers and create expressions
+ * @return the same Signal instance
+ */
+fun <R> SelectAll<*, *>.dataBind(
+    signal: Signal<R>,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
+): Signal<R> {
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-bind$modifiers", signal.name)
+    return signal
+}
+
+/**
+ * Creates a signal and sets up two-way data binding with modifiers.
+ *
+ * @receiver the TextGroup element to which the data-bind attribute will be added
+ * @param name the name of the signal to create and bind
+ * @param block configuration lambda for (binding) modifiers and create expressions
  * @return a Signal instance with the given name
  */
-fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(
+fun TextGroup<*, *>.dataBind(
     name: String,
-    block: ExpressionModifierBuilder<DataIndicatorModifiers>.() -> Unit,
-): Signal<Boolean> {
-    val builder = ExpressionModifierBuilder(::DataIndicatorModifiers).apply(block)
-    val expression = builder.getExpression()
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
+): Signal<Any> {
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
     val modifiers = builder.getModifiers()
-    this.visitor.visitAttribute("data-indicator:$name$modifiers", expression)
+    this.visitor.visitAttribute("data-bind$modifiers", name)
+    return Signal(name)
+}
+
+/**
+ * Creates a signal and sets up two-way data binding with modifiers.
+ *
+ * @receiver the SelectAll element to which the data-bind attribute will be added
+ * @param name the name of the signal to create and bind
+ * @param block configuration lambda for (binding) modifiers and create expressions
+ * @return a Signal instance with the given name
+ */
+fun SelectAll<*, *>.dataBind(
+    name: String,
+    block: ModifierBuilder<DataBindModifiers>.() -> Unit = {},
+): Signal<Any> {
+    val builder = ModifierBuilder(::DataBindModifiers).apply(block)
+    val modifiers = builder.getModifiers()
+    this.visitor.visitAttribute("data-bind$modifiers", name)
     return Signal(name)
 }
