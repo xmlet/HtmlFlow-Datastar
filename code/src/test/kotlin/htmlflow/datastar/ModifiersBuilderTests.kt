@@ -1,3 +1,5 @@
+package htmlflow.datastar
+
 import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
@@ -281,7 +283,7 @@ private val expectedDataBindModifiers =
                                 }
                             }
                             p {
-                                text("Favorite Car: ")
+                                text("Favorite htmlflow.datastar.Car: ")
                                 span {
                                     dataText { +signalCar.on(Car::carName) }
                                     dataText { +signalCar.on(Car::year) }
@@ -713,7 +715,7 @@ private val expectedHtmlCaseModifier =
     """.trimMargin()
 
 private val expectedHtmlDelayModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -731,7 +733,7 @@ private val expectedHtmlDelayModifier =
     """.trimMargin()
 
 private val expectedHtmlDurationModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -752,7 +754,7 @@ private val expectedHtmlDurationModifier =
     """.trimMargin()
 
 private val expectedHtmlTimingEdgeModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -773,7 +775,7 @@ private val expectedHtmlTimingEdgeModifier =
     """.trimMargin()
 
 private val expectedHtmlViewTransitionModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -791,7 +793,7 @@ private val expectedHtmlViewTransitionModifier =
     """.trimMargin()
 
 private val expectedHtmlThrottleModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -809,7 +811,7 @@ private val expectedHtmlThrottleModifier =
     """.trimMargin()
 
 private val expectedHtmlIntersectModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -830,7 +832,7 @@ private val expectedHtmlIntersectModifier =
     """.trimMargin()
 
 private val expectedHtmlIgnoreModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -855,7 +857,7 @@ private val expectedHtmlIgnoreModifier =
     """.trimMargin()
 
 private val expectedHtmlEventModifiers =
-    $$"""        
+    """        
         <!DOCTYPE html>
         <html>
             <head>
@@ -873,7 +875,7 @@ private val expectedHtmlEventModifiers =
     """.trimMargin()
 
 private val expectedHtmlOnceModifier =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>
@@ -964,7 +966,7 @@ private val expectedHtmlDataBindModifiers =
                         </span>
                     </p>
                     <p>
-                        Favorite Car:
+                        Favorite htmlflow.datastar.Car:
                         <span data-text="$car.carName" data-text="$car.year">
                         </span>
                     </p>
@@ -976,7 +978,7 @@ private val expectedHtmlDataBindModifiers =
     """.trimMargin()
 
 private val expectedHtmlDataStyle =
-    $$"""
+    """
         <!DOCTYPE html>
         <html>
             <head>

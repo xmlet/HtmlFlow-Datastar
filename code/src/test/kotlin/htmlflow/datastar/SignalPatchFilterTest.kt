@@ -1,3 +1,5 @@
+package htmlflow.datastar
+
 import htmlflow.div
 import htmlflow.doc
 import htmlflow.html

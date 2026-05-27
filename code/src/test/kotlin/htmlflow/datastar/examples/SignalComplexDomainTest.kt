@@ -1,4 +1,4 @@
-package htmlflow.datastar
+package htmlflow.datastar.examples
 
 import htmlflow.div
 import htmlflow.doc

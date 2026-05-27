@@ -1,6 +1,6 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package htmlflow.datastar
+package htmlflow.datastar.examples
 
 import htmlflow.doc
 import htmlflow.html
