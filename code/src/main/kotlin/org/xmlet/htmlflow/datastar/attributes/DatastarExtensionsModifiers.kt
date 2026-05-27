@@ -33,7 +33,7 @@ import org.xmlet.htmlflow.datastar.modifiers.attribute.DataSignalsModifiers
  * @return a list of Signal instances with the given names
  */
 fun <E : Element<*, *>, P : Element<*, *>, T> Element<E, P>.dataSignals(
-    vararg signals: Pair<String, T?>,
+    vararg signals: Pair<String, T>,
     block: ModifierBuilder<DataSignalsModifiers>.() -> Unit = {},
 ): List<Signal<T>> {
     signals.toList().toJson().also {
