@@ -9,15 +9,9 @@
 
 Type-Safe Hypermedia-First DSL for Reactive Backend-Driven Web Applications
 
-## Examples
+This repository contains the source code of the **HtmlFlow-Datastar** library - a Kotlin DSL for building type-safe, reactive web applications with [Data-Star](https://data-star.dev/). 
 
-This project includes a demo web application featuring examples from 
-[Data-Star](https://data-star.dev/examples), running on **Ktor** and **http4k** and using the **HtmlFlow Kotlin DSL** to generate HTML.
-
-HtmlFlow DSL provides type-safe backend handlers for DataStar actions.
-In the following samples, note how the action `get` is attached to a handler given by a function reference, this function being annotated
-with `Path`, from Jakarta, where the resource location for the
-request is specified.
+For complete examples and demo applications, please visit the [HtmlFlow-Datastar-Examples](https://github.com/xmlet/HtmlFlow-Datastar-Examples) repository.
 
 
 HtmlFlow DSL also provides a type-safe way to define Datastar
