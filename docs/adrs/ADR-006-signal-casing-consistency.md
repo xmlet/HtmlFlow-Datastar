@@ -28,7 +28,7 @@ change the name in case there was no separator (e.g.: `birth-date` would
 automatically be converted to `birthDate`). This would cause an inconsistency as
 the name that the DSL would use in expressions was camelCase, as passed in the
 parameter. In contrast, the HTML generated, that creates the signal, would be
-converted to lowerCase, as HTML attributes are case-insensitive.
+converted to lowerCase, as custom HTML attributes are case-insensitive.
 
 ## Decision
 
