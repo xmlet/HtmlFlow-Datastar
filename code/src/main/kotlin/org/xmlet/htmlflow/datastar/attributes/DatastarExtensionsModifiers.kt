@@ -7,6 +7,7 @@ import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
 import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder
 import org.xmlet.htmlflow.datastar.builders.ModifierBuilder
 import org.xmlet.htmlflow.datastar.events.Event
+import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataBindModifiers
@@ -60,7 +61,7 @@ fun <E : Element<*, *>, P : Element<*, *>, R> Element<E, P>.dataSignal(
 ): Signal<R> {
     val mods = ModifierBuilder(::DataSignalsModifiers).apply(block).getModifiers()
     val serialized = serializeValue(value)
-    this.visitor.visitAttribute("data-signals$mods", "{$name: $serialized}")
+    this.visitor.visitAttribute("data-signals$mods", JavaScriptSerialization.objectLiteral(listOf(name to serialized)))
 
     return Signal(name)
 }

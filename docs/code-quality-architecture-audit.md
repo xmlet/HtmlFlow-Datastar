@@ -39,6 +39,7 @@ These are design or feature decisions that are already present in the codebase.
 | Strongly typed event access in `dataOn` | Partially implemented | `EventExpressionBuilder` exposes `evt`; event classes expose typed properties. |
 | Attribute-specific modifier scopes | Implemented | `DataOnModifiers`, `DataInitModifiers`, `DataBindModifiers`, etc. expose only selected modifier functions. |
 | Complex data-class signal serialization | Partially implemented | Data classes are serialized reflectively in `serializeValue`. |
+| Centralized JavaScript literal and object serialization | Implemented | `JavaScriptSerialization` now centralizes string literals, object keys, object literals, and regex literals. |
 | Test suite | Implemented | `./gradlew test` passes. |
 
 ## Actions Not Implemented Yet
@@ -47,11 +48,10 @@ These are proposed follow-up actions. They are not implemented in the repository
 
 | Priority | Action | Reason |
 | --- | --- | --- |
-| High | Centralize JavaScript literal and object serialization | Current string construction is spread across attributes, action options, actions, filters, and signal values. This can emit invalid JavaScript and is unsafe for untrusted/domain values. |
 | High | Add precedence-aware expression composition | Current `and`, `or`, `eq`, and assignment composition concatenate strings without grouping. Some generated expressions are ambiguous or invalid JavaScript. |
 | High | Fix incorrect event inheritance for `Click` | `Click` currently extends `FocusEvent`, which prevents click handlers from exposing mouse properties such as `clientX`, `button`, and `offsetX`. |
 | Medium | Make modifier duration output explicit | Modifiers currently use Kotlin `Duration.toString()`, coupling generated Datastar syntax to Kotlin display formatting. |
-| Medium | Improve signal name and object-key validation/escaping | Signal/object names are inserted directly into generated object literals and attributes. Invalid JS identifiers are not handled consistently. |
+| Medium | Improve signal-name validation | Object literal keys are now escaped centrally, but signal names can still contain characters that make direct `$signal-name` expression references awkward or invalid. |
 | Medium | Revisit heterogeneous `dataSignals` ergonomics | `dataSignals(vararg Pair<String, T>)` returns `List<Signal<T>>`, which becomes awkward for mixed signal types. |
 | Medium | Reduce repeated attribute builder boilerplate | Many attribute functions repeat `ExpressionBuilder().apply(block).getExpression()` or modifier-builder setup. |
 | Medium | Add semantic tests for expression validity | Current tests mostly verify strings and sometimes lock in questionable output. |
@@ -81,7 +81,7 @@ No critical issue was found that blocks compilation or test execution. The repos
 
    Recommended action:
 
-   Build a small internal serializer for JavaScript string literals, object literal keys, regex literals, action arguments, and Datastar option objects.
+   Completed. A small internal serializer now handles JavaScript string literals, object literal keys, regex literals, and object literal assembly. Remaining risk: raw expression snippets are still intentionally passed through unchanged; full expression safety belongs to the separate expression composition/modeling action.
 
 2. Expression composition has no precedence model
 
@@ -225,12 +225,11 @@ Missing or weak coverage:
 ## Suggested Implementation Order
 
 1. Fix `Click` event inheritance and add a focused test.
-2. Add failing tests for escaping and expression grouping before changing serialization or expression internals.
-3. Introduce centralized JavaScript serialization.
-4. Add precedence/grouping to expression composition.
-5. Make duration formatting explicit.
-6. Refresh README and KDoc.
-7. Refactor repeated attribute builder boilerplate.
+2. Add failing tests for expression grouping before changing expression internals.
+3. Add precedence/grouping to expression composition.
+4. Make duration formatting explicit.
+5. Refresh README and KDoc.
+6. Refactor repeated attribute builder boilerplate.
 
 ## Decisions Needed
 
@@ -239,10 +238,10 @@ Please decide which actions should be implemented and which should be skipped:
 | Action | Implement? |
 | --- | --- |
 | Fix `Click` to be a `MouseEvent` | TBD |
-| Centralize JavaScript serialization | TBD |
+| Centralize JavaScript serialization | Done |
 | Add expression precedence/grouping | TBD |
 | Make duration formatting explicit | TBD |
-| Validate or escape signal/object keys | TBD |
+| Validate signal names | TBD |
 | Improve heterogeneous `dataSignals` ergonomics | TBD |
 | Refactor repeated attribute boilerplate | TBD |
 | Refresh README examples | TBD |
