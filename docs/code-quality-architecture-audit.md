@@ -2,7 +2,7 @@
 
 Date: 2026-05-29
 
-This report summarizes the repository audit and separates what is already implemented from actions that are not implemented yet. No code changes have been made as part of this audit.
+This report summarizes the repository audit and separates what is already implemented from actions that are not implemented yet. The original audit made no code changes; follow-up resolutions are tracked inline.
 
 ## Current Architecture
 
@@ -40,6 +40,7 @@ These are design or feature decisions that are already present in the codebase.
 | Attribute-specific modifier scopes | Implemented | `DataOnModifiers`, `DataInitModifiers`, `DataBindModifiers`, etc. expose only selected modifier functions. |
 | Complex data-class signal serialization | Partially implemented | Data classes are serialized reflectively in `serializeValue`. |
 | Centralized JavaScript literal and object serialization | Implemented | `JavaScriptSerialization` now centralizes string literals, object keys, object literals, and regex literals. |
+| Explicit modifier duration formatting | Implemented | Duration-based modifiers now serialize finite, non-negative, whole-millisecond values explicitly with an `ms` suffix. |
 | Test suite | Implemented | `./gradlew test` passes. |
 
 ## Actions Not Implemented Yet
@@ -50,7 +51,6 @@ These are proposed follow-up actions. They are not implemented in the repository
 | --- | --- | --- |
 | High | Add precedence-aware expression composition | Current `and`, `or`, `eq`, and assignment composition concatenate strings without grouping. Some generated expressions are ambiguous or invalid JavaScript. |
 | High | Fix incorrect event inheritance for `Click` | `Click` currently extends `FocusEvent`, which prevents click handlers from exposing mouse properties such as `clientX`, `button`, and `offsetX`. |
-| Medium | Make modifier duration output explicit | Modifiers currently use Kotlin `Duration.toString()`, coupling generated Datastar syntax to Kotlin display formatting. |
 | Medium | Improve signal-name validation | Object literal keys are now escaped centrally, but signal names can still contain characters that make direct `$signal-name` expression references awkward or invalid. |
 | Medium | Revisit heterogeneous `dataSignals` ergonomics | `dataSignals(vararg Pair<String, T>)` returns `List<Signal<T>>`, which becomes awkward for mixed signal types. |
 | Medium | Reduce repeated attribute builder boilerplate | Many attribute functions repeat `ExpressionBuilder().apply(block).getExpression()` or modifier-builder setup. |
@@ -159,7 +159,7 @@ No critical issue was found that blocks compilation or test execution. The repos
 
    Recommended action:
 
-   Serialize durations explicitly to the Datastar-supported unit format.
+   Completed. Duration-based modifiers now use a shared formatter that emits explicit whole-millisecond values with an `ms` suffix and rejects finite-invalid inputs instead of delegating to Kotlin `Duration.toString()`.
 
 4. Attribute helpers duplicate builder flow
 
@@ -220,16 +220,15 @@ Missing or weak coverage:
 - Event type access for `Click` and other common DOM events.
 - Heterogeneous `dataSignals` usage.
 - README examples compiled or snapshot-tested against current output.
-- Datastar-compatible duration formatting.
+- Additional edge cases for unsupported duration inputs.
 
 ## Suggested Implementation Order
 
 1. Fix `Click` event inheritance and add a focused test.
 2. Add failing tests for expression grouping before changing expression internals.
 3. Add precedence/grouping to expression composition.
-4. Make duration formatting explicit.
-5. Refresh README and KDoc.
-6. Refactor repeated attribute builder boilerplate.
+4. Refresh README and KDoc.
+5. Refactor repeated attribute builder boilerplate.
 
 ## Decisions Needed
 
@@ -240,7 +239,7 @@ Please decide which actions should be implemented and which should be skipped:
 | Fix `Click` to be a `MouseEvent` | TBD |
 | Centralize JavaScript serialization | Done |
 | Add expression precedence/grouping | TBD |
-| Make duration formatting explicit | TBD |
+| Make duration formatting explicit | Done |
 | Validate signal names | TBD |
 | Improve heterogeneous `dataSignals` ergonomics | TBD |
 | Refactor repeated attribute boilerplate | TBD |
