@@ -53,7 +53,6 @@ These are proposed follow-up actions. They are not implemented in the repository
 | High | Fix incorrect event inheritance for `Click` | `Click` currently extends `FocusEvent`, which prevents click handlers from exposing mouse properties such as `clientX`, `button`, and `offsetX`. |
 | Medium | Improve signal-name validation | Object literal keys are now escaped centrally, but signal names can still contain characters that make direct `$signal-name` expression references awkward or invalid. |
 | Medium | Revisit heterogeneous `dataSignals` ergonomics | `dataSignals(vararg Pair<String, T>)` returns `List<Signal<T>>`, which becomes awkward for mixed signal types. |
-| Medium | Reduce repeated attribute builder boilerplate | Many attribute functions repeat `ExpressionBuilder().apply(block).getExpression()` or modifier-builder setup. |
 | Medium | Add semantic tests for expression validity | Current tests mostly verify strings and sometimes lock in questionable output. |
 | Low | Refresh README examples | README contains stale or misleading examples for `Signal` typing and `data-indicator` output. |
 | Low | Update KDoc around `Signal` | Current docs still mention reactive/value semantics after `Signal.value` was removed. |
@@ -174,7 +173,7 @@ No critical issue was found that blocks compilation or test execution. The repos
 
    Recommended action:
 
-   Add small internal helper functions after behavior is covered by tests.
+   Completed. Attribute extensions now use small internal helpers for expression building, modifier building, expression-plus-modifier building, and expression attribute emission. Public DSL functions keep their existing signatures while builder setup is centralized in `AttributesUtils.kt`.
 
 ### Low Severity
 
@@ -228,7 +227,6 @@ Missing or weak coverage:
 2. Add failing tests for expression grouping before changing expression internals.
 3. Add precedence/grouping to expression composition.
 4. Refresh README and KDoc.
-5. Refactor repeated attribute builder boilerplate.
 
 ## Decisions Needed
 
@@ -242,7 +240,7 @@ Please decide which actions should be implemented and which should be skipped:
 | Make duration formatting explicit | Done |
 | Validate signal names | TBD |
 | Improve heterogeneous `dataSignals` ergonomics | TBD |
-| Refactor repeated attribute boilerplate | TBD |
+| Refactor repeated attribute boilerplate | Done |
 | Refresh README examples | TBD |
 | Update stale KDoc | TBD |
 | Add stronger semantic tests | TBD |
