@@ -14,6 +14,6 @@ Status indicates the outcome of the decision.
 | [ADR-002](./ADR-002-expression-registration.md)         | Accepted | Moved the logic that generate DataStarExpression´s to the ExpressionBuilder.                             |
 | [ADR-003](./ADR-003-signal-value.md)                    | Accepted | Remove the property value of Signal.                                                                     |
 | [ADR-004](./ADR-004-datastar-expression-restructure.md) | Accepted | Refactor DataStarExpression as a sealed hierarchy with Signal, DataStarAction, and DataStarExpressionOp. |
-| [ADR-005](./ADR-005-typifying-action-options.md)        | Accepted | Changing action options from Strings to strongly-typed actions.                                          |
+| [ADR-005](./ADR-005-type-safe-action-options.md)        | Accepted | Change action options from raw strings to type-safe Kotlin options.                                      |
 | [ADR-006](./ADR-006-signal-casing-consistency.md)       | Accepted | Refactor signal naming to be in value instead of key, of the attribute.                                  |
 | [ADR-007](./ADR-007-case-modifiers-removal.md)          | Accepted | Removal of case modifiers.                                                                               |
