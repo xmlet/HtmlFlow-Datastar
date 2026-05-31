@@ -9,6 +9,7 @@ import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class ExpressionBuilderTests {
     @Test
@@ -20,7 +21,7 @@ class ExpressionBuilderTests {
             fetching.setValue(false) and get(::someHandler)
         }
 
-        assertEquals("$fetching; $fetching = false && @get('/some/url')", builder.getExpression())
+        assertEquals("$fetching; ($fetching = false) && @get('/some/url')", builder.getExpression())
     }
 
     @Path("/some/url")
@@ -63,7 +64,7 @@ class ExpressionBuilderTests {
             fetching.setValue(!fetching) and get(::someHandler) or other.setValue(fetching)
             !fetching
         }
-        assertEquals("$fetching = !$fetching && @get('/some/url') || $other = $fetching; !$fetching", builder.getExpression())
+        assertEquals("($fetching = !$fetching) && @get('/some/url') || ($other = $fetching); !$fetching", builder.getExpression())
     }
 
     @Test
@@ -75,7 +76,7 @@ class ExpressionBuilderTests {
         with(builder) {
             (count1 eq 1) or (count2 eq 2) and (count3 eq 3)
         }
-        assertEquals("$count1 == 1 || $count2 == 2 && $count3 == 3", builder.getExpression())
+        assertEquals("($count1 == 1 || $count2 == 2) && $count3 == 3", builder.getExpression())
     }
 
     data class User(
@@ -120,6 +121,50 @@ class ExpressionBuilderTests {
         with(builder) {
             (count1 eq 1) eq (count2 eq 1)
         }
-        assertEquals("$count1 == 1 == $count2 == 1", builder.getExpression())
+        assertEquals("($count1 == 1) == ($count2 == 1)", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder preserves explicit logical grouping with JavaScript precedence`() {
+        val count1 = Signal<Int>("count1")
+        val count2 = Signal<Int>("count2")
+        val count3 = Signal<Int>("count3")
+        val builder = ExpressionBuilder()
+        with(builder) {
+            (count1 eq 1) or ((count2 eq 2) and (count3 eq 3))
+        }
+
+        assertEquals("$count1 == 1 || $count2 == 2 && $count3 == 3", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder removes standalone operands after composing logical action expression`() {
+        val builder = ExpressionBuilder()
+        with(builder) {
+            val fetchUsers = get(::someHandler)
+            val postUsers = post(::someHandler)
+            fetchUsers and postUsers
+        }
+
+        val expression = builder.getExpression()
+
+        assertEquals("@get('/some/url') && @post('/some/url')", expression)
+        assertFalse(expression.contains("; @get('/some/url')"))
+        assertFalse(expression.contains("; @post('/some/url')"))
+    }
+
+    @Test
+    fun `Expression builder preserves independent statements before composed expressions`() {
+        val fetching = Signal<Boolean>("_fetching")
+        val builder = ExpressionBuilder()
+        with(builder) {
+            +fetching
+            !fetching and get(::someHandler)
+        }
+
+        val expression = builder.getExpression()
+
+        assertEquals("$fetching; !$fetching && @get('/some/url')", expression)
+        assertEquals(2, expression.split("; ").size)
     }
 }

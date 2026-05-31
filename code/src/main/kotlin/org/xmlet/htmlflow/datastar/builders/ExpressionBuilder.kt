@@ -7,6 +7,7 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.addApost
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.convertFuncToPath
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
+import org.xmlet.htmlflow.datastar.expressions.ExpressionPrecedence
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.reflect.KFunction
@@ -17,6 +18,8 @@ import kotlin.reflect.KProperty1
  * and operators.
  *
  * Multiple expressions are accumulated and separated by semicolons in the final output.
+ * Composed operator expressions track JavaScript precedence and add parentheses when
+ * needed to preserve the grouping expressed by the Kotlin DSL.
  *
  * **Example usage:**
  * ```kotlin
@@ -50,6 +53,28 @@ class ExpressionBuilder : ExpressionScope {
             .toString()
             .takeUnless { it == "{}" }
             .orEmpty()
+
+    private fun binaryExpression(
+        left: DataStarExpression,
+        operator: String,
+        right: DataStarExpression,
+        precedence: Int,
+        groupEqualPrecedence: Boolean = false,
+    ): DataStarExpressionOp {
+        val leftSyntax = left.renderAsOperand(precedence, groupEqualPrecedence)
+        val rightSyntax = right.renderAsOperand(precedence, groupEqualPrecedence = true)
+        return DataStarExpressionOp("$leftSyntax $operator $rightSyntax", precedence)
+    }
+
+    private fun DataStarExpression.renderAsOperand(
+        parentPrecedence: Int,
+        groupEqualPrecedence: Boolean,
+    ): String =
+        if (precedence < parentPrecedence || groupEqualPrecedence && precedence == parentPrecedence) {
+            "($syntax)"
+        } else {
+            syntax
+        }
 
     override operator fun Signal<*>.unaryPlus() {
         appendExpression(this)
@@ -192,7 +217,7 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the JavaScript ! operator, used to negate an expression.
      */
     override operator fun <T> Signal<T>.not(): DataStarExpressionOp {
-        val result = DataStarExpressionOp("!${this.syntax}")
+        val result = DataStarExpressionOp("!${this.renderAsOperand(ExpressionPrecedence.UNARY)}", ExpressionPrecedence.UNARY)
         appendExpression(result)
         return result
     }
@@ -201,7 +226,7 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the JavaScript && operator, used to chain multiple expressions together.
      */
     override infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp {
-        val result = DataStarExpressionOp("${this.syntax} && ${expression.syntax}")
+        val result = binaryExpression(this, "&&", expression, ExpressionPrecedence.LOGICAL_AND)
         removeIfPresent(this, expression)
         appendExpression(result)
         return result
@@ -212,7 +237,11 @@ class ExpressionBuilder : ExpressionScope {
      */
     override infix fun String.and(expression: DataStarExpression): DataStarExpressionOp {
         removeIfPresent(expression)
-        val result = DataStarExpressionOp("$this && ${expression.syntax}")
+        val result =
+            DataStarExpressionOp(
+                "$this && ${expression.renderAsOperand(ExpressionPrecedence.LOGICAL_AND)}",
+                ExpressionPrecedence.LOGICAL_AND,
+            )
         appendExpression(result)
         return result
     }
@@ -221,7 +250,7 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
     override infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpressionOp {
-        val result = DataStarExpressionOp("${this.syntax} || ${expression.syntax}")
+        val result = binaryExpression(this, "||", expression, ExpressionPrecedence.LOGICAL_OR)
         removeIfPresent(this, expression)
         appendExpression(result)
         return result
@@ -231,7 +260,11 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the JavaScript || operator, used to chain multiple expressions together.
      */
     override infix fun String.or(expression: DataStarExpression): DataStarExpressionOp {
-        val result = DataStarExpressionOp("$this || ${expression.syntax}")
+        val result =
+            DataStarExpressionOp(
+                "$this || ${expression.renderAsOperand(ExpressionPrecedence.LOGICAL_OR)}",
+                ExpressionPrecedence.LOGICAL_OR,
+            )
         removeIfPresent(expression)
         appendExpression(result)
         return result
@@ -241,7 +274,7 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
     override infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpressionOp {
-        val result = DataStarExpressionOp("${this.syntax} == ${expression.syntax}")
+        val result = binaryExpression(this, "==", expression, ExpressionPrecedence.EQUALITY, groupEqualPrecedence = true)
         removeIfPresent(this, expression)
         appendExpression(result)
         return result
@@ -251,7 +284,7 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the JavaScript == operator, used to compare two expressions.
      */
     override infix fun <T> Signal<T>.eq(value: T): DataStarExpressionOp {
-        val result = DataStarExpressionOp("${this.syntax} == $value")
+        val result = DataStarExpressionOp("${this.syntax} == $value", ExpressionPrecedence.EQUALITY)
         removeIfPresent(this)
         appendExpression(result)
         return result
@@ -261,7 +294,7 @@ class ExpressionBuilder : ExpressionScope {
      * Equal to the assignment operator in JavaScript, used to assign the signal value to the new value.
      */
     override fun <T> Signal<T>.setValue(value: T): DataStarExpressionOp {
-        val result = DataStarExpressionOp("${this.syntax} = $value")
+        val result = DataStarExpressionOp("${this.syntax} = $value", ExpressionPrecedence.ASSIGNMENT)
         appendExpression(result)
         return result
     }
@@ -271,7 +304,11 @@ class ExpressionBuilder : ExpressionScope {
      */
     override fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpressionOp {
         removeIfPresent(expression)
-        val result = DataStarExpressionOp("${this.syntax} = ${expression.syntax}")
+        val result =
+            DataStarExpressionOp(
+                "${this.syntax} = ${expression.renderAsOperand(ExpressionPrecedence.ASSIGNMENT)}",
+                ExpressionPrecedence.ASSIGNMENT,
+            )
         appendExpression(result)
         return result
     }

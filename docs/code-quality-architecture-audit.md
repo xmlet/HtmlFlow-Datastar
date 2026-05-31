@@ -234,13 +234,13 @@ Please decide which actions should be implemented and which should be skipped:
 
 | Action | Implement? |
 | --- | --- |
-| Fix `Click` to be a `MouseEvent` | TBD |
+| Fix `Click` to be a `MouseEvent` | Done |
 | Centralize JavaScript serialization | Done |
-| Add expression precedence/grouping | TBD |
+| Add expression precedence/grouping | Done |
 | Make duration formatting explicit | Done |
 | Validate signal names | TBD |
 | Improve heterogeneous `dataSignals` ergonomics | TBD |
 | Refactor repeated attribute boilerplate | Done |
 | Refresh README examples | TBD |
 | Update stale KDoc | TBD |
-| Add stronger semantic tests | TBD |
+| Add stronger semantic tests | Done |

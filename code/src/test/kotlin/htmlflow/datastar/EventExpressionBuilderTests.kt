@@ -106,6 +106,22 @@ class EventExpressionBuilderTests {
     }
 
     @Test
+    fun `dataOn click should expose mouse event properties through evt`() {
+        val html =
+            renderDataOn(Click) {
+                with(evt) {
+                    button and clientX and clientY and offsetX and offsetY
+                }
+            }
+
+        assertTrue(
+            html.contains(
+                "data-on:click=\"evt.button && evt.clientX && evt.clientY && evt.offsetX && evt.offsetY\"",
+            ),
+        )
+    }
+
+    @Test
     fun `dataOn should expose keyboard event properties through evt`() {
         val html =
             renderDataOn(Keydown) {
