@@ -6,73 +6,98 @@
 
 ## Context
 
-Signal casing was being inconsistent as, before, this example:
+Signal casing was inconsistent. For example, this DSL code:
+
 ```kotlin
 div {
     val birthDate = dataSignals("birthDate")
     input {
         dataBind(birthDate)
     }
-    p { dataText { +birthDate} }
+    p { dataText { +birthDate } }
 }
 ```
-Would generate this HTML:
-```HTML
+
+generated this HTML:
+
+```html
 <div data-signals:birthdate="">
 	<input data-bind:birthdate></input>
 	<p data-text="$birthDate"></p>
 </div> 
 ```
-As the DSL would treat signal names with case modifier by default, but would not
-change the name in case there was no separator (e.g.: `birth-date` would
-automatically be converted to `birthDate`). This would cause an inconsistency as
-the name that the DSL would use in expressions was camelCase, as passed in the
-parameter. In contrast, the HTML generated, that creates the signal, would be
-converted to lowerCase, as custom HTML attributes are case-insensitive.
+
+The DSL treated signal names with camelCase as the default case modifier, but
+it would only produce a change when the name contained a separator. For
+example, `birth-date` was automatically converted to `birthDate`, while
+`birthDate` was left unchanged in expressions.
+
+This created an inconsistency. Expressions used the signal name exactly as
+passed to the DSL, such as `birthDate`, but the generated HTML attribute name
+that created or bound the signal was converted to lowercase by the browser.
+HTML attribute names are case-insensitive, so a signal encoded in an attribute
+name cannot reliably preserve its original casing.
 
 ## Decision
 
-Change the way signal name is created, from, in certain attributes functions
-such as `dataSignal`, passing it in the key of the attribute, e.g.:
-```HTML
-<input data-bind:foo />
+Change how signal names are emitted in generated HTML. For attributes where the
+signal name may contain meaningful casing, emit the signal name as part of the
+attribute value instead of as part of the attribute name.
+
+This affects:
+
+- `dataBind`;
+- `dataComputed`;
+- `dataSignal`;
+- `dataSignals`;
+- `dataIndicator`;
+- `dataRef`.
+
+Instead of:
+
+```html
+<input data-bind:birthDate />
 ```
-To passing it in the value, where the case is maintained, e.g.:
-```HTML
-<input data-bind="foo" />
+
+generate:
+
+```html
+<input data-bind="birthDate" />
 ```
 
 ## Trigger
 
-Detected inconsistency in signal naming and referencing across expressions, this
-causes errors to be generated.
+An inconsistency was detected between signal names created in HTML attributes
+and signal names referenced in expressions. This caused generated code to fail
+when the casing did not match.
 
 ## Consequences
 
 **Positive:**
 
-- Signal name casing consistent across all calls, from naming itself, to
-  referencing in expressions and HTTP payloads;
+- Signal name casing is consistent across signal creation, expression
+  references, and HTTP payloads;
+- Signal names are preserved exactly as provided to the DSL;
 - The use of the DSL remains the same, with no changes required to existing code
   written using it.
 
 **Negative:**
 
-- This produces HTML code less intuitive, specifically in `dataComputed`
-  attribute, where the value is an expression, going from:
-  ```HTML
+- Some generated HTML becomes less intuitive, especially the `dataComputed`
+  attribute, where the value is an expression. Instead of:
+  ```html
   <div data-computed:foo="$bar + $baz"></div>
   ```
-  Using the key naming notation, to:
-  ```HTML
+  the DSL now generates:
+  ```html
   <div data-computed="{foo: () => $bar + $baz}"></div>
   ```
-  Using the value notation, as this attribute receives a function. The Kotlin
-  code stays the same, but the generated HTML becomes more complex;
-- Datastar notes that "This can be useful depending on the templating language
-  you are using" (https://data-star.dev/reference/attributes#data-bind), but as
-  we did not find use cases relevant to this, we will not investigate this
-  further for the time being.
+  This is required because the signal name is now part of the value notation and
+  the attribute receives a function. The Kotlin code stays the same, but the
+  generated HTML becomes more complex;
+- This stops using Datastar's attribute-suffix form for the affected cases. That
+  form may be useful with some templating languages, but no relevant project use
+  case was identified.
 
 **Neutral:**
 
@@ -82,10 +107,11 @@ causes errors to be generated.
 
 ### Signal Name Conversion Inside The DSL
 
-The option of always converting the name received to camelCase, in order to
-maintain consistency across calls, was considered, but deemed that it was too
-complex and inefficient, as Datastar engine already does this. Also, to ensure
-this, the transformation would generate HTML where the signal name would be
-different from the one used in JavaScript expressions and HTTP payload. This,
-although functional, does not achieve the consistency in the code generated that
-is wanted.
+Always converting received signal names to camelCase inside the DSL was
+considered as a way to maintain consistency across calls. This was rejected
+because it would add complexity and duplicate behavior that the Datastar engine
+already provides.
+
+It would also generate HTML where the signal name differs from the name used in
+JavaScript expressions and HTTP payloads. Although functional, that result would
+not provide the desired consistency in the generated code.
