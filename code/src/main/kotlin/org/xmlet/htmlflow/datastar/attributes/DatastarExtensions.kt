@@ -43,7 +43,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
     name: String,
     block: ExpressionBuilder.() -> Unit,
 ) {
-    visitExpressionAttribute("data-attr:$name", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-attr:$name", expression)
 }
 
 /**
@@ -73,7 +74,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: 
  * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(block: ExpressionBuilder.() -> Unit) {
-    visitExpressionAttribute("data-effect", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-effect", expression)
 }
 
 /**
@@ -99,7 +101,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: Str
  * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(block: ExpressionBuilder.() -> Unit) {
-    visitExpressionAttribute("data-show", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-show", expression)
 }
 
 /**
@@ -111,7 +114,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataShow(block: Express
  * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataText(block: ExpressionBuilder.() -> Unit) {
-    visitExpressionAttribute("data-text", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-text", expression)
 }
 
 /**
@@ -147,7 +151,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIgnoreMorph() {
  * @param block Block with tha lambda containing the expression
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataPreserveAttr(block: ExpressionBuilder.() -> Unit) {
-    visitExpressionAttribute("data-preserve-attr", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-preserve-attr", expression)
 }
 
 /**
@@ -163,7 +168,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataStyle(
     name: String,
     block: ExpressionBuilder.() -> Unit,
 ) {
-    visitExpressionAttribute("data-style:$name", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-style:$name", expression)
 }
 
 /**
@@ -208,7 +214,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     name: String,
     block: ExpressionBuilder.() -> Unit,
 ): Signal<Any> {
-    val computed = serializeComputed(name, buildExpression(block))
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    val computed = serializeComputed(name, expression)
     this.visitor.visitAttribute("data-computed", computed)
     return Signal(name)
 }
@@ -226,5 +233,6 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataClass(
     className: String,
     block: ExpressionBuilder.() -> Unit,
 ) {
-    visitExpressionAttribute("data-class:$className", block)
+    val expression = ExpressionBuilder().apply(block).getExpression()
+    this.visitor.visitAttribute("data-class:$className", expression)
 }

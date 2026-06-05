@@ -1,64 +1,7 @@
 package org.xmlet.htmlflow.datastar.attributes
 
-import org.xmlet.htmlapifaster.Element
-import org.xmlet.htmlflow.datastar.builders.EventExpressionBuilder
-import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
-import org.xmlet.htmlflow.datastar.builders.ExpressionModifierBuilder
-import org.xmlet.htmlflow.datastar.builders.ModifierBuilder
-import org.xmlet.htmlflow.datastar.events.Event
 import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
-import org.xmlet.htmlflow.datastar.modifiers.core.ModifierAccumulator
 import kotlin.reflect.full.memberProperties
-
-internal fun buildExpression(block: ExpressionBuilder.() -> Unit): String =
-    ExpressionBuilder()
-        .apply(block)
-        .getExpression()
-
-internal fun <M : ModifierAccumulator> buildModifiers(
-    builderFactory: () -> M,
-    block: ModifierBuilder<M>.() -> Unit,
-): String =
-    ModifierBuilder(builderFactory)
-        .apply(block)
-        .getModifiers()
-
-internal fun <M : ModifierAccumulator> buildExpressionWithModifiers(
-    builderFactory: () -> M,
-    block: ExpressionModifierBuilder<M>.() -> Unit,
-): AttributeExpression =
-    ExpressionModifierBuilder(builderFactory)
-        .apply(block)
-        .let { AttributeExpression(it.getExpression(), it.getModifiers()) }
-
-internal fun <EVT : Event> buildEventExpressionWithModifiers(
-    event: EVT,
-    block: EventExpressionBuilder<EVT>.() -> Unit,
-): AttributeExpression =
-    EventExpressionBuilder(event)
-        .apply(block)
-        .let { AttributeExpression(it.getExpression(), it.getModifiers()) }
-
-internal fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.visitExpressionAttribute(
-    name: String,
-    block: ExpressionBuilder.() -> Unit,
-) {
-    visitor.visitAttribute(name, buildExpression(block))
-}
-
-internal fun <E : Element<*, *>, P : Element<*, *>, M : ModifierAccumulator> Element<E, P>.visitExpressionModifierAttribute(
-    name: String,
-    builderFactory: () -> M,
-    block: ExpressionModifierBuilder<M>.() -> Unit,
-) {
-    val result = buildExpressionWithModifiers(builderFactory, block)
-    visitor.visitAttribute("$name${result.modifiers}", result.expression)
-}
-
-internal data class AttributeExpression(
-    val expression: String,
-    val modifiers: String,
-)
 
 /**
  * Transforms a list of pairs containing the names and values of signals to create
