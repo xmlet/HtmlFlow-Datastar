@@ -34,6 +34,9 @@ dependencies {
     implementation(kotlin("reflect"))
 
     testImplementation(kotlin("test"))
+
+    // For Kotlinx.html integration with DataStar
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 }
 
 kotlin {
