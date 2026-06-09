@@ -47,9 +47,8 @@ class ExpressionBuilder : ExpressionScope {
         }
     }
 
-    private fun buildSignalPatchFilter(filterBuilder: SignalPatchFilter.() -> Unit): String =
-        SignalPatchFilter()
-            .apply(filterBuilder)
+    private fun SignalPatchFilter.applySignalPatchFilter(filterBuilder: SignalPatchFilter.() -> Unit): String =
+        apply(filterBuilder)
             .toString()
             .takeUnless { it == "{}" }
             .orEmpty()
@@ -105,13 +104,13 @@ class ExpressionBuilder : ExpressionScope {
         value: Any,
         filterBuilder: SignalPatchFilter.() -> Unit,
     ): DataStarAction {
-        val action = DataStarAction(ActionType.SET_ALL, value, buildSignalPatchFilter(filterBuilder))
+        val action = DataStarAction(ActionType.SET_ALL, value, SignalPatchFilter().applySignalPatchFilter(filterBuilder))
         appendExpression(action)
         return action
     }
 
     override fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction {
-        val action = DataStarAction(ActionType.TOGGLE_ALL, buildSignalPatchFilter(filterBuilder))
+        val action = DataStarAction(ActionType.TOGGLE_ALL, SignalPatchFilter().applySignalPatchFilter(filterBuilder))
         appendExpression(action)
         return action
     }
