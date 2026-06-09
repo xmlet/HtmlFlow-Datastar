@@ -1,4 +1,4 @@
-# ADR 002: The existence of value property in Signal:
+# ADR 003: The existence of value property in Signal:
 
 **Status:** Accepted
 
