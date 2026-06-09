@@ -14,13 +14,11 @@ import org.xmlet.htmlflow.datastar.modifiers.core.ModifierAccumulator
  * ```
  *
  * @param M the type of [ModifierAccumulator] used to accumulate modifiers
- * @param builderFactory factory function that creates a new [ModifierAccumulator] instance
+ * @param builder [ModifierAccumulator] to apply lambda received
  */
 class ModifierBuilder<M : ModifierAccumulator>(
-    builderFactory: () -> M,
+    private val builder: M,
 ) : ModifierScope<M> {
-    private val builder = builderFactory()
-
     override fun modifiers(block: M.() -> Unit) {
         builder.apply(block)
     }

@@ -25,5 +25,5 @@ import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnModifiers
  */
 class EventExpressionBuilder<EVT : Event>(
     val evt: EVT,
-    private val expressionModifierBuilder: ExpressionModifierBuilder<DataOnModifiers> = ExpressionModifierBuilder(::DataOnModifiers),
+    private val expressionModifierBuilder: ExpressionModifierBuilder<DataOnModifiers> = ExpressionModifierBuilder(DataOnModifiers()),
 ) : ExpressionModifierScope<DataOnModifiers> by expressionModifierBuilder
