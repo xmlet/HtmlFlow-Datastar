@@ -39,9 +39,12 @@ import org.xmlet.htmlflow.datastar.events.FocusIn
 import org.xmlet.htmlflow.datastar.events.FocusOut
 import org.xmlet.htmlflow.datastar.events.Input
 import org.xmlet.htmlflow.datastar.modifiers.DomProperty
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnIntervalModifiers
+import org.xmlet.htmlflow.datastar.modifiers.attribute.DataOnModifiers
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class ModifiersTests {
     @Test
@@ -66,6 +69,25 @@ class ModifiersTests {
         expectedDurationModifier.toString().split("\n").forEach { actual ->
             assertEquals(expected.next().trim(), actual.trim())
         }
+    }
+
+    @Test
+    fun `time modifiers should serialize exact seconds with an s suffix`() {
+        val eventModifiers =
+            DataOnModifiers().apply {
+                delay(90.seconds)
+                debounce(1.seconds + 500.milliseconds)
+                throttle(2.seconds)
+            }
+
+        assertEquals("__delay.90s__debounce.1500ms__throttle.2s", eventModifiers.modifiers)
+
+        val intervalModifiers =
+            DataOnIntervalModifiers().apply {
+                duration(90.seconds, leading = true)
+            }
+
+        assertEquals("__duration.90s.leading", intervalModifiers.modifiers)
     }
 
     @Test

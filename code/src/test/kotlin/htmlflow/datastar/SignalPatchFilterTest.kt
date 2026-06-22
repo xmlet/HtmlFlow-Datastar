@@ -47,6 +47,25 @@ class SignalPatchFilterTest {
         assertEquals(expectedIncludeAndExcludeHtml, html)
     }
 
+    @Test
+    fun `escapes slash characters in regex filters`() {
+        val html =
+            StringBuilder()
+                .apply {
+                    doc {
+                        html {
+                            div {
+                                dataOnSignalPatchFilter {
+                                    include = Regex("users/active")
+                                }
+                            }
+                        }
+                    }
+                }.toString()
+
+        assertEquals(expectedEscapedRegexHtml, html)
+    }
+
     private val expectedIncludeOnlyHtml =
         """
         <!DOCTYPE html>
@@ -61,6 +80,15 @@ class SignalPatchFilterTest {
         <!DOCTYPE html>
         <html>
         	<div data-on-signal-patch-filter="{include: /user/, exclude: /password/}">
+        	</div>
+        </html>
+        """.trimIndent()
+
+    private val expectedEscapedRegexHtml =
+        """
+        <!DOCTYPE html>
+        <html>
+        	<div data-on-signal-patch-filter="{include: /users\/active/}">
         	</div>
         </html>
         """.trimIndent()

@@ -14,14 +14,14 @@ import org.xmlet.htmlflow.datastar.modifiers.core.ModifierAccumulator
  * }
  * ```
  * @param M the type of [ModifierAccumulator] used to accumulate modifiers
- * @param builderFactory the [ModifierBuilder] instance used to build modifiers alongside expressions
+ * @param builder the [ModifierBuilder] instance used to build modifiers alongside expressions
  * @property expressionBuilder delegates [ExpressionScope] to [ExpressionBuilder]
  * @property modifierBuilder delegates [ModifierScope] to [ModifierBuilder]
  */
 class ExpressionModifierBuilder<M : ModifierAccumulator>(
-    builderFactory: () -> M,
+    builder: M,
     private val expressionBuilder: ExpressionBuilder = ExpressionBuilder(),
-    private val modifierBuilder: ModifierBuilder<M> = ModifierBuilder(builderFactory),
+    private val modifierBuilder: ModifierBuilder<M> = ModifierBuilder(builder),
 ) : ExpressionModifierScope<M>,
     ExpressionScope by expressionBuilder,
     ModifierScope<M> by modifierBuilder

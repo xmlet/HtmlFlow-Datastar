@@ -1,5 +1,6 @@
 package org.xmlet.htmlflow.datastar.attributes
 
+import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
 import kotlin.reflect.full.memberProperties
 
 /**
@@ -11,10 +12,11 @@ import kotlin.reflect.full.memberProperties
  */
 
 internal fun List<Pair<String, Any?>>.toJson(): String =
-    this.joinToString(prefix = "{", postfix = "}", separator = ", ") { (name, value) ->
-        val res = serializeValue(value)
-        "$name: $res"
-    }
+    JavaScriptSerialization.objectLiteral(
+        this.map { (name, value) ->
+            name to serializeValue(value)
+        },
+    )
 
 /**
  * Serializes the value received for correct display of complex Signal domains.
@@ -30,7 +32,7 @@ internal fun serializeValue(
 ): String =
     when (value) {
         is String -> {
-            "'${value.replace("'", "\\'")}'"
+            JavaScriptSerialization.stringLiteral(value)
         }
 
         is Function0<*> -> {
@@ -53,10 +55,12 @@ internal fun serializeValue(
                 if (properties.isEmpty()) {
                     "$value"
                 } else {
-                    properties.joinToString(separator = ", ", prefix = "{", postfix = "}") { prop ->
-                        val propValue = runCatching { prop.getter.call(value) }.getOrNull()
-                        "${prop.name}: ${serializeValue(propValue, isTopLevel = false)}"
-                    }
+                    JavaScriptSerialization.objectLiteral(
+                        properties.map { prop ->
+                            val propValue = runCatching { prop.getter.call(value) }.getOrNull()
+                            prop.name to serializeValue(propValue, isTopLevel = false)
+                        },
+                    )
                 }
             }
         }
@@ -72,4 +76,4 @@ internal fun serializeValue(
 internal fun serializeComputed(
     name: String,
     expression: String,
-): String = "{$name: () => $expression}"
+): String = JavaScriptSerialization.objectLiteral(listOf(name to "() => $expression"))

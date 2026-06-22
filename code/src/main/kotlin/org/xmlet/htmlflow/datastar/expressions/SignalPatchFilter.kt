@@ -14,9 +14,9 @@ class SignalPatchFilter {
     var exclude: Regex? = null
 
     override fun toString(): String {
-        val parts = mutableListOf<String>()
-        include?.let { parts.add("include: /${it.pattern}/") }
-        exclude?.let { parts.add("exclude: /${it.pattern}/") }
-        return parts.joinToString(prefix = "{", postfix = "}")
+        val parts = mutableListOf<Pair<String, String>>()
+        include?.let { parts.add("include" to JavaScriptSerialization.regexLiteral(it)) }
+        exclude?.let { parts.add("exclude" to JavaScriptSerialization.regexLiteral(it)) }
+        return JavaScriptSerialization.objectLiteral(parts)
     }
 }

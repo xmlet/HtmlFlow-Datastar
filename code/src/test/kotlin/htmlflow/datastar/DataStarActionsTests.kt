@@ -57,6 +57,14 @@ class DataStarActionsTests {
         assertEquals("@patch('/users')", patchPathDataStarAction.syntax)
     }
 
+    @Test
+    fun `backend action paths escape JavaScript string literals`() {
+        val handler = ExpressionBuilder()
+
+        assertEquals("@get('/users/\\'active\\'')", handler.get("/users/'active'").syntax)
+        assertEquals("@post('/users\\\\archive')", handler.post("/users\\archive").syntax)
+    }
+
     @Path("/users")
     fun getUsers() {}
 

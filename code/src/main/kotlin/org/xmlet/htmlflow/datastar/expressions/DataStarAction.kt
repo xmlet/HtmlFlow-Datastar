@@ -19,10 +19,10 @@ class DataStarAction internal constructor(
         internal fun convertFuncToPath(func: KFunction<*>): String {
             val pathAnnotation = func.annotations.filterIsInstance<Path>().firstOrNull()
             val path = pathAnnotation?.value ?: throw IllegalArgumentException("Function ${func.name} must be annotated with @Path")
-            return "'$path'"
+            return JavaScriptSerialization.stringLiteral(path)
         }
 
-        internal fun addApostrophe(path: String) = "'$path'"
+        internal fun addApostrophe(path: String) = JavaScriptSerialization.stringLiteral(path)
     }
 }
 

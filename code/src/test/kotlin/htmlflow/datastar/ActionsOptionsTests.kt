@@ -298,7 +298,7 @@ class ActionsOptionsTests {
             ActionOptions().apply {
                 selector = "div.container > button[data-action='save']"
             }
-        assertEquals("{selector: 'div.container > button[data-action='save']'}", options.toString())
+        assertEquals("{selector: 'div.container > button[data-action=\\'save\\']'}", options.toString())
     }
 
     @Test
@@ -308,5 +308,20 @@ class ActionsOptionsTests {
                 headers = "Content-Type: application/json; charset=utf-8"
             }
         assertEquals("{headers: \"Content-Type: application/json; charset=utf-8\"}", options.toString())
+    }
+
+    @Test
+    fun `ActionOptions escapes string literal control characters`() {
+        val options =
+            ActionOptions().apply {
+                selector = "button[data-action='save']\n.active"
+                headers = "X-Trace: \"quoted\"\\value"
+                payload = "line1\nline2"
+            }
+
+        assertEquals(
+            "{selector: 'button[data-action=\\'save\\']\\n.active', headers: \"X-Trace: \\\"quoted\\\"\\\\value\", payload: \"line1\\nline2\"}",
+            options.toString(),
+        )
     }
 }

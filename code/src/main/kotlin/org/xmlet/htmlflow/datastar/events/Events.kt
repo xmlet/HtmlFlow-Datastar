@@ -155,7 +155,7 @@ object Focus : FocusEvent("focus")
 
 object FocusIn : FocusEvent("focusin")
 
-object Click : FocusEvent("click")
+object Click : MouseEvent("click")
 
 object Keydown : KeyboardEvent("keydown")
 

@@ -16,9 +16,8 @@ interface ExpressionScope {
 
     operator fun String.unaryPlus()
 
-    /**
-     * Frontend actions
-     */
+    // Frontend actions
+
     fun peek(callable: () -> String): DataStarAction
 
     fun peek(js: String): DataStarAction
@@ -30,9 +29,8 @@ interface ExpressionScope {
 
     fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction
 
-    /**
-     * Backend actions
-     */
+    // Backend actions
+
     fun get(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit = {},
@@ -83,25 +81,51 @@ interface ExpressionScope {
         optionsBuilder: ActionOptions.() -> Unit = {},
     ): DataStarAction
 
+    // JavaScript operators
+
     /**
-     * JavaScript operators
+     * Equal to the JavaScript ! operator, used to negate an expression.
      */
     operator fun <T> Signal<T>.not(): DataStarExpressionOp
 
+    /**
+     * Equal to the JavaScript && operator, used to chain multiple expressions together.
+     */
     infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp
 
+    /**
+     * Equal to the JavaScript && operator, used to chain multiple expressions together.
+     */
     infix fun String.and(expression: DataStarExpression): DataStarExpressionOp
 
+    /**
+     * Equal to the JavaScript || operator, used to chain multiple expressions together.
+     */
     infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpressionOp
 
+    /**
+     * Equal to the JavaScript || operator, used to chain multiple expressions together.
+     */
     infix fun String.or(expression: DataStarExpression): DataStarExpressionOp
 
+    /**
+     * Equal to the JavaScript == operator, used to compare two expressions.
+     */
     infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpressionOp
 
+    /**
+     * Equal to the JavaScript == operator, used to compare two expressions.
+     */
     infix fun <T> Signal<T>.eq(value: T): DataStarExpressionOp
 
+    /**
+     * Equal to the assignment operator in JavaScript, used to assign the signal value to the new value.
+     */
     fun <T> Signal<T>.setValue(value: T): DataStarExpressionOp
 
+    /**
+     * Equal to the assignment operator in JavaScript, used to assign the passed expression to another expression.
+     */
     fun Signal<*>.setValue(expression: DataStarExpression): DataStarExpressionOp
 
     /**

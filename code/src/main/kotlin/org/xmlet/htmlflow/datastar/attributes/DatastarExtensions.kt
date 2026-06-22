@@ -26,9 +26,10 @@ package org.xmlet.htmlflow.datastar.attributes
 
 import org.xmlet.htmlapifaster.Element
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
+import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
-import kotlin.collections.joinToString
+import org.xmlet.htmlflow.datastar.expressions.signal
 
 /**
  * Binds any HTML attribute to an expression, keeping it synchronized.
@@ -56,12 +57,13 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(
  * @param attrs a JavaScript expression that computes the values of multiple attribute on an element using a set of key-value pairs
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataAttr(vararg attrs: Pair<String, Signal<*>>) {
-    attrs
-        .joinToString(prefix = "{", postfix = "}", separator = ", ") { (name, value) ->
-            "$name: $value"
-        }.also {
-            this.visitor.visitAttribute("data-attr", it)
-        }
+    val serialized =
+        JavaScriptSerialization.objectLiteral(
+            attrs.map { (name, value) ->
+                name to value.toString()
+            },
+        )
+    this.visitor.visitAttribute("data-attr", serialized)
 }
 
 /**
@@ -88,7 +90,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(block: Expre
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal<Boolean> {
     this.visitor.visitAttribute("data-indicator", name)
-    return Signal(name)
+    return signal(name)
 }
 
 /**
@@ -181,13 +183,8 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataStyle(
  * is a JavaScript expression that computes the style value
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataStyle(vararg styles: Pair<String, String>) {
-    styles
-        .joinToString(prefix = "{", postfix = "}", separator = ", ") { (property, expression) ->
-            val quotedProperty = if (property.contains('-')) "'$property'" else property
-            "$quotedProperty: $expression"
-        }.also {
-            this.visitor.visitAttribute("data-style", it)
-        }
+    val serialized = JavaScriptSerialization.objectLiteral(styles.asIterable())
+    this.visitor.visitAttribute("data-style", serialized)
 }
 
 /**
@@ -201,7 +198,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataStyle(vararg styles
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataRef(name: String): Signal<Any> {
     this.visitor.visitAttribute("data-ref", name)
-    return Signal(name)
+    return signal(name)
 }
 
 /**
@@ -221,7 +218,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     val expression = ExpressionBuilder().apply(block).getExpression()
     val computed = serializeComputed(name, expression)
     this.visitor.visitAttribute("data-computed", computed)
-    return Signal(name)
+    return signal(name)
 }
 
 /**

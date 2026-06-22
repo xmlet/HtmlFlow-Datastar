@@ -30,10 +30,10 @@ class ActionOptions {
                     add("filterSignals: $filter")
                 }
 
-                selector?.let { add("selector: '$it'") }
-                headers?.let { add("headers: \"$it\"") }
+                selector?.let { add("selector: ${JavaScriptSerialization.stringLiteral(it)}") }
+                headers?.let { add("headers: ${JavaScriptSerialization.stringLiteral(it, QuoteStyle.DOUBLE)}") }
                 openWhenHidden?.let { add("openWhenHidden: $it") }
-                payload?.let { add("payload: \"$it\"") }
+                payload?.let { add("payload: ${JavaScriptSerialization.stringLiteral(it, QuoteStyle.DOUBLE)}") }
                 retry?.let { add("retry: '${it.name.lowercase()}'") }
                 retryInterval?.let { add("retryInterval: ${it.inWholeMilliseconds}") }
                 retryScaler?.let { add("retryScaler: $it") }
