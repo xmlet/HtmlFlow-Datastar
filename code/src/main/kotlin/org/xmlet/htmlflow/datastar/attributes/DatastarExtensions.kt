@@ -29,6 +29,7 @@ import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
+import org.xmlet.htmlflow.datastar.expressions.signal
 
 /**
  * Binds any HTML attribute to an expression, keeping it synchronized.
@@ -89,7 +90,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataEffect(block: Expre
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataIndicator(name: String): Signal<Boolean> {
     this.visitor.visitAttribute("data-indicator", name)
-    return Signal(name)
+    return signal(name)
 }
 
 /**
@@ -197,7 +198,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataStyle(vararg styles
  */
 fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataRef(name: String): Signal<Any> {
     this.visitor.visitAttribute("data-ref", name)
-    return Signal(name)
+    return signal(name)
 }
 
 /**
@@ -217,7 +218,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     val expression = ExpressionBuilder().apply(block).getExpression()
     val computed = serializeComputed(name, expression)
     this.visitor.visitAttribute("data-computed", computed)
-    return Signal(name)
+    return signal(name)
 }
 
 /**

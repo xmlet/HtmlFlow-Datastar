@@ -47,4 +47,10 @@ class Signal<T> internal constructor(
     override fun toString() = this.syntax
 }
 
+/**
+ * Creates a public [Signal] instance that can be used by downstream libraries without
+ * requiring access to the internal constructor.
+ */
+fun <T> signal(name: String): Signal<T> = Signal(name)
+
 private fun makeExpression(name: String): String = "$$name"

@@ -10,6 +10,7 @@ import org.xmlet.htmlflow.datastar.events.Event
 import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
+import org.xmlet.htmlflow.datastar.expressions.signal
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataBindModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataIgnoreModifiers
 import org.xmlet.htmlflow.datastar.modifiers.attribute.DataInitModifiers
@@ -253,7 +254,7 @@ fun TextGroup<*, *>.dataBind(
     val builder = ModifierBuilder(DataBindModifiers()).apply(block)
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-bind$modifiers", name)
-    return Signal(name)
+    return signal(name)
 }
 
 /**
@@ -271,5 +272,5 @@ fun SelectAll<*, *>.dataBind(
     val builder = ModifierBuilder(DataBindModifiers()).apply(block)
     val modifiers = builder.getModifiers()
     this.visitor.visitAttribute("data-bind$modifiers", name)
-    return Signal(name)
+    return signal(name)
 }
