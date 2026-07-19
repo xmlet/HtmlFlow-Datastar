@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.0
+
+### Changed
+- First stable release of HtmlFlow-Datastar.
+- No functional changes since `v1.3.0-alpha`.
+
 ## v1.3.0-alpha
 
 ### Added
