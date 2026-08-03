@@ -9,6 +9,7 @@ import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
+@DatastarDslMarker
 interface ExpressionScope {
     fun getExpression(): String
 
