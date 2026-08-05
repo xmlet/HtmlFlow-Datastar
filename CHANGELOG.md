@@ -1,5 +1,25 @@
 # Changelog
 
+## v1.0.0
+
+### Changed
+- First stable release of HtmlFlow-Datastar.
+- No functional changes since `v1.3.0-alpha`.
+
+## v1.3.0-alpha
+
+### Added
+- Type-safe builder support for DataStar action options
+- Architecture Decision Records (ADRs) for project documentation
+- Expression precedence and grouping support in the Expression Builder
+
+### Changed
+- Refactored internal helper functions related to attribute value serialization
+
+### Removed
+- Support for signal name case modifiers
+- Unary plus (`+`) operator support for `Function<*>` in the Expression Builder
+
 ## v1.2.0-alpha
 
 ### Added or Changed

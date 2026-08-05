@@ -6,8 +6,8 @@
 
 ## Context
 
-We want to support type-safe authoring of DataStar expressions in Kotlin,
-which are ultimately evaluated as JavaScript expressions.
+We want to support type-safe authoring of DataStar expressions in Kotlin, which
+are ultimately evaluated as JavaScript expressions.
 
 Initially, we explored a Gradle/compiler plugin approach that would allow
 developers to write Kotlin code and automatically transpile it into equivalent
@@ -15,25 +15,30 @@ JavaScript strings.
 
 During prototyping, several constraints became clear:
 
-- Kotlin compiler plugins operate at file/module level, not expression-level extraction
-- Extracting a single lambda as a JavaScript expression requires full code generation
-- The compiler-embeddable approach generates standalone artifacts, introducing unnecessary overhead
-- The solution would require deep coupling to Kotlin compiler internals, increasing maintenance cost
+- Kotlin compiler plugins operate at file/module level, not expression-level
+  extraction
+- Extracting a single lambda as a JavaScript expression requires full code
+  generation
+- The compiler-embeddable approach generates standalone artifacts, introducing
+  unnecessary overhead
+- The solution would require deep coupling to Kotlin compiler internals,
+  increasing maintenance cost
 
 These issues made the plugin approach impractical for the project's goals.
 
 ## Decision
 
-We will not use a Gradle/compiler plugin to transpile Kotlin expressions into JavaScript.
+We will not use a Gradle/compiler plugin to transpile Kotlin expressions into
+JavaScript.
 
-Instead, we will adopt a constrained Kotlin DSL for defining DataStar expressions,
-where expressions are constructed explicitly and mapped to JavaScript strings
-without relying on compiler-level transformations.
+Instead, we will adopt a constrained Kotlin DSL for defining DataStar
+expressions, where expressions are constructed explicitly and mapped to
+JavaScript strings without relying on compiler-level transformations.
 
 ## Trigger
 
-While prototyping type-safe DataStar expressions, we needed to decide whether
-to proceed with a Gradle/compiler plugin approach or adopt a simpler alternative.
+While prototyping type-safe DataStar expressions, we needed to decide whether to
+proceed with a Gradle/compiler plugin approach or adopt a simpler alternative.
 
 The increasing complexity observed during early experimentation made this
 decision necessary before further investment.
