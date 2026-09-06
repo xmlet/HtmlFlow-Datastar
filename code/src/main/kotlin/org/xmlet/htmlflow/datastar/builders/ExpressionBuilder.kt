@@ -1,5 +1,6 @@
 package org.xmlet.htmlflow.datastar.builders
 
+import org.xmlet.htmlflow.datastar.attributes.serializeValue
 import org.xmlet.htmlflow.datastar.expressions.ActionOptions
 import org.xmlet.htmlflow.datastar.expressions.ActionType
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction
@@ -279,7 +280,8 @@ class ExpressionBuilder : ExpressionScope {
     }
 
     override fun <T> Signal<T>.setValue(value: T): DataStarExpressionOp {
-        val result = DataStarExpressionOp("${this.syntax} = $value", ExpressionPrecedence.ASSIGNMENT)
+        val serializedValue = serializeValue(value)
+        val result = DataStarExpressionOp("${this.syntax} = $serializedValue", ExpressionPrecedence.ASSIGNMENT)
         appendExpression(result)
         return result
     }
