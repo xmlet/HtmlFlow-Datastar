@@ -34,7 +34,7 @@ internal object JsRenderer {
     private fun literal(value: Any?): String =
         when (value) {
             null -> "null"
-            is String -> JavaScriptSerialization.stringLiteral(value, QuoteStyle.DOUBLE)
+            is String -> JavaScriptSerialization.stringLiteral(value, QuoteStyle.SINGLE)
             is Number, is Boolean -> value.toString()
             else -> error("Unsupported JavaScript literal value: ${value::class.qualifiedName}")
         }

@@ -22,10 +22,10 @@ class JsRendererTests {
         val b = signalExpr("b")
         val c = signalExpr("c")
 
-        assertEquals("\$a && \$b || \$c", JsRenderer.render(binary(binary(a, BinaryOperator.AND, b), BinaryOperator.OR, c)))
-        assertEquals("\$a && (\$b || \$c)", JsRenderer.render(binary(a, BinaryOperator.AND, binary(b, BinaryOperator.OR, c))))
-        assertEquals("\$a || \$b && \$c", JsRenderer.render(binary(a, BinaryOperator.OR, binary(b, BinaryOperator.AND, c))))
-        assertEquals("(\$a || \$b) && \$c", JsRenderer.render(binary(binary(a, BinaryOperator.OR, b), BinaryOperator.AND, c)))
+        assertEquals($$"$a && $b || $c", JsRenderer.render(binary(binary(a, BinaryOperator.AND, b), BinaryOperator.OR, c)))
+        assertEquals($$"$a && ($b || $c)", JsRenderer.render(binary(a, BinaryOperator.AND, binary(b, BinaryOperator.OR, c))))
+        assertEquals($$"$a || $b && $c", JsRenderer.render(binary(a, BinaryOperator.OR, binary(b, BinaryOperator.AND, c))))
+        assertEquals($$"($a || $b) && $c", JsRenderer.render(binary(binary(a, BinaryOperator.OR, b), BinaryOperator.AND, c)))
     }
 
     @Test
@@ -33,18 +33,18 @@ class JsRendererTests {
         val a = signalExpr("a")
         val b = signalExpr("b")
 
-        assertEquals("!(\$a && \$b)", JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, binary(a, BinaryOperator.AND, b))))
+        assertEquals($$"!($a && $b)", JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, binary(a, BinaryOperator.AND, b))))
     }
 
     @Test
     fun `program preserves sequence order and renderer escapes literals`() {
         val registry = ExpressionRegistry()
 
-        registry.explicit(registry.source("\$a"))
-        registry.explicit(registry.source("\$b"))
-        registry.explicit(registry.source("\$c"))
+        registry.explicit(registry.source($$"$a"))
+        registry.explicit(registry.source($$"$b"))
+        registry.explicit(registry.source($$"$c"))
 
-        assertEquals("\$a; \$b; \$c", registry.render())
+        assertEquals($$"$a; $b; $c", registry.render())
         assertEquals(
             "\"quote: \\\" slash: \\\\ newline: \\n tab: \\t\"",
             JsRenderer.render(JsExpr.Literal("quote: \" slash: \\ newline: \n tab: \t")),
@@ -70,10 +70,10 @@ class JsRendererTests {
                     }
                 }.toString()
 
-        assertTrue(html.contains("data-on:click=\"\$a && (\$b || \$c)\""))
+        assertTrue(html.contains($$"data-on:click=\"$a && ($b || $c)\""))
     }
 
-    private fun signalExpr(name: String) = JsExpr.Source("\$$name")
+    private fun signalExpr(name: String) = JsExpr.Source($$"$$$name")
 
     private fun binary(
         left: JsExpr,
