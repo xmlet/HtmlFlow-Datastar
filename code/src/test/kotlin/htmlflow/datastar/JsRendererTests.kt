@@ -46,7 +46,7 @@ class JsRendererTests {
 
         assertEquals($$"$a; $b; $c", registry.render())
         assertEquals(
-            "\"quote: \\\" slash: \\\\ newline: \\n tab: \\t\"",
+            "\'quote: \" slash: \\\\ newline: \\n tab: \\t\'",
             JsRenderer.render(JsExpr.Literal("quote: \" slash: \\ newline: \n tab: \t")),
         )
     }

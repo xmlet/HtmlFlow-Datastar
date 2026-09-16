@@ -61,7 +61,7 @@ class TodoMvcKeydownPatchTest {
             </head>
             <body>
                 <div>
-                    <input type="text" data-bind="input" data-on:keydown="if (evt.key !== 'Enter' || !${'$'}input.trim()) return; @patch('/todo-mvc/-1'); ${'$'}input = " "">
+                    <input type="text" data-bind="input" data-on:keydown="if (evt.key !== 'Enter' || !${'$'}input.trim()) return; @patch('/todo-mvc/-1'); ${'$'}input = ' '">
                 </div>
             </body>
         </html>
