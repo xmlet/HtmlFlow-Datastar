@@ -3,6 +3,7 @@ package htmlflow.datastar
 import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
+import kotlinx.serialization.Serializable
 import org.xmlet.htmlflow.datastar.attributes.dataAttr
 import org.xmlet.htmlflow.datastar.attributes.dataInit
 import org.xmlet.htmlflow.datastar.attributes.dataSignal
@@ -39,7 +40,7 @@ class JavaScriptSerializationTests {
     }
 
     @Test
-    fun `data class serialization escapes nested object keys and string values`() {
+    fun `class serialization escapes nested object keys and string values`() {
         val html =
             StringBuilder()
                 .apply {
@@ -56,7 +57,7 @@ class JavaScriptSerializationTests {
             """
             <!DOCTYPE html>
             <html>
-            	<div data-signals="{profile: {address: {street: 'Main\nStreet'}, name: 'O\'Reilly'}}">
+            	<div data-signals="{profile: {name: 'O\'Reilly', address: {street: 'Main\nStreet'}}}">
             	</div>
             </html>
             """.trimIndent(),
@@ -171,7 +172,7 @@ class JavaScriptSerializationTests {
             $$"""
             <!DOCTYPE html>
             <html>
-            	<div data-signals="{profile: {address: {street: 'Main\nStreet'}, name: 'John'}}" data-init="$profile = {address: {street: 'Second\nStreet'}, name: 'Doe'}">
+            	<div data-signals="{profile: {name: 'John', address: {street: 'Main\nStreet'}}}" data-init="$profile = {name: 'Doe', address: {street: 'Second\nStreet'}}">
             	</div>
             </html>
             """.trimIndent(),
@@ -179,12 +180,14 @@ class JavaScriptSerializationTests {
         )
     }
 
-    data class Profile(
+    @Serializable
+    class Profile(
         val name: String,
         val address: Address,
     )
 
-    data class Address(
+    @Serializable
+    class Address(
         val street: String,
     )
 }

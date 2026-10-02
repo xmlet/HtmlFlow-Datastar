@@ -30,6 +30,7 @@ import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.expressions.signal
+import org.xmlet.htmlflow.datastar.serialization.Serializer
 
 /**
  * Binds any HTML attribute to an expression, keeping it synchronized.
@@ -216,7 +217,7 @@ fun <E : Element<*, *>, P : Element<*, *>> Element<E, P>.dataComputed(
     block: ExpressionBuilder.() -> Unit,
 ): Signal<Any> {
     val expression = ExpressionBuilder().apply(block).getExpression()
-    val computed = serializeComputed(name, expression)
+    val computed = Serializer.serializeComputed(name, expression)
     this.visitor.visitAttribute("data-computed", computed)
     return signal(name)
 }
