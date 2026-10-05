@@ -4,6 +4,7 @@ import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
 import jakarta.ws.rs.Path
+import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.Test
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
@@ -79,6 +80,7 @@ class ExpressionBuilderTests {
         assertEquals("($count1 == 1 || $count2 == 2) && $count3 == 3", builder.getExpression())
     }
 
+    @Serializable
     data class User(
         val name: String,
         val age: Int,

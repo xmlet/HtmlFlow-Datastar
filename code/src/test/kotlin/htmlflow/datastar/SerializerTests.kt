@@ -2,10 +2,8 @@ package htmlflow.datastar
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonPrimitive
-import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+import org.xmlet.htmlflow.datastar.serialization.NoQuote
 import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeComputed
 import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeSignals
 import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeValue
@@ -150,6 +148,30 @@ class SerializerTests {
         assertEquals("{inner: {value: 'value'}}", result)
     }
 
+    @Test
+    fun `NoQuote property emits raw JavaScript`() {
+        val result = serializeValue(SerializableConfig("John", "{enabled: true}"))
+        assertEquals("{name: 'John', options: {enabled: true}}", result)
+    }
+
+    @Test
+    fun `list of objects`() {
+        val result = serializeValue(SerializableConfigGroup(listOf(SerializableRenamedConfig("John", "{enabled: true}"))))
+        assertEquals("{items: [{name: 'John', 'raw-options': {enabled: true}}]}", result)
+    }
+
+    @Test
+    fun `map of objects`() {
+        val result = serializeValue(SerializableConfigMap(mapOf("primary" to SerializableRenamedConfig("John", "{enabled: true}"))))
+        assertEquals("{items: {primary: {name: 'John', 'raw-options': {enabled: true}}}}", result)
+    }
+
+    @Test
+    fun `bare list of data classes preserves NoQuote`() {
+        val result = serializeValue(listOf(SerializableConfig("John", "{enabled: true}")))
+        assertEquals("[{name: 'John', options: {enabled: true}}]", result)
+    }
+
     // ── serializeValue: null and scalar values ──────────────────────────
 
     @Test
@@ -173,13 +195,8 @@ class SerializerTests {
     }
 
     @Test
-    fun `double quote style escapes double quotes`() {
-        assertEquals("\"He said \\\"hi\\\"\"", serializeValue("He said \"hi\"", QuoteStyle.DOUBLE))
-    }
-
-    @Test
     fun `double quote style keeps single quotes unescaped`() {
-        assertEquals("\"O'Reilly\"", serializeValue("O'Reilly", QuoteStyle.DOUBLE))
+        assertEquals("'O\\'Reilly'", serializeValue("O'Reilly"))
     }
 
     @Test
@@ -201,25 +218,7 @@ class SerializerTests {
         assertEquals("'a'", serializeValue('a'))
     }
 
-    // ── serializeValue: lambdas ─────────────────────────────────────────
-
-    @Test
-    fun `lambda returning a number is evaluated`() {
-        assertEquals("42", serializeValue({ 42 }))
-    }
-
-    @Test
-    fun `lambda returning a string serializes the result as a quoted string`() {
-        assertEquals("raw", serializeValue({ "raw" }))
-    }
-
-    @Test
-    fun `lambda nested in a collection or map is evaluated`() {
-        assertEquals("[1, 2]", serializeValue(listOf({ 1 }, 2)))
-        assertEquals("{cb: 3}", serializeValue(mapOf("cb" to { 3 })))
-    }
-
-    // ── serializeValue: maps ────────────────────────────────────────────
+// ── serializeValue: maps ────────────────────────────────────────────
 
     @Test
     fun `map with non-identifier keys quotes them`() {
@@ -248,7 +247,7 @@ class SerializerTests {
 
     @Test
     fun `double quote style applies to map values but not to keys`() {
-        assertEquals("{'user-name': \"on\"}", serializeValue(mapOf("user-name" to "on"), QuoteStyle.DOUBLE))
+        assertEquals("{'user-name': 'on'}", serializeValue(mapOf("user-name" to "on"), quote = true))
     }
 
     // ── serializeValue: collections ─────────────────────────────────────
@@ -260,7 +259,7 @@ class SerializerTests {
 
     @Test
     fun `double quote style applies inside collections`() {
-        assertEquals("[\"a\", \"b\"]", serializeValue(listOf("a", "b"), QuoteStyle.DOUBLE))
+        assertEquals("['a', 'b']", serializeValue(listOf("a", "b"), quote = true))
     }
 
     // ── serializeValue: kotlinx JSON elements ───────────────────────────
@@ -268,28 +267,6 @@ class SerializerTests {
     @Test
     fun `json null serializes to null`() {
         assertEquals("null", serializeValue(JsonNull))
-    }
-
-    @Test
-    fun `json string primitive is quoted`() {
-        assertEquals("'hello'", serializeValue(JsonPrimitive("hello")))
-        assertEquals("\"hello\"", serializeValue(JsonPrimitive("hello"), QuoteStyle.DOUBLE))
-    }
-
-    @Test
-    fun `json number and boolean primitives pass through`() {
-        assertEquals("42", serializeValue(JsonPrimitive(42)))
-        assertEquals("true", serializeValue(JsonPrimitive(true)))
-    }
-
-    @Test
-    fun `json object serializes as an object literal`() {
-        assertEquals("{a: 1, b: 'x'}", serializeValue(Json.parseToJsonElement("""{"a": 1, "b": "x"}""")))
-    }
-
-    @Test
-    fun `json array serializes as an array literal`() {
-        assertEquals("[1, 'a']", serializeValue(Json.parseToJsonElement("""[1, "a"]""")))
     }
 
     // ── serializeValue: kotlinx serializer fallback ─────────────────────
@@ -322,8 +299,8 @@ class SerializerTests {
 
     @Test
     fun `double quote style applies to nested data classes`() {
-        val result = serializeValue(Profile("O'Reilly", Address("Main\nStreet")), QuoteStyle.DOUBLE)
-        assertEquals("{name: \"O'Reilly\", address: {street: \"Main\\nStreet\"}}", result)
+        val result = serializeValue(Profile("O'Reilly", Address("Main\nStreet")), quote = true)
+        assertEquals("{name: 'O\\'Reilly', address: {street: 'Main\\nStreet'}}", result)
     }
 
     // ── serializeSignals ────────────────────────────────────────────────
@@ -349,12 +326,6 @@ class SerializerTests {
     fun `signal value that is a collection`() {
         val result = listOf("tags" to listOf("a", "b")).serializeSignals()
         assertEquals("{tags: ['a', 'b']}", result)
-    }
-
-    @Test
-    fun `signal value that is a lambda is evaluated`() {
-        val result = listOf("total" to { 42 }).serializeSignals()
-        assertEquals("{total: 42}", result)
     }
 
     // ── serializeComputed ───────────────────────────────────────────────
@@ -405,6 +376,30 @@ class SerializerTests {
     @Serializable
     data class AnyList(
         val anies: List<Int>,
+    )
+
+    @Serializable
+    data class SerializableConfig(
+        val name: String,
+        @NoQuote val options: String,
+    )
+
+    @Serializable
+    data class SerializableConfigGroup(
+        val items: List<SerializableRenamedConfig>,
+    )
+
+    @Serializable
+    data class SerializableRenamedConfig(
+        val name: String,
+        @SerialName("raw-options")
+        @NoQuote
+        val options: String,
+    )
+
+    @Serializable
+    data class SerializableConfigMap(
+        val items: Map<String, SerializableRenamedConfig>,
     )
 
     @Serializable

@@ -3,16 +3,19 @@ package htmlflow.datastar
 import htmlflow.div
 import htmlflow.doc
 import htmlflow.html
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.xmlet.htmlflow.datastar.attributes.dataAttr
 import org.xmlet.htmlflow.datastar.attributes.dataInit
 import org.xmlet.htmlflow.datastar.attributes.dataSignal
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.attributes.dataStyle
+import org.xmlet.htmlflow.datastar.serialization.NoQuote
+import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class JavaScriptSerializationTests {
+class JavaScriptLiteralsTests {
     @Test
     fun `data signal values escape string literals and object keys`() {
         val html =
@@ -180,14 +183,133 @@ class JavaScriptSerializationTests {
         )
     }
 
+    @Test
+    fun `serializable signal value renders as JavaScript literal and supports raw properties`() {
+        val html =
+            StringBuilder()
+                .apply {
+                    doc {
+                        html {
+                            div {
+                                dataSignal("config", SerializableConfig("John", "{enabled: true}"))
+                            }
+                        }
+                    }
+                }.toString()
+
+        assertEquals(
+            """
+            <!DOCTYPE html>
+            <html>
+            	<div data-signals="{config: {name: 'John', options: {enabled: true}}}">
+            	</div>
+            </html>
+            """.trimIndent(),
+            html,
+        )
+    }
+
+    @Test
+    fun `raw property metadata follows serialized names and list element types`() {
+        val html =
+            StringBuilder()
+                .apply {
+                    doc {
+                        html {
+                            div {
+                                dataSignal(
+                                    "config",
+                                    SerializableConfigGroup(
+                                        listOf(SerializableRenamedConfig("John", "{enabled: true}")),
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }.toString()
+
+        assertEquals(
+            """
+            <!DOCTYPE html>
+            <html>
+            	<div data-signals="{config: {items: [{name: 'John', 'raw-options': {enabled: true}}]}}">
+            	</div>
+            </html>
+            """.trimIndent(),
+            html,
+        )
+    }
+
+    @Test
+    fun `raw property metadata follows map value types`() {
+        val html =
+            StringBuilder()
+                .apply {
+                    doc {
+                        html {
+                            div {
+                                dataSignal(
+                                    "config",
+                                    SerializableConfigMap(
+                                        mapOf("primary" to SerializableRenamedConfig("John", "{enabled: true}")),
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }.toString()
+
+        assertEquals(
+            """
+            <!DOCTYPE html>
+            <html>
+            	<div data-signals="{config: {items: {primary: {name: 'John', 'raw-options': {enabled: true}}}}}">
+            	</div>
+            </html>
+            """.trimIndent(),
+            html,
+        )
+    }
+
+    @Test
+    fun `list of mixed types`() {
+        val result = serializeValue(listOf(1, 2, 3, "str"))
+        assertEquals("""[1, 2, 3, 'str']""", result)
+    }
+
     @Serializable
-    class Profile(
+    data class SerializableConfigMap(
+        val items: Map<String, SerializableRenamedConfig>,
+    )
+
+    @Serializable
+    data class Profile(
         val name: String,
         val address: Address,
     )
 
     @Serializable
-    class Address(
+    data class Address(
         val street: String,
+    )
+
+    @Serializable
+    data class SerializableConfig(
+        val name: String,
+        @NoQuote
+        val options: String,
+    )
+
+    @Serializable
+    data class SerializableConfigGroup(
+        val items: List<SerializableRenamedConfig>,
+    )
+
+    @Serializable
+    data class SerializableRenamedConfig(
+        val name: String,
+        @SerialName("raw-options")
+        @NoQuote
+        val options: String,
     )
 }

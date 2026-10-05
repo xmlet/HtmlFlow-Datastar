@@ -333,7 +333,7 @@ private val expectedDataBindModifiers =
         }
 
 @Serializable
-class Car(
+data class Car(
     val carName: String,
     val year: Int,
 )

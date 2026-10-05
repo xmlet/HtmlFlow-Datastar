@@ -45,7 +45,8 @@ class BulkUpdateTest {
                                 val (fetching, selections) =
                                     dataSignals(
                                         "_fetching" to false,
-                                        "selections" to { "Array(4).fill(false)" },
+                                        "selections" to "Array(4).fill(false)",
+                                        quote = false,
                                     ) { modifiers { ifMissing() } }
                                 buildTable(fetching, selections)
                                 div {
