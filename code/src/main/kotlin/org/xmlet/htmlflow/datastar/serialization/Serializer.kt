@@ -53,8 +53,8 @@ internal object Serializer {
                 "$value"
             }
 
-            is Function0<*> -> {
-                value().toString()
+            is RawJS -> {
+                value.js
             }
 
             is Map<*, *> -> {
@@ -68,7 +68,7 @@ internal object Serializer {
             }
 
             is Array<*> -> {
-                serializeValue(value.toList(), quoteStyle)
+                value.toList().joinToString(prefix = "[", postfix = "]", separator = ", ") { serializeValue(it, quoteStyle) }
             }
 
             is JsonNull -> {

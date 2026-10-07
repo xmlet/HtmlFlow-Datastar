@@ -9,6 +9,7 @@ import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
 import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeComputed
 import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeSignals
 import org.xmlet.htmlflow.datastar.serialization.Serializer.serializeValue
+import org.xmlet.htmlflow.datastar.serialization.asRawJS
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -201,22 +202,22 @@ class SerializerTests {
         assertEquals("'a'", serializeValue('a'))
     }
 
-    // ── serializeValue: lambdas ─────────────────────────────────────────
+    // ── serializeValue: asRawJs ─────────────────────────────────────────
 
     @Test
     fun `lambda returning a number is evaluated`() {
-        assertEquals("42", serializeValue({ 42 }))
+        assertEquals("{ 42 }", serializeValue("{ 42 }".asRawJS()))
     }
 
     @Test
     fun `lambda returning a string serializes the result as a quoted string`() {
-        assertEquals("raw", serializeValue({ "raw" }))
+        assertEquals("\"raw\"", serializeValue("\"raw\"".asRawJS()))
     }
 
     @Test
     fun `lambda nested in a collection or map is evaluated`() {
-        assertEquals("[1, 2]", serializeValue(listOf({ 1 }, 2)))
-        assertEquals("{cb: 3}", serializeValue(mapOf("cb" to { 3 })))
+        assertEquals("[1, 2]", serializeValue(listOf("1".asRawJS(), 2)))
+        assertEquals("{cb: 3}", serializeValue(mapOf("cb" to "3".asRawJS())))
     }
 
     // ── serializeValue: maps ────────────────────────────────────────────
@@ -353,7 +354,7 @@ class SerializerTests {
 
     @Test
     fun `signal value that is a lambda is evaluated`() {
-        val result = listOf("total" to { 42 }).serializeSignals()
+        val result = listOf("total" to "42".asRawJS()).serializeSignals()
         assertEquals("{total: 42}", result)
     }
 
