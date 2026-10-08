@@ -1,6 +1,7 @@
 package org.xmlet.htmlflow.datastar.serialization
 
-data class RawJS(
+@JvmInline
+value class RawJS(
     val js: String = "",
 )
 
