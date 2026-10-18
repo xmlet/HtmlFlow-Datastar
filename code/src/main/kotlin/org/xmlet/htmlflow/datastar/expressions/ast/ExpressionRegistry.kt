@@ -1,5 +1,7 @@
 package org.xmlet.htmlflow.datastar.expressions.ast
 
+import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+
 /**
  * Opaque reference to an AST expression created for one [ExpressionRegistry].
  *
@@ -36,16 +38,14 @@ internal class ExpressionRegistry {
     fun source(value: String): ExpressionRef = ExpressionRef(JsExpr.Source(value))
 
     /**
-     * Creates a safely rendered JavaScript literal for primitive Kotlin values.
+     * Creates a JavaScript literal rendered by the shared DataStar serializer.
      *
-     * Other values retain the established DSL behavior and are used as already-rendered source.
+     * Use [source] for intentionally raw JavaScript.
      */
-    fun literalOrSource(value: Any?): ExpressionRef =
-        if (value == null || value is String || value is Number || value is Boolean) {
-            ExpressionRef(JsExpr.Literal(value))
-        } else {
-            source(value.toString())
-        }
+    fun literal(
+        value: Any?,
+        quoteStyle: QuoteStyle = QuoteStyle.SINGLE,
+    ): ExpressionRef = ExpressionRef(JsExpr.Literal(value, quoteStyle))
 
     /** Composes and implicitly registers a unary expression after consuming its provisional operand statement. */
     fun unary(

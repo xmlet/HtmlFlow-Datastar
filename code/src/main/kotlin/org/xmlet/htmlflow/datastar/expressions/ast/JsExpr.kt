@@ -1,6 +1,8 @@
 
 package org.xmlet.htmlflow.datastar.expressions.ast
 
+import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+
 /**
  * Minimal structural representation for JavaScript expressions composed by the DataStar DSL.
  *
@@ -16,6 +18,7 @@ internal sealed interface JsExpr {
     /** A Kotlin value that must be serialized as a JavaScript literal by [JsRenderer]. */
     data class Literal(
         val value: Any?,
+        val quoteStyle: QuoteStyle = QuoteStyle.SINGLE,
     ) : JsExpr
 
     /** A prefix unary operation applied to [operand]. */

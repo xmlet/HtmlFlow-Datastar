@@ -1,7 +1,6 @@
 package org.xmlet.htmlflow.datastar.expressions.ast
 
-import org.xmlet.htmlflow.datastar.expressions.JavaScriptSerialization
-import org.xmlet.htmlflow.datastar.expressions.QuoteStyle
+import org.xmlet.htmlflow.datastar.serialization.Serializer
 
 /**
  * Converts the structural [JsExpr] tree into JavaScript at the attribute-output boundary.
@@ -18,7 +17,7 @@ internal object JsRenderer {
     fun render(expression: JsExpr): String =
         when (expression) {
             is JsExpr.Source -> expression.value
-            is JsExpr.Literal -> literal(expression.value)
+            is JsExpr.Literal -> literal(expression)
             is JsExpr.Unary -> expression.operator.symbol + unaryOperand(expression.operand)
             is JsExpr.Binary ->
                 "${binaryOperand(expression.left, expression.operator, isRightOperand = false)} " +
@@ -30,14 +29,8 @@ internal object JsRenderer {
                     assignmentOperand(expression.value, isRightOperand = true)
         }
 
-    /** Serializes the primitive values accepted by [JsExpr.Literal]. */
-    private fun literal(value: Any?): String =
-        when (value) {
-            null -> "null"
-            is String -> JavaScriptSerialization.stringLiteral(value, QuoteStyle.SINGLE)
-            is Number, is Boolean -> value.toString()
-            else -> error("Unsupported JavaScript literal value: ${value::class.qualifiedName}")
-        }
+    /** Serializes literal values with the established DataStar JavaScript-literal rules. */
+    private fun literal(value: JsExpr.Literal): String = Serializer.serializeValue(value.value, value.quoteStyle)
 
     /** Parenthesizes a unary operand only when it binds less tightly than the unary operator. */
     private fun unaryOperand(expression: JsExpr): String = operand(expression, precedence(expression) < UNARY_PRECEDENCE)

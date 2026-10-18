@@ -4,6 +4,7 @@ import org.xmlet.htmlflow.datastar.expressions.ast.BinaryOperator
 import org.xmlet.htmlflow.datastar.expressions.ast.ExpressionRef
 import org.xmlet.htmlflow.datastar.expressions.ast.ExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.ast.UnaryOperator
+import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
 import java.util.IdentityHashMap
 
 /**
@@ -64,13 +65,14 @@ internal class DataStarExpressionRegistry {
     fun equal(
         left: DataStarExpression,
         right: Any?,
-    ): DataStarExpressionOp = operation(registry.binary(reference(left), BinaryOperator.EQUAL, registry.literalOrSource(right)))
+    ): DataStarExpressionOp = operation(registry.binary(reference(left), BinaryOperator.EQUAL, registry.literal(right)))
 
     /** Creates and registers an assignment to a Kotlin value. */
     fun assign(
         target: DataStarExpression,
         value: Any?,
-    ): DataStarExpressionOp = operation(registry.assignment(reference(target), registry.literalOrSource(value)))
+        quoteStyle: QuoteStyle = QuoteStyle.SINGLE,
+    ): DataStarExpressionOp = operation(registry.assignment(reference(target), registry.literal(value, quoteStyle)))
 
     /** Creates and registers an assignment from another DataStar expression. */
     fun assign(
