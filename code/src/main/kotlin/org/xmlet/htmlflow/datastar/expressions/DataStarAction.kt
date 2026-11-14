@@ -15,7 +15,9 @@ import kotlin.reflect.KFunction
 class DataStarAction internal constructor(
     val type: ActionType,
     vararg params: Any?,
-) : DataStarExpression(makeExpression(type, *params)) {
+) : DataStarExpression() {
+    override val syntax: String = makeExpression(type, *params)
+
     companion object {
         internal fun convertFuncToPath(func: KFunction<*>): String {
             val pathAnnotation = func.annotations.filterIsInstance<Path>().firstOrNull()

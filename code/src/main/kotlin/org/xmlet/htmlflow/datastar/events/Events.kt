@@ -2,12 +2,13 @@ package org.xmlet.htmlflow.datastar.events
 
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
+import org.xmlet.htmlflow.datastar.expressions.ast.JsExpr
 
 sealed class DomEvent(
     val name: String,
     private val ref: String = "evt",
 ) {
-    protected fun prop(name: String) = DataStarExpressionOp("$ref.$name")
+    protected fun prop(name: String) = DataStarExpressionOp(JsExpr.Source("$ref.$name"))
 
     override fun toString() = name
 }
