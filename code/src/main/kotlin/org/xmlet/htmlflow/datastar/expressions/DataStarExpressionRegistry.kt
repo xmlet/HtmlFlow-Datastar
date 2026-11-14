@@ -5,10 +5,12 @@ import org.xmlet.htmlflow.datastar.expressions.ast.ExpressionRef
 import org.xmlet.htmlflow.datastar.expressions.ast.ExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.ast.UnaryOperator
 import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+import org.xmlet.htmlflow.datastar.serialization.RawJS
 import java.util.IdentityHashMap
 
 /**
- * Adapts the string-backed DataStar expression types to the generic structural expression registry.
+ * Adapts DataStar expression types to the generic structural expression registry without rendering
+ * composed expressions. Their AST is reusable; statement slots remain local to this registry.
  *
  * The identity map only associates an existing DataStar value with its AST reference. It is not
  * used to find or remove operands: the generic registry consumes its own direct statement slots.
@@ -20,6 +22,11 @@ internal class DataStarExpressionRegistry {
     /** Registers an explicit statement that must remain in the final output when it is reused. */
     fun explicit(expression: DataStarExpression) {
         registry.explicit(reference(expression))
+    }
+
+    /** Emits raw JavaScript without changing its source or registering a provisional operand. */
+    fun explicit(expression: RawJS) {
+        registry.explicit(registry.raw(expression))
     }
 
     /** Registers an action as a provisional statement while preserving its existing DataStar type. */
@@ -39,9 +46,9 @@ internal class DataStarExpressionRegistry {
 
     /** Creates and registers a logical conjunction with raw JavaScript on the left. */
     fun and(
-        left: String,
+        left: RawJS,
         right: DataStarExpression,
-    ): DataStarExpressionOp = operation(registry.binary(registry.source(left), BinaryOperator.AND, reference(right)))
+    ): DataStarExpressionOp = operation(registry.binary(registry.raw(left), BinaryOperator.AND, reference(right)))
 
     /** Creates and registers a logical disjunction. */
     fun or(
@@ -51,9 +58,9 @@ internal class DataStarExpressionRegistry {
 
     /** Creates and registers a logical disjunction with raw JavaScript on the left. */
     fun or(
-        left: String,
+        left: RawJS,
         right: DataStarExpression,
-    ): DataStarExpressionOp = operation(registry.binary(registry.source(left), BinaryOperator.OR, reference(right)))
+    ): DataStarExpressionOp = operation(registry.binary(registry.raw(left), BinaryOperator.OR, reference(right)))
 
     /** Creates and registers an equality comparison. */
     fun equal(
@@ -83,8 +90,12 @@ internal class DataStarExpressionRegistry {
     /** Renders the final ordered sequence of statements. */
     fun render(): String = registry.render()
 
-    private fun reference(expression: DataStarExpression): ExpressionRef = references[expression] ?: registry.source(expression.syntax)
+    private fun reference(expression: DataStarExpression): ExpressionRef =
+        references[expression] ?: when (expression) {
+            is DataStarExpressionOp -> ExpressionRef(expression.node)
+            else -> registry.source(expression.syntax)
+        }
 
     private fun operation(reference: ExpressionRef): DataStarExpressionOp =
-        DataStarExpressionOp(registry.render(reference)).also { references[it] = reference }
+        DataStarExpressionOp(reference.expression).also { references[it] = reference }
 }

@@ -109,3 +109,41 @@ button {
 </td>
 </tr>
 </table>
+
+### Raw JavaScript expressions
+
+The expression DSL keeps its existing string-based syntax for raw JavaScript:
+
+```kotlin
+dataOn(Click) {
+    "ready() || retry()" and get("/users")
+}
+// data-on:click="ready() || retry() && @get('/users')"
+```
+
+`ExpressionBuilder` converts raw string statements and the string operands of
+`and` and `or` to `RawJS` internally. Raw source is emitted exactly as supplied,
+without quoting, escaping, parsing, or automatically adding parentheses. Callers
+are responsible for grouping their JavaScript:
+
+```kotlin
+dataOn(Click) {
+    "(ready() || retry())" and get("/users")
+}
+// data-on:click="(ready() || retry()) && @get('/users')"
+```
+
+The AST still handles grouping for operations built through the typed DSL.
+Standalone raw statements are also emitted unchanged:
+
+```kotlin
+dataEffect {
+    +"console.log('hello')"
+}
+```
+
+A plain Kotlin string passed to `setValue` or a signal's `eq` remains a string
+literal. The existing generic value APIs also recognize `RawJS` values where the
+signal's Kotlin type accepts them, such as `Signal<RawJS>` or `Signal<Any>`.
+No new `ExpressionScope` overloads or explicit conversions are required for the
+existing string-based DSL. Statement sequences are not valid operands.

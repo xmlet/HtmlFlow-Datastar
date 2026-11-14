@@ -2,6 +2,7 @@
 package org.xmlet.htmlflow.datastar.expressions.ast
 
 import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+import org.xmlet.htmlflow.datastar.serialization.RawJS
 
 /**
  * Minimal structural representation for JavaScript expressions composed by the DataStar DSL.
@@ -13,6 +14,11 @@ internal sealed interface JsExpr {
     /** An already-defined DataStar expression, such as a signal, action, event property, or raw JavaScript. */
     data class Source(
         val value: String,
+    ) : JsExpr
+
+    /** Opaque JavaScript, emitted verbatim; callers are responsible for its grouping. */
+    data class Raw(
+        val value: RawJS,
     ) : JsExpr
 
     /** A Kotlin value that must be serialized as a JavaScript literal by [JsRenderer]. */

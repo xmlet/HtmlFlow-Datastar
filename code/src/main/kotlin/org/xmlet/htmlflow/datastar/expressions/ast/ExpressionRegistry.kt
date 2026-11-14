@@ -1,6 +1,7 @@
 package org.xmlet.htmlflow.datastar.expressions.ast
 
 import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+import org.xmlet.htmlflow.datastar.serialization.RawJS
 
 /**
  * Opaque reference to an AST expression created for one [ExpressionRegistry].
@@ -37,15 +38,19 @@ internal class ExpressionRegistry {
     /** Creates a reference to existing DataStar or raw JavaScript source without registering it as a statement. */
     fun source(value: String): ExpressionRef = ExpressionRef(JsExpr.Source(value))
 
+    /** Creates an opaque raw expression without registering it as a statement. */
+    fun raw(value: RawJS): ExpressionRef = ExpressionRef(JsExpr.Raw(value))
+
     /**
      * Creates a JavaScript literal rendered by the shared DataStar serializer.
      *
-     * Use [source] for intentionally raw JavaScript.
+     * A [RawJS] value is an opaque expression rather than a literal, even when boxed as [Any].
+     * Use [source] for known primary expressions or legacy verbatim source.
      */
     fun literal(
         value: Any?,
         quoteStyle: QuoteStyle = QuoteStyle.SINGLE,
-    ): ExpressionRef = ExpressionRef(JsExpr.Literal(value, quoteStyle))
+    ): ExpressionRef = if (value is RawJS) raw(value) else ExpressionRef(JsExpr.Literal(value, quoteStyle))
 
     /** Composes and implicitly registers a unary expression after consuming its provisional operand statement. */
     fun unary(
@@ -78,7 +83,10 @@ internal class ExpressionRegistry {
     }
 
     /** Renders the remaining top-level statements in original registration order, separated by "; ". */
-    fun render(): String = statements.filterNotNull().joinToString(separator = JAVASCRIPT_STATEMENT_SEPARATOR) { JsRenderer.render(it) }
+    fun render(): String =
+        statements
+            .filterNotNull()
+            .joinToString(separator = JAVASCRIPT_STATEMENT_SEPARATOR) { JsRenderer.render(it) }
 
     /** Renders one expression reference without registering it as a top-level statement. */
     fun render(expression: ExpressionRef): String = JsRenderer.render(expression.expression)

@@ -37,6 +37,44 @@ class JsRendererTests {
     }
 
     @Test
+    fun `renderer appends to an existing buffer and preserves nested grouping`() {
+        val a = signalExpr("a")
+        val b = signalExpr("b")
+        val c = signalExpr("c")
+        val output = StringBuilder("prefix: ")
+
+        JsRenderer.renderInto(output, binary(a, BinaryOperator.AND, binary(b, BinaryOperator.AND, c)))
+        output.append("; ")
+        JsRenderer.renderInto(output, JsExpr.Literal("O'Reilly"))
+
+        assertEquals($$"prefix: $a && ($b && $c); 'O\\'Reilly'", output.toString())
+    }
+
+    @Test
+    fun `renderer preserves assignment associativity and equality grouping`() {
+        val a = signalExpr("a")
+        val b = signalExpr("b")
+        val c = signalExpr("c")
+
+        assertEquals($$"$a = $b = $c", JsRenderer.render(JsExpr.Assignment(a, JsExpr.Assignment(b, c))))
+        assertEquals($$"($a = $b) = $c", JsRenderer.render(JsExpr.Assignment(JsExpr.Assignment(a, b), c)))
+        assertEquals($$"($a == $b) == $c", JsRenderer.render(binary(binary(a, BinaryOperator.EQUAL, b), BinaryOperator.EQUAL, c)))
+        assertEquals($$"$a == ($b == $c)", JsRenderer.render(binary(a, BinaryOperator.EQUAL, binary(b, BinaryOperator.EQUAL, c))))
+    }
+
+    @Test
+    fun `empty and consumed statement slots add no separators`() {
+        val registry = ExpressionRegistry()
+        assertEquals("", registry.render())
+
+        val first = registry.unary(UnaryOperator.NOT, registry.source($$"$a"))
+        registry.binary(first, BinaryOperator.AND, registry.source($$"$b"))
+        registry.explicit(registry.source("after()"))
+
+        assertEquals($$"!$a && $b; after()", registry.render())
+    }
+
+    @Test
     fun `program preserves sequence order and renderer escapes literals`() {
         val registry = ExpressionRegistry()
 

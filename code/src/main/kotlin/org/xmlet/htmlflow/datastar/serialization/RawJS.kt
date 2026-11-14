@@ -1,7 +1,11 @@
 package org.xmlet.htmlflow.datastar.serialization
 
 /**
- * Indicates that the string received should not be changes or serialized.
+ * Marks JavaScript source that must not be quoted, escaped, or interpreted as a Kotlin string value.
+ *
+ * The expression DSL preserves [js] verbatim, both as a standalone statement and as an operand.
+ * Callers are responsible for including any parentheses needed to group their raw JavaScript.
+ * Use valid JavaScript expressions as operands; statement sequences belong in standalone output.
  * @property js The Raw JavaScript string
  */
 @JvmInline
@@ -10,7 +14,7 @@ value class RawJS(
 )
 
 /**
- * Function that will ensure the String passed is not changed or serialized.
+ * Marks this string as intentionally raw JavaScript rather than a string literal.
  * @receiver The String containing the raw JavaScript
  */
 fun String.asRawJS(): RawJS = RawJS(this)

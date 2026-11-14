@@ -11,6 +11,7 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
 import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
+import org.xmlet.htmlflow.datastar.serialization.asRawJS
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
@@ -42,7 +43,7 @@ class ExpressionBuilder : ExpressionScope {
     }
 
     override operator fun String.unaryPlus() {
-        registry.explicit(DataStarExpressionOp(this))
+        registry.explicit(this.asRawJS())
     }
 
     override fun getExpression(): String = registry.render()
@@ -154,11 +155,11 @@ class ExpressionBuilder : ExpressionScope {
 
     override infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this, expression)
 
-    override infix fun String.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this, expression)
+    override infix fun String.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this.asRawJS(), expression)
 
     override infix fun DataStarExpression.or(expression: DataStarExpression): DataStarExpressionOp = registry.or(this, expression)
 
-    override infix fun String.or(expression: DataStarExpression): DataStarExpressionOp = registry.or(this, expression)
+    override infix fun String.or(expression: DataStarExpression): DataStarExpressionOp = registry.or(this.asRawJS(), expression)
 
     override infix fun DataStarExpression.eq(expression: DataStarExpression): DataStarExpressionOp = registry.equal(this, expression)
 

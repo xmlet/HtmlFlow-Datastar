@@ -14,36 +14,46 @@ internal object JsRenderer {
     private const val PRIMARY_PRECEDENCE = 20
 
     /** Renders [expression] into its canonical JavaScript representation. */
-    fun render(expression: JsExpr): String =
+    fun render(expression: JsExpr): String = buildString { renderInto(this, expression) }
+
+    /** Appends an expression in one traversal without materializing strings for its subtrees. */
+    fun renderInto(
+        output: StringBuilder,
+        expression: JsExpr,
+    ) {
         when (expression) {
-            is JsExpr.Source -> expression.value
-            is JsExpr.Literal -> literal(expression)
-            is JsExpr.Unary -> expression.operator.symbol + unaryOperand(expression.operand)
-            is JsExpr.Binary ->
-                "${binaryOperand(expression.left, expression.operator, isRightOperand = false)} " +
-                    "${expression.operator.symbol} " +
-                    binaryOperand(expression.right, expression.operator, isRightOperand = true)
+            is JsExpr.Source -> output.append(expression.value)
+            is JsExpr.Raw -> output.append(expression.value.js)
+            is JsExpr.Literal -> output.append(Serializer.serializeValue(expression.value, expression.quoteStyle))
+            is JsExpr.Unary -> {
+                output.append(expression.operator.symbol)
+                operand(output, expression.operand, precedence(expression.operand) < UNARY_PRECEDENCE)
+            }
 
-            is JsExpr.Assignment ->
-                "${assignmentOperand(expression.target, isRightOperand = false)} = " +
-                    assignmentOperand(expression.value, isRightOperand = true)
+            is JsExpr.Binary -> {
+                binaryOperand(output, expression.left, expression.operator, isRightOperand = false)
+                output.append(' ').append(expression.operator.symbol).append(' ')
+                binaryOperand(output, expression.right, expression.operator, isRightOperand = true)
+            }
+
+            is JsExpr.Assignment -> {
+                assignmentOperand(output, expression.target, isRightOperand = false)
+                output.append(" = ")
+                assignmentOperand(output, expression.value, isRightOperand = true)
+            }
         }
-
-    /** Serializes literal values with the established DataStar JavaScript-literal rules. */
-    private fun literal(value: JsExpr.Literal): String = Serializer.serializeValue(value.value, value.quoteStyle)
-
-    /** Parenthesizes a unary operand only when it binds less tightly than the unary operator. */
-    private fun unaryOperand(expression: JsExpr): String = operand(expression, precedence(expression) < UNARY_PRECEDENCE)
+    }
 
     /**
      * Renders an operand of [operator], preserving both precedence and equal-precedence
      * associativity.
      */
     private fun binaryOperand(
+        output: StringBuilder,
         expression: JsExpr,
         operator: BinaryOperator,
         isRightOperand: Boolean,
-    ): String {
+    ) {
         val childPrecedence = precedence(expression)
         val needsParentheses =
             childPrecedence < operator.precedence ||
@@ -55,26 +65,34 @@ internal object JsRenderer {
                         operator.associativity == Associativity.RIGHT &&
                         !isRightOperand
                 )
-        return operand(expression, needsParentheses)
+        operand(output, expression, needsParentheses)
     }
 
     /** Renders an assignment operand while preserving JavaScript's right-associative assignment grouping. */
     private fun assignmentOperand(
+        output: StringBuilder,
         expression: JsExpr,
         isRightOperand: Boolean,
-    ): String =
+    ) {
         operand(
+            output,
             expression,
             precedence(expression) < ASSIGNMENT_PRECEDENCE ||
                 precedence(expression) == ASSIGNMENT_PRECEDENCE &&
                 !isRightOperand,
         )
+    }
 
     /** Renders [expression] and adds parentheses only when [parenthesize] is required by its parent. */
     private fun operand(
+        output: StringBuilder,
         expression: JsExpr,
         parenthesize: Boolean,
-    ): String = render(expression).let { if (parenthesize) "($it)" else it }
+    ) {
+        if (parenthesize) output.append('(')
+        renderInto(output, expression)
+        if (parenthesize) output.append(')')
+    }
 
     /** Returns the precedence used to determine whether an expression needs parentheses in its parent. */
     private fun precedence(expression: JsExpr): Int =
@@ -82,6 +100,8 @@ internal object JsRenderer {
             is JsExpr.Binary -> expression.operator.precedence
             is JsExpr.Assignment -> ASSIGNMENT_PRECEDENCE
             is JsExpr.Unary -> UNARY_PRECEDENCE
-            is JsExpr.Source, is JsExpr.Literal -> PRIMARY_PRECEDENCE
+            // Raw source is emitted verbatim; callers provide its grouping. Only structural
+            // operations participate in the renderer's precedence and associativity rules.
+            is JsExpr.Source, is JsExpr.Raw, is JsExpr.Literal -> PRIMARY_PRECEDENCE
         }
 }
