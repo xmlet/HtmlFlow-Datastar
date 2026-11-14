@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.xmlet.htmlflow.datastar.attributes.dataSignals
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import org.xmlet.htmlflow.datastar.expressions.Signal
+import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
@@ -166,5 +167,41 @@ class ExpressionBuilderTests {
 
         assertEquals("$fetching; !$fetching && @get('/some/url')", expression)
         assertEquals(2, expression.split("; ").size)
+    }
+
+    @Test
+    fun `Expression builder serializes assignment literals with the requested quote style`() {
+        val name = Signal<String>("name")
+        val builder = ExpressionBuilder()
+
+        with(builder) {
+            name.setValue("O'Reilly", QuoteStyle.DOUBLE)
+        }
+
+        assertEquals("$name = \"O'Reilly\"", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder serializes structured literal operands`() {
+        val state = Signal<Any>("state")
+        val builder = ExpressionBuilder()
+
+        with(builder) {
+            state.setValue(mapOf("user-name" to listOf("O'Reilly", 2)))
+        }
+
+        assertEquals("$state = {'user-name': ['O\\'Reilly', 2]}", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder serializes equality string operands`() {
+        val name = Signal<String>("name")
+        val builder = ExpressionBuilder()
+
+        with(builder) {
+            name eq "O'Reilly"
+        }
+
+        assertEquals("$name == 'O\\'Reilly'", builder.getExpression())
     }
 }

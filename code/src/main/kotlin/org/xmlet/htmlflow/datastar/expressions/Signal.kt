@@ -37,7 +37,9 @@ package org.xmlet.htmlflow.datastar.expressions
  */
 class Signal<T> internal constructor(
     val name: String,
-) : DataStarExpression(makeExpression(name)) {
+) : DataStarExpression() {
+    override val syntax: String = makeExpression(name)
+
     init {
         require(
             !name.contains("__"),
