@@ -38,6 +38,8 @@ class ExpressionBuilder : ExpressionScope {
             .takeUnless { it == "{}" }
             .orEmpty()
 
+    private fun renderOptions(optionsBuilder: ActionOptions.() -> Unit): String = ActionOptions().apply(optionsBuilder).toString()
+
     override operator fun Signal<*>.unaryPlus() {
         registry.explicit(this)
     }
@@ -51,18 +53,32 @@ class ExpressionBuilder : ExpressionScope {
     /**
      * Frontend actions
      */
-    override fun peek(callable: () -> String): DataStarAction = registry.action(DataStarAction(ActionType.PEEK, callable))
+    override fun peek(callable: () -> String): DataStarAction {
+        val action = DataStarAction(ActionType.PEEK, callable)
+        registry.register(action)
+        return action
+    }
 
-    override fun peek(js: String): DataStarAction = registry.action(DataStarAction(ActionType.PEEK, js))
+    override fun peek(js: String): DataStarAction {
+        val action = DataStarAction(ActionType.PEEK, js)
+        registry.register(action)
+        return action
+    }
 
     override fun setAll(
         value: Any,
         filterBuilder: SignalPatchFilter.() -> Unit,
-    ): DataStarAction =
-        registry.action(DataStarAction(ActionType.SET_ALL, value, SignalPatchFilter().applySignalPatchFilter(filterBuilder)))
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.SET_ALL, value, SignalPatchFilter().applySignalPatchFilter(filterBuilder))
+        registry.register(action)
+        return action
+    }
 
-    override fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction =
-        registry.action(DataStarAction(ActionType.TOGGLE_ALL, SignalPatchFilter().applySignalPatchFilter(filterBuilder)))
+    override fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction {
+        val action = DataStarAction(ActionType.TOGGLE_ALL, SignalPatchFilter().applySignalPatchFilter(filterBuilder))
+        registry.register(action)
+        return action
+    }
 
     /**
      * Backend actions
@@ -71,80 +87,90 @@ class ExpressionBuilder : ExpressionScope {
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.GET, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.GET, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun get(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.GET, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.GET, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun post(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.POST, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.POST, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun post(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.POST, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.POST, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun put(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PUT, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.PUT, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun put(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PUT, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.PUT, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun delete(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.DELETE, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.DELETE, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun delete(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.DELETE, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.DELETE, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun patch(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PATCH, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.PATCH, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun patch(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PATCH, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.PATCH, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     /**

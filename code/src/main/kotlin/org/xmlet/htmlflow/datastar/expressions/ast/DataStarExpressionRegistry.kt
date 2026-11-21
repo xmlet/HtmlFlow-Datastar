@@ -17,7 +17,7 @@ private const val JAVASCRIPT_STATEMENT_SEPARATOR = "; "
  * is requested.
  *
  * Statements registered through `explicit` always remain in the output. Statements registered
- * through `action` or produced by `not`, `and`, `or`, `equal`, and `assign` are provisional: they
+ * through `register` or produced by `not`, `and`, `or`, `equal`, and `assign` are provisional: they
  * occupy a removable slot that is consumed when the expression is composed into a larger
  * operation.
  */
@@ -35,10 +35,9 @@ internal class DataStarExpressionRegistry {
         statements += JsExpr.Raw(expression)
     }
 
-    /** Registers an action as a provisional statement and returns it unchanged so it can be composed later. */
-    fun action(action: DataStarAction): DataStarAction {
-        slots[action] = register(node(action))
-        return action
+    /** Registers an action as a provisional statement. */
+    fun register(action: DataStarAction) {
+        slots[action] = append(node(action))
     }
 
     /** Creates and registers a negated expression. */
@@ -127,12 +126,12 @@ internal class DataStarExpressionRegistry {
     ): DataStarExpressionOp {
         operands.forEach { consume(it) }
         val result = DataStarExpressionOp(build())
-        slots[result] = register(result.node)
+        slots[result] = append(result.node)
         return result
     }
 
-    /** Registers a statement and returns its slot index. */
-    private fun register(node: JsExpr): Int {
+    /** Appends a statement node and returns its slot index. */
+    private fun append(node: JsExpr): Int {
         statements += node
         return statements.lastIndex
     }
