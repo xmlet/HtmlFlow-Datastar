@@ -7,9 +7,9 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.addApost
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.convertFuncToPath
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
-import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
+import org.xmlet.htmlflow.datastar.expressions.ast.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
 import org.xmlet.htmlflow.datastar.serialization.asRawJS
 import kotlin.reflect.KFunction

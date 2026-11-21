@@ -6,11 +6,12 @@ import htmlflow.html
 import org.xmlet.htmlflow.datastar.attributes.dataOn
 import org.xmlet.htmlflow.datastar.events.Click
 import org.xmlet.htmlflow.datastar.expressions.ast.BinaryOperator
-import org.xmlet.htmlflow.datastar.expressions.ast.ExpressionRegistry
+import org.xmlet.htmlflow.datastar.expressions.ast.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.ast.JsExpr
 import org.xmlet.htmlflow.datastar.expressions.ast.JsRenderer
 import org.xmlet.htmlflow.datastar.expressions.ast.UnaryOperator
 import org.xmlet.htmlflow.datastar.expressions.signal
+import org.xmlet.htmlflow.datastar.serialization.asRawJS
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -64,23 +65,25 @@ class JsRendererTests {
 
     @Test
     fun `empty and consumed statement slots add no separators`() {
-        val registry = ExpressionRegistry()
+        val a = signal<Boolean>("a")
+        val b = signal<Boolean>("b")
+        val registry = DataStarExpressionRegistry()
         assertEquals("", registry.render())
 
-        val first = registry.unary(UnaryOperator.NOT, registry.source($$"$a"))
-        registry.binary(first, BinaryOperator.AND, registry.source($$"$b"))
-        registry.explicit(registry.source("after()"))
+        val negated = registry.not(a)
+        registry.and(negated, b)
+        registry.explicit("after()".asRawJS())
 
         assertEquals($$"!$a && $b; after()", registry.render())
     }
 
     @Test
-    fun `program preserves sequence order and renderer escapes literals`() {
-        val registry = ExpressionRegistry()
+    fun `registry preserves sequence order and renderer escapes literals`() {
+        val registry = DataStarExpressionRegistry()
 
-        registry.explicit(registry.source($$"$a"))
-        registry.explicit(registry.source($$"$b"))
-        registry.explicit(registry.source($$"$c"))
+        registry.explicit($$"$a".asRawJS())
+        registry.explicit($$"$b".asRawJS())
+        registry.explicit($$"$c".asRawJS())
 
         assertEquals($$"$a; $b; $c", registry.render())
         assertEquals(

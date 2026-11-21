@@ -10,7 +10,8 @@ import org.xmlet.htmlflow.datastar.attributes.dataShow
 import org.xmlet.htmlflow.datastar.builders.ExpressionBuilder
 import org.xmlet.htmlflow.datastar.events.Click
 import org.xmlet.htmlflow.datastar.expressions.ast.BinaryOperator
-import org.xmlet.htmlflow.datastar.expressions.ast.ExpressionRegistry
+import org.xmlet.htmlflow.datastar.expressions.ast.JsExpr
+import org.xmlet.htmlflow.datastar.expressions.ast.JsRenderer
 import org.xmlet.htmlflow.datastar.expressions.ast.UnaryOperator
 import org.xmlet.htmlflow.datastar.expressions.signal
 import org.xmlet.htmlflow.datastar.serialization.RawJS
@@ -34,19 +35,32 @@ class RawJsExpressionTests {
 
     @Test
     fun `two raw operands compose through the AST`() {
-        val registry = ExpressionRegistry()
-        val left = registry.raw("a() || b()".asRawJS())
-        val right = registry.raw("c() ? d() : e()".asRawJS())
-        assertEquals("a() || b() && c() ? d() : e()", registry.render(registry.binary(left, BinaryOperator.AND, right)))
-        assertEquals("a() || b() || c() ? d() : e()", registry.render(registry.binary(left, BinaryOperator.OR, right)))
-        assertEquals("a() || b() == c() ? d() : e()", registry.render(registry.binary(left, BinaryOperator.EQUAL, right)))
+        val left = "a() || b()".asRawJS()
+        val right = "c() ? d() : e()".asRawJS()
+        assertEquals(
+            "a() || b() && c() ? d() : e()",
+            JsRenderer.render(JsExpr.Binary(JsExpr.Raw(left), BinaryOperator.AND, JsExpr.Raw(right))),
+        )
+        assertEquals(
+            "a() || b() || c() ? d() : e()",
+            JsRenderer.render(JsExpr.Binary(JsExpr.Raw(left), BinaryOperator.OR, JsExpr.Raw(right))),
+        )
+        assertEquals(
+            "a() || b() == c() ? d() : e()",
+            JsRenderer.render(JsExpr.Binary(JsExpr.Raw(left), BinaryOperator.EQUAL, JsExpr.Raw(right))),
+        )
     }
 
     @Test
     fun `raw negation uses caller grouping while DSL composite negation uses AST grouping`() {
-        val registry = ExpressionRegistry()
-        assertEquals("!a() || b()", registry.render(registry.unary(UnaryOperator.NOT, registry.raw("a() || b()".asRawJS()))))
-        assertEquals("!(a() || b())", registry.render(registry.unary(UnaryOperator.NOT, registry.raw("(a() || b())".asRawJS()))))
+        assertEquals(
+            "!a() || b()",
+            JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, JsExpr.Raw("a() || b()".asRawJS()))),
+        )
+        assertEquals(
+            "!(a() || b())",
+            JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, JsExpr.Raw("(a() || b())".asRawJS()))),
+        )
 
         val enabled = signal<Boolean>("enabled")
         assertEffect($$"!(a() || b() && $enabled)") {
@@ -106,8 +120,7 @@ class RawJsExpressionTests {
     fun `raw source is not escaped or serialized`() {
         val raw = "log('O\\'Reilly', \"quoted\", `template`)".asRawJS()
         assertEffect(raw.js) { +raw.js }
-        val registry = ExpressionRegistry()
-        assertEquals("!${raw.js}", registry.render(registry.unary(UnaryOperator.NOT, registry.raw(raw))))
+        assertEquals("!${raw.js}", JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, JsExpr.Raw(raw))))
     }
 
     @Test
