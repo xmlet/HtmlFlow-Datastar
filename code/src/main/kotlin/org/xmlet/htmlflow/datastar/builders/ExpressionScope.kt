@@ -86,9 +86,14 @@ interface ExpressionScope {
     // JavaScript operators
 
     /**
-     * Equal to the JavaScript ! operator, used to negate an expression.
+     * Equal to the JavaScript ! operator, used to negate a signal.
      */
     operator fun <T> Signal<T>.not(): DataStarExpressionOp
+
+    /**
+     * Equal to the JavaScript ! operator, used to negate a composed expression.
+     */
+    operator fun DataStarExpressionOp.not(): DataStarExpressionOp
 
     /**
      * Equal to the JavaScript && operator, used to chain multiple expressions together.

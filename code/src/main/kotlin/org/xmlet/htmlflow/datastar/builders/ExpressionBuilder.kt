@@ -180,6 +180,8 @@ class ExpressionBuilder : ExpressionScope {
 
     override operator fun <T> Signal<T>.not(): DataStarExpressionOp = registry.not(this)
 
+    override operator fun DataStarExpressionOp.not(): DataStarExpressionOp = registry.not(this)
+
     override infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this, expression)
 
     override infix fun String.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this.asRawJS(), expression)

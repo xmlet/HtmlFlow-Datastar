@@ -77,10 +77,13 @@ class DeferredExpressionTests {
         val original = ExpressionBuilder()
         val condition = with(original) { a or b }
         val combined = ExpressionBuilder()
+        val negated = ExpressionBuilder()
 
         with(combined) { condition and c }
+        with(negated) { !condition }
 
         assertEquals($$"($a || $b) && $c", combined.getExpression())
+        assertEquals($$"!($a || $b)", negated.getExpression())
         assertEquals($$"$a || $b", original.getExpression())
         assertEquals($$"$a || $b", condition.syntax)
     }

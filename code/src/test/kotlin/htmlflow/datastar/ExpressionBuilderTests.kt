@@ -80,6 +80,51 @@ class ExpressionBuilderTests {
         assertEquals("($count1 == 1 || $count2 == 2) && $count3 == 3", builder.getExpression())
     }
 
+    @Test
+    fun `Expression builder negates a composed expression`() {
+        val a = Signal<Boolean>("a")
+        val b = Signal<Boolean>("b")
+        val builder = ExpressionBuilder()
+        with(builder) {
+            !(a and b)
+        }
+        assertEquals("!($a && $b)", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder negates every composed operator result`() {
+        val a = Signal<Boolean>("a")
+        val b = Signal<Boolean>("b")
+        val builder = ExpressionBuilder()
+        with(builder) {
+            !(a or b)
+            !(a eq b)
+            !(!a)
+            !(a.setValue(true))
+        }
+        assertEquals("!($a || $b); !($a == $b); !!$a; !($a = true)", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder negates composed raw operands`() {
+        val enabled = Signal<Boolean>("enabled")
+        val builder = ExpressionBuilder()
+        with(builder) {
+            !("ready()" and enabled)
+        }
+        assertEquals("!(ready() && $enabled)", builder.getExpression())
+    }
+
+    @Test
+    fun `Expression builder negation does not validate action operands`() {
+        val builder = ExpressionBuilder()
+        with(builder) {
+            !(get(::someHandler) and post(::someHandler))
+        }
+        // Logical operators still accept actions, so their negation renders invalid JavaScript.
+        assertEquals("!(@get('/some/url') && @post('/some/url'))", builder.getExpression())
+    }
+
     data class User(
         val name: String,
         val age: Int,
