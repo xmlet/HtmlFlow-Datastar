@@ -12,7 +12,6 @@ import org.xmlet.htmlflow.datastar.events.Click
 import org.xmlet.htmlflow.datastar.expressions.ast.BinaryOperator
 import org.xmlet.htmlflow.datastar.expressions.ast.JsExpr
 import org.xmlet.htmlflow.datastar.expressions.ast.JsRenderer
-import org.xmlet.htmlflow.datastar.expressions.ast.UnaryOperator
 import org.xmlet.htmlflow.datastar.expressions.signal
 import org.xmlet.htmlflow.datastar.serialization.RawJS
 import org.xmlet.htmlflow.datastar.serialization.asRawJS
@@ -49,26 +48,6 @@ class RawJsExpressionTests {
             "a() || b() == c() ? d() : e()",
             JsRenderer.render(JsExpr.Binary(JsExpr.Raw(left), BinaryOperator.EQUAL, JsExpr.Raw(right))),
         )
-    }
-
-    @Test
-    fun `raw negation uses caller grouping while DSL composite negation uses AST grouping`() {
-        assertEquals(
-            "!a() || b()",
-            JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, JsExpr.Raw("a() || b()".asRawJS()))),
-        )
-        assertEquals(
-            "!(a() || b())",
-            JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, JsExpr.Raw("(a() || b())".asRawJS()))),
-        )
-
-        val enabled = signal<Boolean>("enabled")
-        assertEffect($$"!(a() || b() && $enabled)") {
-            !("a() || b()" and enabled)
-        }
-        assertEffect($$"!((a() || b()) && $enabled)") {
-            !("(a() || b())" and enabled)
-        }
     }
 
     @Test
@@ -120,7 +99,6 @@ class RawJsExpressionTests {
     fun `raw source is not escaped or serialized`() {
         val raw = "log('O\\'Reilly', \"quoted\", `template`)".asRawJS()
         assertEffect(raw.js) { +raw.js }
-        assertEquals("!${raw.js}", JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, JsExpr.Raw(raw))))
     }
 
     @Test

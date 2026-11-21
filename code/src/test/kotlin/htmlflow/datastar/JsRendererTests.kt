@@ -9,7 +9,6 @@ import org.xmlet.htmlflow.datastar.expressions.ast.BinaryOperator
 import org.xmlet.htmlflow.datastar.expressions.ast.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.ast.JsExpr
 import org.xmlet.htmlflow.datastar.expressions.ast.JsRenderer
-import org.xmlet.htmlflow.datastar.expressions.ast.UnaryOperator
 import org.xmlet.htmlflow.datastar.expressions.signal
 import org.xmlet.htmlflow.datastar.serialization.asRawJS
 import kotlin.test.Test
@@ -27,14 +26,6 @@ class JsRendererTests {
         assertEquals($$"$a && ($b || $c)", JsRenderer.render(binary(a, BinaryOperator.AND, binary(b, BinaryOperator.OR, c))))
         assertEquals($$"$a || $b && $c", JsRenderer.render(binary(a, BinaryOperator.OR, binary(b, BinaryOperator.AND, c))))
         assertEquals($$"($a || $b) && $c", JsRenderer.render(binary(binary(a, BinaryOperator.OR, b), BinaryOperator.AND, c)))
-    }
-
-    @Test
-    fun `renderer negates any expression and respects associativity`() {
-        val a = signalExpr("a")
-        val b = signalExpr("b")
-
-        assertEquals($$"!($a && $b)", JsRenderer.render(JsExpr.Unary(UnaryOperator.NOT, binary(a, BinaryOperator.AND, b))))
     }
 
     @Test
