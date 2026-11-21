@@ -151,7 +151,7 @@ class ExpressionBuilder : ExpressionScope {
      * JavaScript operators
      */
 
-    override operator fun DataStarExpression.not(): DataStarExpressionOp = registry.not(this)
+    override operator fun <T> Signal<T>.not(): DataStarExpressionOp = registry.not(this)
 
     override infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this, expression)
 
