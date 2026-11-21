@@ -7,9 +7,9 @@ import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.addApost
 import org.xmlet.htmlflow.datastar.expressions.DataStarAction.Companion.convertFuncToPath
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpression
 import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionOp
-import org.xmlet.htmlflow.datastar.expressions.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.expressions.Signal
 import org.xmlet.htmlflow.datastar.expressions.SignalPatchFilter
+import org.xmlet.htmlflow.datastar.expressions.ast.DataStarExpressionRegistry
 import org.xmlet.htmlflow.datastar.serialization.QuoteStyle
 import org.xmlet.htmlflow.datastar.serialization.asRawJS
 import kotlin.reflect.KFunction
@@ -19,7 +19,8 @@ import kotlin.reflect.KProperty1
  * A DSL builder for constructing DataStar expressions by combining signals, actions,
  * and operators.
  *
- * Multiple expressions are accumulated as AST nodes and separated by semicolons in the final output.
+ * Expressions are accumulated as ordered statements and separated by semicolons in the final
+ * output. Composed operations retain their AST so grouping is preserved until rendering.
  *
  * **Example usage:**
  * ```kotlin
@@ -38,6 +39,8 @@ class ExpressionBuilder : ExpressionScope {
             .takeUnless { it == "{}" }
             .orEmpty()
 
+    private fun renderOptions(optionsBuilder: ActionOptions.() -> Unit): String = ActionOptions().apply(optionsBuilder).toString()
+
     override operator fun Signal<*>.unaryPlus() {
         registry.explicit(this)
     }
@@ -51,18 +54,32 @@ class ExpressionBuilder : ExpressionScope {
     /**
      * Frontend actions
      */
-    override fun peek(callable: () -> String): DataStarAction = registry.action(DataStarAction(ActionType.PEEK, callable))
+    override fun peek(callable: () -> String): DataStarAction {
+        val action = DataStarAction(ActionType.PEEK, callable)
+        registry.register(action)
+        return action
+    }
 
-    override fun peek(js: String): DataStarAction = registry.action(DataStarAction(ActionType.PEEK, js))
+    override fun peek(js: String): DataStarAction {
+        val action = DataStarAction(ActionType.PEEK, js)
+        registry.register(action)
+        return action
+    }
 
     override fun setAll(
         value: Any,
         filterBuilder: SignalPatchFilter.() -> Unit,
-    ): DataStarAction =
-        registry.action(DataStarAction(ActionType.SET_ALL, value, SignalPatchFilter().applySignalPatchFilter(filterBuilder)))
+    ): DataStarAction {
+        val action = DataStarAction(ActionType.SET_ALL, value, SignalPatchFilter().applySignalPatchFilter(filterBuilder))
+        registry.register(action)
+        return action
+    }
 
-    override fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction =
-        registry.action(DataStarAction(ActionType.TOGGLE_ALL, SignalPatchFilter().applySignalPatchFilter(filterBuilder)))
+    override fun toggleAll(filterBuilder: SignalPatchFilter.() -> Unit): DataStarAction {
+        val action = DataStarAction(ActionType.TOGGLE_ALL, SignalPatchFilter().applySignalPatchFilter(filterBuilder))
+        registry.register(action)
+        return action
+    }
 
     /**
      * Backend actions
@@ -71,87 +88,99 @@ class ExpressionBuilder : ExpressionScope {
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.GET, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.GET, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun get(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.GET, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.GET, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun post(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.POST, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.POST, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun post(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.POST, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.POST, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun put(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PUT, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.PUT, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun put(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PUT, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.PUT, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun delete(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.DELETE, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.DELETE, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun delete(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.DELETE, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.DELETE, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun patch(
         func: KFunction<*>,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PATCH, convertFuncToPath(func), options))
+        val action = DataStarAction(ActionType.PATCH, convertFuncToPath(func), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     override fun patch(
         path: String,
         optionsBuilder: ActionOptions.() -> Unit,
     ): DataStarAction {
-        val options = ActionOptions().apply(optionsBuilder).toString()
-        return registry.action(DataStarAction(ActionType.PATCH, addApostrophe(path), options))
+        val action = DataStarAction(ActionType.PATCH, addApostrophe(path), renderOptions(optionsBuilder))
+        registry.register(action)
+        return action
     }
 
     /**
      * JavaScript operators
      */
 
-    override operator fun DataStarExpression.not(): DataStarExpressionOp = registry.not(this)
+    override operator fun <T> Signal<T>.not(): DataStarExpressionOp = registry.not(this)
+
+    override operator fun DataStarExpressionOp.not(): DataStarExpressionOp = registry.not(this)
 
     override infix fun DataStarExpression.and(expression: DataStarExpression): DataStarExpressionOp = registry.and(this, expression)
 
