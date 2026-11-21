@@ -19,7 +19,8 @@ import kotlin.reflect.KProperty1
  * A DSL builder for constructing DataStar expressions by combining signals, actions,
  * and operators.
  *
- * Multiple expressions are accumulated as AST nodes and separated by semicolons in the final output.
+ * Expressions are accumulated as ordered statements and separated by semicolons in the final
+ * output. Composed operations retain their AST so grouping is preserved until rendering.
  *
  * **Example usage:**
  * ```kotlin
