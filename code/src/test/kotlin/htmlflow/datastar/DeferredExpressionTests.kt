@@ -103,11 +103,11 @@ class DeferredExpressionTests {
         assertEquals($$"$a || $b", condition.toString())
 
         with(builder) {
-            !condition
+            a and b
             +"after()"
         }
 
-        assertEquals($$"before(); !($a || $b); after()", builder.getExpression())
-        assertEquals($$"before(); !($a || $b); after()", builder.getExpression())
+        assertEquals($$"before(); $a || $b; $a && $b; after()", builder.getExpression())
+        assertEquals($$"before(); $a || $b; $a && $b; after()", builder.getExpression())
     }
 }
